@@ -54,7 +54,7 @@
 
 ## 快速开始
 
-1. 下载 `期末复习系统.html`，用浏览器打开（推荐 Chrome / Edge），或直接打开https://contr0l-text-review.netlify.app/进入网页。
+1. 下载 `期末复习系统.html`，用浏览器打开（推荐 Chrome / Edge），或直接打开https://contr0l-text-review.netlify.app 进入网页。
 2. 首页点击「上传题库」，选择文件或粘贴文本。
 3. 若使用 AI 识别：点击「更改设置」，选择供应商并填入自己的 API Key（首次使用可点击「新手？查看接入教程」）。
 4. 确认识别结果后导入，即可开始刷题。
