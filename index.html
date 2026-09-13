@@ -1,4 +1,4 @@
-<!-- 期末复习系统 · v1.2.2.2 | 官方品牌Logo + 弹窗关闭动画 + 正确率趋势 + 题库选择 -->
+<!-- 期末复习系统 · v1.3 | visionOS 质感与动效升级 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -11,178 +11,429 @@
   <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
+    // Tailwind 未配置时 darkMode 默认 media，与基于 .dark 类的切换冲突；preflight 会覆盖本文件自带的 :root/body 基础样式
+    tailwind.config = { darkMode: 'class', corePlugins: { preflight: false } };
+  </script>
+  <script>
     if (typeof pdfjsLib !== 'undefined') {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
   </script>
   <style>
     :root {
-      --bg: #f5f5f7;
+      /* ---- 兼容旧变量名（老代码在用，不许删） ---- */
+      --bg: #f2f2f7;
       --card-bg: #ffffff;
-      --text: #1d1d1f;
-      --text-secondary: #86868b;
+      --text-secondary: #6e6e73;
       --border: #d2d2d7;
-      --border-light: #e8e8ed;
+      --border-light: #e6e6eb;
       --accent: #0071e3;
       --accent-hover: #0077ed;
       --green: #34c759;
       --red: #ff3b30;
       --purple: #af52de;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-      --radius-lg: 20px;
+      --radius-lg: 22px;
       --radius-md: 16px;
+
+      /* ---- 文本层级 ---- */
+      --text: #1d1d1f;
+      --text-2: #48484a;
+      --text-3: #8e8e93;
+
+      /* ---- 表面层级（visionOS：越靠上越「厚」） ---- */
+      --surface-0: #f2f2f7;
+      --surface-1: rgba(255,255,255,.72);
+      --surface-2: #ffffff;
+      --surface-glass: rgba(255,255,255,.66);
+      --hairline: rgba(0,0,0,.07);
+      --hairline-strong: rgba(0,0,0,.12);
+      --fill-quiet: rgba(120,120,128,.09);
+      --fill-hover: rgba(120,120,128,.14);
+
+      /* ---- 高度与光晕 ---- */
+      --elev-1: 0 1px 2px rgba(0,0,0,.05), 0 8px 24px -12px rgba(0,0,0,.12);
+      --elev-2: 0 2px 6px rgba(0,0,0,.06), 0 18px 44px -18px rgba(0,0,0,.2);
+      --elev-3: 0 8px 16px rgba(0,0,0,.08), 0 40px 90px -30px rgba(0,0,0,.32);
+      --elev-glow: 0 0 0 1px rgba(0,113,227,.16), 0 6px 22px -8px rgba(0,113,227,.4);
+      --inset-top: inset 0 1px 0 rgba(255,255,255,.6);
+      --shadow-sm: var(--elev-1);
+
+      /* ---- 间距刻度 ---- */
+      --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+      --sp-5: 20px; --sp-6: 24px; --sp-7: 32px; --sp-8: 40px;
+
+      /* ---- 圆角 ---- */
+      --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px; --r-pill: 999px;
+
+      /* ---- 字体 ---- */
+      --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      --font-num: ui-rounded, 'SF Pro Rounded', -apple-system, 'PingFang SC', sans-serif;
+      --fs-xs: 12px; --fs-sm: 13.5px; --fs-md: 15px; --fs-lg: 17px;
+      --fs-xl: 22px; --fs-2xl: 28px; --fs-3xl: 34px; --fs-4xl: 44px;
+      --track-tight: -0.022em;
+
+      /* ---- 时长与曲线（Apple 手感三件套） ---- */
+      --dur-1: 140ms;
+      --dur-2: 260ms;
+      --dur-3: 420ms;
+      --ease-out: cubic-bezier(.32, .72, 0, 1);
+      --ease-spring: cubic-bezier(.2, 1.3, .4, 1);
+      --ease-soft: cubic-bezier(.4, 0, .2, 1);
+
       color-scheme: light;
     }
     .dark {
-      --bg: #0f0f12;
+      --bg: #0b0b0d;
       --card-bg: #1c1c1e;
-      --text: #f5f5f7;
       --text-secondary: #98989d;
-      --border: #38383a;
-      --border-light: #2c2c2e;
+      --border: #3a3a3c;
+      --border-light: #2a2a2c;
       --accent: #0a84ff;
       --accent-hover: #409cff;
       --green: #30d158;
       --red: #ff453a;
       --purple: #bf5af2;
+
+      --text: #f5f5f7;
+      --text-2: #c7c7cc;
+      --text-3: #8e8e93;
+
+      --surface-0: #0b0b0d;
+      --surface-1: rgba(28,28,30,.72);
+      --surface-2: #1c1c1e;
+      --surface-glass: rgba(22,22,24,.7);
+      --hairline: rgba(255,255,255,.09);
+      --hairline-strong: rgba(255,255,255,.16);
+      --fill-quiet: rgba(120,120,128,.16);
+      --fill-hover: rgba(120,120,128,.24);
+
+      --elev-1: 0 1px 2px rgba(0,0,0,.5), 0 10px 30px -14px rgba(0,0,0,.7);
+      --elev-2: 0 2px 8px rgba(0,0,0,.55), 0 22px 52px -20px rgba(0,0,0,.8);
+      --elev-3: 0 10px 20px rgba(0,0,0,.6), 0 48px 100px -34px rgba(0,0,0,.9);
+      --elev-glow: 0 0 0 1px rgba(10,132,255,.24), 0 6px 26px -8px rgba(10,132,255,.5);
+      --inset-top: inset 0 1px 0 rgba(255,255,255,.07);
+      --shadow-sm: var(--elev-1);
+
       color-scheme: dark;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
-      background: var(--bg); color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: var(--surface-0); color: var(--text);
+      font-family: var(--font-ui);
+      font-size: var(--fs-md);
       margin: 0; padding: 0; min-height: 100vh; line-height: 1.5;
-      transition: background-color 0.3s, color 0.3s;
-      -webkit-font-smoothing: antialiased;
+      letter-spacing: var(--track-tight);
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+      /* 景深：两团极淡的品牌色光晕，让纯色背景不再是死平色 */
+      background-image:
+        radial-gradient(1100px 620px at 12% -8%, rgba(0,113,227,.10), transparent 62%),
+        radial-gradient(900px 560px at 92% 4%, rgba(175,82,222,.08), transparent 60%);
+      background-attachment: fixed;
+      transition: background-color var(--dur-2) var(--ease-soft), color var(--dur-2) var(--ease-soft);
+    }
+    body.dark {
+      background-image:
+        radial-gradient(1100px 620px at 12% -8%, rgba(10,132,255,.16), transparent 60%),
+        radial-gradient(900px 560px at 92% 4%, rgba(191,90,242,.12), transparent 58%);
+    }
+    /* 数字统一用等宽数位，避免读数时抖动 */
+    .num, #resultAcc, [id$="Count"], .stat-value { font-variant-numeric: tabular-nums; }
+
+    /* 焦点环：只在键盘导航时出现，不破坏鼠标观感 */
+    :focus-visible {
+      outline: 2.5px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: var(--r-sm);
+    }
+    /* ===== 表面系统：visionOS 的「厚度」来自 三层玻璃 + 发丝边 + 顶部内高光 ===== */
+    .glass {
+      background: var(--surface-1);
+      -webkit-backdrop-filter: blur(30px) saturate(1.8);
+      backdrop-filter: blur(30px) saturate(1.8);
     }
     .card-elegant {
-      background: var(--card-bg); border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm); border: 0.5px solid var(--border-light);
-      transition: all 0.2s ease;
+      background: var(--card-bg);
+      border-radius: var(--r-lg);
+      box-shadow: var(--elev-1), var(--inset-top);
+      border: 0.5px solid var(--hairline);
+      transition: box-shadow var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-soft), background-color var(--dur-2) var(--ease-soft);
     }
-    .card-hover { transition: transform .35s cubic-bezier(.32,.72,0,1), box-shadow .35s cubic-bezier(.32,.72,0,1), border-color .2s; }
-    .card-hover:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.09); border-color: var(--border); }
+    .elev-1 { box-shadow: var(--elev-1), var(--inset-top); }
+    .elev-2 { box-shadow: var(--elev-2), var(--inset-top); }
+    .card-hover { cursor: pointer; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: var(--elev-2), var(--inset-top); border-color: var(--hairline-strong); }
+    .card-hover:active { transform: translateY(0) scale(.992); transition-duration: var(--dur-1); }
+    /* 触屏设备没有 hover，滚动手势期间不要残留悬停位移 */
+    @media (hover: none) { .card-hover:hover { transform: none; } }
+
+    /* 统一按压反馈：按下去立刻收，松手由各组件自己的过渡负责回弹 */
+    .press { transition: transform var(--dur-1) var(--ease-out); }
+    .press:active { transform: scale(.965); }
     .btn-primary {
-      background: var(--accent); color: #fff; border: none; border-radius: 24px;
-      padding: 12px 24px; font-weight: 500; font-size: 15px; cursor: pointer;
-      transition: transform .15s cubic-bezier(.32,.72,0,1), background .2s, box-shadow .2s;
-      letter-spacing: -0.01em; user-select: none;
+      background: var(--accent); color: #fff; border: none; border-radius: var(--r-pill);
+      padding: 12px 24px; font-weight: 590; font-size: var(--fs-md); cursor: pointer;
+      letter-spacing: var(--track-tight); user-select: none;
+      box-shadow: var(--elev-glow), inset 0 1px 0 rgba(255,255,255,.28);
+      transition: transform var(--dur-1) var(--ease-spring), background-color var(--dur-2) var(--ease-soft), box-shadow var(--dur-2) var(--ease-out), opacity var(--dur-2);
     }
-    .btn-primary:hover { background: var(--accent-hover); box-shadow: 0 6px 18px rgba(0,113,227,.28); }
-    .btn-primary:active { transform: scale(.955); }
+    .btn-primary:hover { background: var(--accent-hover); box-shadow: var(--elev-glow), var(--elev-2); transform: translateY(-1px); }
+    .btn-primary:active { transform: scale(.965); box-shadow: var(--elev-glow); }
+    .btn-primary:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-ghost {
-      background: transparent; border: 0.5px solid var(--border); border-radius: 24px;
-      padding: 10px 20px; font-weight: 500; font-size: 14px; cursor: pointer;
-      color: var(--text); transition: transform .15s cubic-bezier(.32,.72,0,1), background .2s, border-color .2s;
-      user-select: none; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
-    }
-    .btn-ghost:hover { background: rgba(128,128,128,0.08); border-color: var(--text-secondary); }
-    .btn-ghost:active { transform: scale(.955); }
-    .btn-icon {
-      width: 36px; height: 36px; border-radius: 12px; flex: none;
+      background: var(--fill-quiet); border: 0.5px solid var(--hairline); border-radius: var(--r-pill);
+      padding: 10px 20px; font-weight: 500; font-size: var(--fs-sm); cursor: pointer;
+      color: var(--text); user-select: none; text-decoration: none;
       display: inline-flex; align-items: center; justify-content: center;
-      background: transparent; border: 0.5px solid var(--border); color: var(--text-secondary);
-      cursor: pointer; transition: transform .15s cubic-bezier(.32,.72,0,1), background .2s, color .2s, border-color .2s;
+      transition: transform var(--dur-1) var(--ease-spring), background-color var(--dur-2) var(--ease-soft), border-color var(--dur-2) var(--ease-soft), color var(--dur-2);
     }
-    .btn-icon:hover { background: rgba(128,128,128,.08); color: var(--text); }
-    .btn-icon:active { transform: scale(.94); }
-    .btn-icon.on { color: var(--accent); border-color: var(--accent); }
+    .btn-ghost:hover { background: var(--fill-hover); border-color: var(--hairline-strong); }
+    .btn-ghost:active { transform: scale(.965); }
+    .btn-icon {
+      width: 36px; height: 36px; border-radius: var(--r-md); flex: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--fill-quiet); border: 0.5px solid var(--hairline); color: var(--text-2);
+      cursor: pointer;
+      transition: transform var(--dur-1) var(--ease-spring), background-color var(--dur-2) var(--ease-soft), color var(--dur-2), border-color var(--dur-2);
+    }
+    .btn-icon:hover { background: var(--fill-hover); color: var(--text); }
+    .btn-icon:active { transform: scale(.92); }
+    .btn-icon.on { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
     .option-elegant {
-      background: var(--card-bg); border: 1px solid var(--border-light);
-      border-radius: var(--radius-md); padding: 15px 18px; cursor: pointer;
-      transition: transform .15s cubic-bezier(.32,.72,0,1), border-color .2s, background .2s;
+      background: var(--card-bg); border: 0.5px solid var(--hairline);
+      border-radius: var(--r-md); padding: 15px 18px; cursor: pointer;
       display: flex; align-items: center; gap: 12px;
-      width: 100%; user-select: none; font-size: 15px;
+      width: 100%; user-select: none; font-size: var(--fs-md); color: var(--text);
+      transition: transform var(--dur-1) var(--ease-spring), border-color var(--dur-2) var(--ease-soft), background-color var(--dur-2) var(--ease-soft), box-shadow var(--dur-2) var(--ease-out);
     }
-    .option-elegant:active { transform: scale(.975); }
-    .option-elegant:hover { border-color: var(--border); }
-    .option-elegant.selected { border-color: var(--accent); background: rgba(0,113,227,0.05); }
-    .option-elegant.correct-flash { border-color: var(--green)!important; background: rgba(52,199,89,0.08)!important; animation: correctPulse 0.6s ease; }
-    .option-elegant.wrong-shake { border-color: var(--red)!important; background: rgba(255,59,48,0.08)!important; animation: shakeX 0.5s ease; }
-    @keyframes correctPulse { 0%{transform:scale(1)}30%{transform:scale(1.03)}60%{transform:scale(0.98)}100%{transform:scale(1)} }
-    @keyframes shakeX { 0%,100%{transform:translateX(0)}15%{transform:translateX(-6px)}30%{transform:translateX(6px)} }
-    .progress-line { height:3px; border-radius:2px; background:var(--border-light); overflow:hidden; }
-    .progress-line-fill { height:100%; background:var(--accent); transition: width .6s cubic-bezier(.32,.72,0,1); }
+    .option-elegant:active { transform: scale(.978); }
+    .option-elegant:hover { border-color: var(--hairline-strong); background: var(--fill-quiet); }
+    .option-elegant.selected {
+      border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--card-bg));
+      box-shadow: var(--elev-glow);
+    }
+    /* 选项字母徽章（配合 Task 8 的 DOM 结构调整） */
+    .opt-key {
+      width: 26px; height: 26px; border-radius: 8px; flex: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: var(--fs-sm); font-weight: 600;
+      background: var(--fill-quiet); color: var(--text-2);
+      transition: background-color var(--dur-2), color var(--dur-2);
+    }
+    .option-elegant.selected .opt-key { background: var(--accent); color: #fff; }
+    .option-elegant.correct-flash { border-color: var(--green) !important; background: color-mix(in srgb, var(--green) 10%, var(--card-bg)) !important; animation: correctPulse .5s var(--ease-spring); }
+    .option-elegant.correct-flash .opt-key { background: var(--green); color: #fff; }
+    .option-elegant.wrong-shake { border-color: var(--red) !important; background: color-mix(in srgb, var(--red) 10%, var(--card-bg)) !important; animation: shakeX .45s var(--ease-soft); }
+    .option-elegant.wrong-shake .opt-key { background: var(--red); color: #fff; }
+    @keyframes correctPulse { 0%{transform:scale(1)} 34%{transform:scale(1.022)} 100%{transform:scale(1)} }
+    @keyframes shakeX { 0%,100%{transform:translateX(0)} 18%{transform:translateX(-5px)} 38%{transform:translateX(5px)} 58%{transform:translateX(-3px)} 78%{transform:translateX(2px)} }
+    /* 进度条：轨道 + 发光填充，填充用 transform 而非 width（Task 9 的 JS 配合） */
+    .progress-line { height:4px; border-radius: var(--r-pill); background: var(--fill-quiet); overflow: hidden; position: relative; }
+    .progress-line-fill {
+      height: 100%; width: 100%; transform-origin: left center; transform: scaleX(0);
+      background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 62%, var(--purple)));
+      border-radius: var(--r-pill);
+      transition: transform var(--dur-3) var(--ease-spring);
+    }
     .upload-zone {
-      display: block; border: 2px dashed var(--border); border-radius: var(--radius-lg);
+      display: block; border: 1.5px dashed var(--hairline-strong); border-radius: var(--r-xl);
       padding: 36px 20px; text-align: center; cursor: pointer;
-      transition: border-color .2s, background .2s, transform .2s;
+      background: var(--fill-quiet);
       user-select: none; -webkit-touch-callout: none;
+      transition: border-color var(--dur-2) var(--ease-soft), background-color var(--dur-2) var(--ease-soft), transform var(--dur-1) var(--ease-spring);
     }
-    .upload-zone:hover { border-color: var(--accent); background: rgba(0,113,227,0.02); }
+    .upload-zone:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, transparent); }
     .upload-zone:active { transform: scale(.99); }
+    .upload-zone.dragover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); transform: scale(1.008); }
     .vh { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-    .input-elegant { border:0.5px solid var(--border); border-radius:12px; padding:12px 16px; font-size:15px; background:var(--card-bg); color:var(--text); width:100%; outline:none; transition: border-color .2s, box-shadow .2s; }
-    .input-elegant:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,113,227,0.08); }
+    .input-elegant {
+      border: 0.5px solid var(--hairline-strong); border-radius: var(--r-md);
+      padding: 12px 15px; font-size: var(--fs-md); font-family: var(--font-ui);
+      background: var(--card-bg); color: var(--text); width: 100%; outline: none;
+      transition: border-color var(--dur-2) var(--ease-soft), box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2);
+    }
+    .input-elegant:focus { border-color: var(--accent); box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--accent) 14%, transparent); }
+    .input-elegant::placeholder { color: var(--text-3); }
     textarea.input-elegant { resize: vertical; min-height: 90px; }
     .text-secondary { color: var(--text-secondary); }
     .tag-pill {
-      display:inline-flex; align-items:center; padding:2px 10px; border-radius:999px;
-      font-size:11px; font-weight:600; background:rgba(0,113,227,0.08); color:var(--accent);
+      display: inline-flex; align-items: center; padding: 3px 10px; border-radius: var(--r-pill);
+      font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums;
+      background: var(--fill-quiet); color: var(--text-2);
     }
-    .tag-single { background:rgba(0,113,227,0.10); color:var(--accent); }
-    .tag-multi { background:rgba(175,82,222,0.10); color:var(--purple); }
-    .tag-judge { background:rgba(255,149,0,0.12); color:#ff9500; }
-    .tag-fill { background:rgba(52,199,89,0.12); color:var(--green); }
-    .tag-short { background:rgba(90,200,250,0.12); color:#5ac8fa; }
-    .tag-comprehensive { background:rgba(255,204,0,0.14); color:#ff9500; }
-    .tag-wrong { background:rgba(255,59,48,0.1); color:var(--red); }
-    .timeline-dot { width:8px; height:8px; border-radius:50%; background:var(--border); flex:none; }
-    .timeline-line { width:2px; min-height:28px; background:var(--border-light); flex:1; }
-    .option-elegant.disabled { opacity:.55; cursor:not-allowed; }
-    @media (max-width:640px) {
-      .option-elegant { padding:13px 14px; font-size:14px; }
-      .btn-primary { padding:10px 18px; font-size:14px; }
+    .tag-single { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+    .tag-multi { background: color-mix(in srgb, var(--purple) 14%, transparent); color: var(--purple); }
+    .tag-judge { background: color-mix(in srgb, #ff9500 15%, transparent); color: #ff9500; }
+    .tag-fill { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); }
+    .tag-short { background: color-mix(in srgb, #5ac8fa 16%, transparent); color: #3aa8dd; }
+    .tag-comprehensive { background: color-mix(in srgb, #ffcc00 18%, transparent); color: #b8860b; }
+    .tag-wrong { background: color-mix(in srgb, var(--red) 13%, transparent); color: var(--red); }
+    .timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--hairline-strong); flex: none; }
+    .timeline-line { width: 1.5px; min-height: 28px; background: var(--hairline); flex: 1; }
+    .option-elegant.disabled { opacity: .6; cursor: default; }
+    .option-elegant.disabled:active { transform: none; }
+
+    /* 指标小块（首页统计 + 结果页复用） */
+    .stat-tile {
+      padding: 12px 8px; border-radius: var(--r-md); text-align: center;
+      background: var(--fill-quiet); border: 0.5px solid var(--hairline);
+    }
+    .stat-tile .stat-value { font-family: var(--font-num); font-size: var(--fs-xl); font-weight: 640; letter-spacing: -0.03em; }
+    .stat-tile .stat-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    /* 跳题条：可横向滚动的小圆点，做对绿、做错红、当前蓝且放大 */
+    .jump-dot {
+      flex: none; min-width: 26px; height: 26px; padding: 0 4px;
+      border-radius: var(--r-pill); border: 0.5px solid var(--hairline);
+      background: var(--fill-quiet); color: var(--text-2);
+      font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums;
+      cursor: pointer; font-family: var(--font-ui);
+      transition: transform var(--dur-1) var(--ease-spring), background-color var(--dur-2), color var(--dur-2), border-color var(--dur-2);
+    }
+    .jump-dot:hover { background: var(--fill-hover); transform: translateY(-1px); }
+    .jump-dot:active { transform: scale(.9); }
+    .jump-dot.ok { border-color: color-mix(in srgb, var(--green) 50%, transparent); background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--green); }
+    .jump-dot.bad { border-color: color-mix(in srgb, var(--red) 50%, transparent); background: color-mix(in srgb, var(--red) 14%, transparent); color: var(--red); }
+    .jump-dot.cur { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.12); box-shadow: var(--elev-glow); }
+    #jumpBar::-webkit-scrollbar { height: 3px; }
+    #jumpBar::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 2px; }
+    /* 练习页顶栏：轻微玻璃，滚动时保持在顶部 */
+    .exam-bar {
+      position: sticky; top: 0; z-index: 50; padding: 10px 0 12px;
+      background: var(--surface-glass);
+      -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
+      border-bottom: 0.5px solid var(--hairline);
+    }
+    @media (max-width: 640px) {
+      .option-elegant { padding: 13px 14px; font-size: 14px; }
+      .btn-primary { padding: 11px 18px; font-size: 14px; }
+      .card-elegant { border-radius: var(--r-md); }
+    }
+    @media (min-width: 1024px) {
+      /* 桌面宽屏提高信息密度：首页题库卡两列、指标三列 */
+      .home-bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--sp-4); }
+      .home-bento > .span-hero { grid-column: span 8; }
+      .home-bento > .span-side { grid-column: span 4; }
+      .home-bento > .span-full { grid-column: span 12; }
+      .home-bento > .span-half { grid-column: span 6; }
     }
 
-    /* ========== 动画系统（兼容 Edge / Windows，可通过顶部动效开关关闭） ========== */
-    ::view-transition-old(root) { animation: vtFadeOut .22s ease both; }
-    ::view-transition-new(root) { animation: vtRiseIn .42s cubic-bezier(.32,.72,0,1) both; }
-    @keyframes vtFadeOut { to { opacity: 0; transform: scale(.985); } }
-    @keyframes vtRiseIn { from { opacity: 0; transform: translateY(16px) scale(.99); } }
+    /* ========== 动效层 ==========
+       三档：.motion-full（默认）/ .motion-lite（只保留必要的位移与淡入）/ .motion-off（关闭装饰性动效，保留状态反馈）
+       旧版的 .no-motion 用 `transition:none !important` 把按钮按压反馈也一起杀了，本版按档位降级而不是一刀切 */
+    body { --motion-scale: 1; }
+    .motion-lite { --motion-scale: .55; }
+    .motion-off  { --motion-scale: 0; }
 
-    .rise-item { animation: riseIn .55s cubic-bezier(.32,.72,0,1) both; }
-    @keyframes riseIn { from { opacity:0; transform: translateY(18px) scale(.985); } to { opacity:1; transform:none; } }
+    /* 入场：整体上浮淡入 */
+    .rise-item { animation: riseIn calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-out) both; }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
-    .no-motion *, .no-motion *::before, .no-motion *::after {
-      animation: none !important;
-      transition: none !important;
+    /* 子项依次入场：父加 .stagger，子元素自动递增延迟（最多 12 个） */
+    .stagger > * { animation: riseIn calc(var(--dur-2) * var(--motion-scale, 1) + 1ms) var(--ease-out) both; }
+    .stagger > *:nth-child(1) { animation-delay: 0ms; }
+    .stagger > *:nth-child(2) { animation-delay: 35ms; }
+    .stagger > *:nth-child(3) { animation-delay: 70ms; }
+    .stagger > *:nth-child(4) { animation-delay: 105ms; }
+    .stagger > *:nth-child(5) { animation-delay: 140ms; }
+    .stagger > *:nth-child(6) { animation-delay: 175ms; }
+    .stagger > *:nth-child(7) { animation-delay: 210ms; }
+    .stagger > *:nth-child(8) { animation-delay: 245ms; }
+    .stagger > *:nth-child(n+9) { animation-delay: 280ms; }
+
+    /* 切题方向动画（Task 8 使用） */
+    .swap-in-right { animation: swapInRight calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-out) both; }
+    .swap-in-left  { animation: swapInLeft  calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-out) both; }
+    @keyframes swapInRight { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
+    @keyframes swapInLeft  { from { opacity: 0; transform: translateX(-22px); } to { opacity: 1; transform: none; } }
+
+    /* 关闭装饰动效时：去掉入场/位移/彩带，但保留 140ms 的按压与颜色反馈 */
+    .motion-off .rise-item,
+    .motion-off .stagger > *,
+    .motion-off .swap-in-right,
+    .motion-off .swap-in-left,
+    .motion-off .confetti,
+    .motion-off .think-dot { animation: none !important; }
+    .motion-off .card-hover:hover,
+    .motion-off .mode-opt:hover,
+    .motion-off .provider-chip:hover,
+    .motion-off .btn-primary:hover { transform: none !important; }
+    .motion-off .seg-ind { transition: none !important; }
+
+    /* 系统级降级：尊重操作系统「减弱动态效果」 */
+    @media (prefers-reduced-motion: reduce) {
+      .rise-item, .stagger > *, .swap-in-right, .swap-in-left { animation: none !important; }
+      .card-hover:hover, .mode-opt:hover, .btn-primary:hover { transform: none !important; }
+      ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .01ms !important; }
     }
 
-    /* 弹窗（移动端为底部抽屉式，关闭也有动画） */
+    /* 视图转场：只让内容区过渡，外壳（顶部/背景）保持稳定 —— 旧版对 root 整体做过渡，导致大标题卡片跟着飞 */
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+    #app { view-transition-name: app-content; }
+    /* 方向通过 :root 上的 CSS 变量传递，而不是 `.vt-back ::view-transition-new(app-content)` 这类后代选择器。
+       实测 Chrome 能解析那种写法（sheet.cssRules 里可见、animationName 生效），但转场时是否命中没有可靠保证；
+       用变量取值不存在这个不确定性，静态也能验。 */
+    :root { --vt-in: vtIn; }
+    .vt-back { --vt-in: vtInLeft; }
+    ::view-transition-old(app-content) {
+      animation: vtOut calc(var(--dur-2) * var(--motion-scale, 1) + 1ms) var(--ease-soft) both;
+    }
+    ::view-transition-new(app-content) {
+      animation: var(--vt-in) calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-out) both;
+    }
+    @keyframes vtOut { to { opacity: 0; transform: scale(.992); } }
+    @keyframes vtIn  { from { opacity: 0; transform: translateY(10px) scale(.994); } }
+    @keyframes vtInLeft { from { opacity: 0; transform: translateX(-16px); } }
+
+    /* 弹窗：移动端底部抽屉 / 桌面居中卡片，玻璃质感 */
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,.35);
-      backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3);
+      position: fixed; inset: 0; background: rgba(0,0,0,.32);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6);
       z-index: 1000; display: flex; align-items: flex-end; justify-content: center;
-      animation: backdropIn .28s ease both;
+      animation: backdropIn calc(var(--dur-2) * var(--motion-scale, 1) + 1ms) var(--ease-soft) both;
     }
     @media (min-width: 640px) { .modal-backdrop { align-items: center; padding: 28px; } }
     .modal-panel {
-      background: var(--card-bg); border-radius: 26px; width: 100%; max-width: 580px;
-      max-height: 88vh; overflow-y: auto; border: 0.5px solid var(--border-light);
-      box-shadow: 0 32px 90px rgba(0,0,0,.32);
-      animation: modalIn .38s cubic-bezier(.32,.72,0,1) both;
+      background: var(--surface-2); border-radius: var(--r-xl) var(--r-xl) 0 0; width: 100%; max-width: 580px;
+      max-height: 88vh; overflow-y: auto; border: 0.5px solid var(--hairline);
+      box-shadow: var(--elev-3), var(--inset-top);
+      animation: modalIn calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-spring) both;
+      overscroll-behavior: contain;
     }
+    @media (min-width: 640px) { .modal-panel { border-radius: var(--r-xl); } }
     @media (max-width: 639px) {
-      .modal-panel { border-radius: 26px 26px 0 0; max-height: 92vh; }
+      .modal-panel { max-height: 92vh; padding-bottom: env(safe-area-inset-bottom, 0); }
       .seg-btn { padding: 8px 14px; }
     }
-    @keyframes modalIn { from { opacity: 0; transform: translateY(32px) scale(.96); } }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(26px) scale(.97); } }
     @keyframes backdropIn { from { opacity: 0; } }
-    @keyframes modalOut { to { opacity: 0; transform: translateY(24px) scale(.96); } }
+    @keyframes modalOut { to { opacity: 0; transform: translateY(18px) scale(.97); } }
     @keyframes backdropOut { to { opacity: 0; } }
     .modal-panel::-webkit-scrollbar { width: 6px; }
-    .modal-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .modal-panel::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 3px; }
 
-    /* 分段控件 */
-    .seg { display: inline-flex; background: rgba(128,128,128,.12); border-radius: 999px; padding: 3px; gap: 2px; }
+    /* 分段控件：滑动指示器（visionOS 最标志性的一处） */
+    .seg {
+      display: inline-flex; position: relative; isolation: isolate;
+      background: var(--fill-quiet); border: 0.5px solid var(--hairline);
+      border-radius: var(--r-pill); padding: 3px; gap: 2px;
+    }
+    .seg-ind {
+      position: absolute; top: 3px; bottom: 3px; left: 0; z-index: -1;
+      border-radius: var(--r-pill); background: var(--card-bg);
+      box-shadow: 0 1px 4px rgba(0,0,0,.16), var(--inset-top);
+      transition: transform calc(var(--dur-2) * var(--motion-scale, 1) + 1ms) var(--ease-spring),
+                  width calc(var(--dur-2) * var(--motion-scale, 1) + 1ms) var(--ease-spring);
+      pointer-events: none;
+    }
     .seg-btn {
-      border: none; background: transparent; padding: 7px 16px; border-radius: 999px;
-      font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer;
-      transition: all .28s cubic-bezier(.32,.72,0,1); user-select: none;
+      border: none; background: transparent; padding: 7px 16px; border-radius: var(--r-pill);
+      font-size: var(--fs-sm); font-weight: 560; color: var(--text-2); cursor: pointer;
+      position: relative; z-index: 1; font-family: var(--font-ui);
+      transition: color var(--dur-2) var(--ease-soft), transform var(--dur-1) var(--ease-spring);
+      user-select: none;
     }
     .seg-btn:hover { color: var(--text); }
-    .seg-btn.active { background: var(--card-bg); color: var(--text); box-shadow: 0 1px 5px rgba(0,0,0,.14); }
+    .seg-btn:active { transform: scale(.96); }
+    .seg-btn.active { color: var(--text); }
 
     /* 供应商 chip */
     .provider-chip {
@@ -232,14 +483,18 @@
     .ring-bg { stroke: var(--border-light); }
     #resultRing { transition: stroke-dashoffset 1.2s cubic-bezier(.32,.72,0,1); }
 
-    /* 彩带 */
+    /* 结果页爆发粒子（满分时；取代旧版从顶部飘落 5 秒的方片） */
     .confetti {
-      position: fixed; top: -20px; z-index: 3000; pointer-events: none; border-radius: 2px;
-      animation: confettiFall linear forwards;
+      position: fixed; z-index: 3000; pointer-events: none;
+      border-radius: 50%;
+      will-change: transform, opacity;
+      animation: burstOut var(--burst-dur, 1100ms) cubic-bezier(.16, .84, .34, 1) forwards;
+      transform: translate(-50%, -50%);
     }
-    @keyframes confettiFall {
-      from { transform: translateY(-24px) rotate(0deg); opacity: 1; }
-      to { transform: translateY(108vh) rotate(760deg); opacity: .85; }
+    @keyframes burstOut {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(.4); }
+      12%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--bx)), calc(-50% + var(--by))) scale(var(--bs, 1)) rotate(var(--br, 0deg)); }
     }
 
     /* 作答方式选择行 */
@@ -258,27 +513,33 @@
 
     .field-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; margin-bottom: 6px; display: block; }
 
-    /* Toast 毛玻璃 */
+    /* Toast：毛玻璃胶囊 + 状态色图标 */
     .toast-item {
-      display: flex; align-items: center; gap: 8px;
-      background: rgba(28,28,30,.82); border: 0.5px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      color: #fff; padding: 11px 20px; border-radius: 999px; font-size: 13.5px;
-      box-shadow: 0 14px 44px rgba(0,0,0,.28); pointer-events: auto; max-width: 340px;
-      animation: toastIn .38s cubic-bezier(.32,.72,0,1);
+      display: flex; align-items: center; gap: 9px;
+      background: var(--surface-glass); border: 0.5px solid var(--hairline-strong);
+      -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
+      color: var(--text); padding: 11px 18px; border-radius: var(--r-pill); font-size: var(--fs-sm);
+      font-weight: 520; box-shadow: var(--elev-2); pointer-events: auto; max-width: min(340px, 84vw);
+      animation: toastIn calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-spring) both;
     }
-    .toast-item::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--tcolor, #0a84ff); flex: none; }
-    @keyframes toastIn { from { opacity: 0; transform: translateX(36px) scale(.96); } }
+    .toast-item::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--tcolor, var(--accent)); flex: none;
+      box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--tcolor, var(--accent)) 22%, transparent);
+    }
+    .toast-item.out { animation: toastOut var(--dur-2) var(--ease-soft) both; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(28px) scale(.94); } }
+    @keyframes toastOut { to { opacity: 0; transform: translateX(20px) scale(.96); } }
   </style>
 </head>
 <body>
-  <div id="app" class="max-w-5xl mx-auto px-3 sm:px-5 py-4 sm:py-6"></div>
+  <div id="app" class="mx-auto px-3 sm:px-5 py-4 sm:py-6" style="max-width:68rem"></div>
   <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;"></div>
   <div id="modalRoot" style="display:none;"></div>
 
   <script>
     (() => {
-      const APP_VERSION = '1.2.2.2';
+      const APP_VERSION = '1.3';
       const STORAGE_KEY = 'final_review_system_data_v141';
       const DARK_KEY = 'final_review_dark_mode';
       const MOTION_KEY = 'final_review_motion';
@@ -303,6 +564,7 @@
       ];
 
       const CHANGELOG = [
+        { date:'2026.09.12', version:'v1.3', content:'视觉与动效全面升级：建立完整设计令牌与三层玻璃表面系统；深色模式改为圆形揭示转场；页面转场只作用于内容区并带前进/后退方向感；新增三档动效开关（完整/精简/关闭）与系统减弱动效适配；练习页新增切题方向动画、滑动模式指示器、可横向滚动的跳题条与键盘跳题；结果页改为弹性计数、发光圆环与中心爆发粒子；更新日志移出首页；修复：动效关闭后按钮失去按压反馈、弹窗未做焦点陷阱、返回上一层丢失滚动位置。' },
         { date:'2026.08.23', version:'v1.2.2.2', content:'（热更）该应用正式上线！' },
         { date:'2026.08.23', version:'v1.2.2.1', content:'供应商品牌 Logo 全部更新为官方图形；弹窗新增关闭动画；新增正确率趋势统计（首页展示练习次数、平均正确率、最佳成绩）；主页「开始复习」「去综合测试」新增题库选择；看题模式新增题目目录跳转；更新日志措辞修订。' },
         { date:'2026.08.22', version:'v1.2.2', content:'移动端上传修复：手机浏览器点击即可唤起文件选择器；供应商启用品牌 Logo；新增错题本：答错自动收录、随时复习、答对自动移出、支持一键清空；新增字节跳动·豆包供应商；动画系统兼容 Edge/Windows 并新增动效开关；更新新手接入教程链接。' },
@@ -326,6 +588,7 @@
         subjects: {}, wrongBook: {}, stats: [], darkMode: false, motion: true,
         examStartTime: null, lastResult: null,
         _sessionStartMode: 'order', _lastAnswerMode: 'order',
+        motionLevel: 'full', navStack: ['home'], scrollMemo: {}, _navDirection: 'forward', _suppressStack: false,
         apiKey: localStorage.getItem(API_KEY_STORAGE) || '',
         aiConfig: null,
       };
@@ -353,16 +616,16 @@
       }
       function showToast(msg, type = 'info') {
         const container = document.getElementById('toastContainer');
+        if (!container) return;
         const toast = document.createElement('div');
         toast.className = 'toast-item';
-        const color = type === 'error' ? '#ff453a' : type === 'success' ? '#30d158' : '#0a84ff';
+        const color = type === 'error' ? 'var(--red)' : type === 'success' ? 'var(--green)' : 'var(--accent)';
         toast.style.setProperty('--tcolor', color);
+        if (type === 'error') toast.setAttribute('role', 'alert');
         toast.textContent = msg;
         container.appendChild(toast);
         setTimeout(() => {
-          toast.style.opacity = '0';
-          toast.style.transform = 'translateX(40px)';
-          toast.style.transition = '.3s';
+          toast.classList.add('out');
           setTimeout(() => toast.remove(), 300);
         }, 2600);
       }
@@ -446,11 +709,32 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ subjects: appState.subjects, wrongBook: appState.wrongBook, stats: appState.stats }));
       }
       function toggleDarkMode() {
-        appState.darkMode = !appState.darkMode;
-        document.body.classList.toggle('dark', appState.darkMode);
-        localStorage.setItem(DARK_KEY, appState.darkMode);
-        const darkBtn = document.getElementById('darkModeBtn');
-        if (darkBtn) darkBtn.innerHTML = iconSvg(appState.darkMode ? 'sun' : 'moon', 16);
+        const next = !appState.darkMode;
+        const apply = () => {
+          appState.darkMode = next;
+          document.body.classList.toggle('dark', next);
+          localStorage.setItem(DARK_KEY, String(next));
+          const darkBtn = document.getElementById('darkModeBtn');
+          if (darkBtn) darkBtn.innerHTML = iconSvg(next ? 'sun' : 'moon', 16);
+        };
+        // 从按钮位置扩散的圆形揭示（Apple 手感）；不支持或不需动效时直接切换
+        if (appState.motionLevel === 'off' || typeof document.startViewTransition !== 'function') { apply(); return; }
+        const btn = document.getElementById('darkModeBtn');
+        const r = btn ? btn.getBoundingClientRect() : { left: innerWidth - 48, top: 40, width: 0, height: 0 };
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const radius = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy));
+        const t = document.startViewTransition(apply);
+        t.ready.then(() => {
+          document.documentElement.animate(
+            { clipPath: [`circle(0px at ${cx}px ${cy}px)`, `circle(${radius}px at ${cx}px ${cy}px)`] },
+            { duration: 520, easing: 'cubic-bezier(.32,.72,0,1)', pseudoElement: '::view-transition-new(root)' }
+          );
+          document.documentElement.animate(
+            { opacity: [1, 1] },
+            { duration: 520, pseudoElement: '::view-transition-old(root)' }
+          );
+        }).catch(() => {});
       }
 
       function defaultAiConfig() {
@@ -508,66 +792,129 @@
         else addWrongToBook(appState.currentSubjectId, q._type, q);
       }
 
-      // ================= 弹窗系统（带关闭动画） =================
+      // ================= 弹窗系统（焦点陷阱 + 关闭后焦点归还 + 关闭动画） =================
       let modalCloseTimer = null;
+      let modalLastFocus = null;
+      const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
       function clearModalRoot() {
         const root = document.getElementById('modalRoot');
         root.innerHTML = '';
         root.style.display = 'none';
         document.body.style.overflow = '';
+        if (modalLastFocus && typeof modalLastFocus.focus === 'function') {
+          try { modalLastFocus.focus({ preventScroll: true }); } catch (e) {}
+        }
+        modalLastFocus = null;
+      }
+      function trapModalFocus(e) {
+        if (e.key !== 'Tab') return;
+        const root = document.getElementById('modalRoot');
+        const items = Array.from(root.querySelectorAll(FOCUSABLE)).filter(el => el.offsetParent !== null);
+        if (!items.length) return;
+        const first = items[0], last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
       function openModal(innerHtml, panelClass = '') {
+        // 只取消未完成的关闭定时器，不做 clearModalRoot()：
+        // 随即要整体覆写 root.innerHTML，多跑一次清空只会白做焦点归还。
+        // 关键在于定时器必须在覆写之前被取消，否则它会在新弹窗打开后把内容清掉。
         if (modalCloseTimer) { clearTimeout(modalCloseTimer); modalCloseTimer = null; }
+        modalLastFocus = document.activeElement;
         const root = document.getElementById('modalRoot');
-        root.innerHTML = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal-panel ${panelClass}">${innerHtml}</div></div>`;
+        root.innerHTML = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal-panel ${panelClass}" role="dialog" aria-modal="true">${innerHtml}</div></div>`;
         root.style.display = 'block';
         document.body.style.overflow = 'hidden';
         root.querySelector('#modalBackdrop').addEventListener('click', e => {
           if (e.target.id === 'modalBackdrop') closeModal();
+        });
+        root.addEventListener('keydown', trapModalFocus);
+        // 焦点移入弹窗：优先第一个输入框，否则面板自身
+        requestAnimationFrame(() => {
+          const target = root.querySelector('input:not([type="hidden"]), textarea') || root.querySelector(FOCUSABLE) || root.querySelector('.modal-panel');
+          if (target) { if (!target.hasAttribute('tabindex') && target.classList.contains('modal-panel')) target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
         });
       }
       function closeModal() {
         const root = document.getElementById('modalRoot');
         if (!root || root.style.display === 'none') return;
         if (modalCloseTimer) { clearTimeout(modalCloseTimer); modalCloseTimer = null; }
-        if (document.body.classList.contains('no-motion')) { clearModalRoot(); return; }
+        root.removeEventListener('keydown', trapModalFocus);
+        if (appState.motionLevel === 'off') { clearModalRoot(); return; }
         const backdrop = root.querySelector('.modal-backdrop');
         const panel = root.querySelector('.modal-panel');
-        if (backdrop) backdrop.style.animation = 'backdropOut .18s ease both';
-        if (panel) panel.style.animation = 'modalOut .22s cubic-bezier(.32,.72,0,1) both';
-        modalCloseTimer = setTimeout(() => { modalCloseTimer = null; clearModalRoot(); }, 220);
+        if (backdrop) backdrop.style.animation = 'backdropOut var(--dur-1) var(--ease-soft) both';
+        if (panel) panel.style.animation = 'modalOut var(--dur-2) var(--ease-out) both';
+        modalCloseTimer = setTimeout(() => { modalCloseTimer = null; clearModalRoot(); }, 200);
       }
 
       // ================= 视图系统（每次导航重新生成 DOM，动画必然重放） =================
-      function navigateTo(view) {
-        appState.currentView = view;
+      // ================= 滚动记忆 =================
+      function viewKey() {
+        if (appState.currentView === 'exam') {
+          return ['exam', appState.currentSubjectId, appState.currentCategory, appState.currentMode].join(':');
+        }
+        if (appState.currentView === 'home') return 'home';
+        return [appState.currentView, appState.currentSubjectId || ''].join(':');
+      }
+      function rememberScroll() {
+        appState.scrollMemo[viewKey()] = window.scrollY || 0;
+      }
+      function restoreScroll(key) {
+        const y = appState.scrollMemo[key];
+        // 用两参数形式，瞬时定位；不加全局 scroll-behavior:smooth，否则会与 offsetWidth 强制重排打架
+        if (typeof y === 'number' && y > 0) window.scrollTo(0, y);
+        else window.scrollTo(0, 0);
+      }
+      function navigateTo(view, opts = {}) {
+        const prev = appState.currentView;
+        rememberScroll();
+        const push = (v) => { if (appState.navStack[appState.navStack.length - 1] !== v) appState.navStack.push(v); };
         if (view === 'exam') {
           appState.currentIndex = 0;
           appState.answeredSet = {};
           appState.userAnswers = {};
           appState.multiTempSelections = [];
         }
+        const noStack = appState._suppressStack;
+        appState._suppressStack = false;
+        appState._navDirection = opts.back ? 'back' : 'forward';
+        appState.currentView = view;
+        if (!opts.replace && !noStack && !opts.back) push(view);
         renderView();
       }
+      function goBack() {
+        // 已在栈底就不再弹：否则连按返回会把 navStack 弹空，之后每次 _back() 都变成无效操作
+        if (appState.navStack.length <= 1) return;
+        rememberScroll();
+        appState.navStack.pop();
+        const target = appState.navStack[appState.navStack.length - 1] || 'home';
+        appState._suppressStack = true;
+        appState._navDirection = 'back';
+        navigateTo(target, { back: true, replace: true });
+      }
+      window._back = goBack;
 
       function renderView() {
         const app = document.getElementById('app');
         const html = renderCurrentView();
-        const doSwap = () => {
-          app.innerHTML = html;
+        const key = viewKey();
+        const swapContent = (h) => {
+          app.innerHTML = h;
           bindEvents();
           if (appState.currentView === 'exam') updateExamUI();
           if (appState.currentView === 'browse') window._filterBrowse?.();
           if (appState.currentView === 'result') animateResult();
-          window.scrollTo(0, 0);
+          restoreScroll(key);
         };
-        if (document.startViewTransition && !document.body.classList.contains('no-motion')) {
-          try {
-            document.startViewTransition(doSwap);
-            return;
-          } catch (e) {}
+        const dir = appState._navDirection || 'forward';
+        // 只切 .vt-back：:root 默认 --vt-in: vtIn，.vt-back 覆盖为 vtInLeft
+        document.documentElement.classList.toggle('vt-back', dir === 'back');
+        const canVT = typeof document.startViewTransition === 'function' && appState.motionLevel !== 'off';
+        if (canVT) {
+          try { document.startViewTransition(() => swapContent(html)); return; } catch (e) {}
         }
-        doSwap();
+        swapContent(html);
       }
 
       function renderCurrentView() {
@@ -578,6 +925,7 @@
           case 'upload': return renderUploadPage();
           case 'log': return renderLogPage();
           case 'browse': return renderBrowsePage();
+          case 'changelog': return renderChangelogPage();
           case 'result': return renderResultPage();
           default: return renderHomePage();
         }
@@ -625,71 +973,105 @@
           <div class="flex justify-between mt-1" style="font-size:10px;color:var(--text-secondary)">
             <span>${pts[0].s.date}</span><span>${pts[pts.length-1].s.date}</span>
           </div>
-          <div class="grid grid-cols-3 gap-2 mt-3 text-center">
-            <div class="p-2 rounded-xl" style="background:var(--border-light)"><div class="font-bold">${total}</div><div style="font-size:10px;color:var(--text-secondary)">练习次数</div></div>
-            <div class="p-2 rounded-xl" style="background:var(--border-light)"><div class="font-bold" style="color:var(--accent)">${avg}%</div><div style="font-size:10px;color:var(--text-secondary)">平均正确率</div></div>
-            <div class="p-2 rounded-xl" style="background:var(--border-light)"><div class="font-bold" style="color:var(--green)">${best}%</div><div style="font-size:10px;color:var(--text-secondary)">最佳成绩</div></div>
+          <div class="grid grid-cols-3 gap-2 mt-3">
+            <div class="stat-tile"><div class="stat-value">${total}</div><div class="stat-label">练习次数</div></div>
+            <div class="stat-tile"><div class="stat-value" style="color:var(--accent)">${avg}%</div><div class="stat-label">平均正确率</div></div>
+            <div class="stat-tile"><div class="stat-value" style="color:var(--green)">${best}%</div><div class="stat-label">最佳成绩</div></div>
           </div>
         </div>`;
       }
 
       // ================= 首页 =================
       function renderHomePage() {
-        let cards = '';
         const ids = Object.keys(appState.subjects);
-        ids.forEach((id, i) => {
+        const totalQuestions = ids.reduce((s, id) => {
+          const q = appState.subjects[id].questions || {};
+          return s + ['single','multi','judge','fill','short'].reduce((a, t) => a + (q[t]?.length || 0), 0);
+        }, 0);
+        const cards = ids.map(id => {
           const sub = appState.subjects[id];
-          const qCount = (sub.questions?.single?.length||0)+(sub.questions?.multi?.length||0)+(sub.questions?.judge?.length||0)+(sub.questions?.fill?.length||0)+(sub.questions?.short?.length||0);
-          cards += `<div class="card-elegant card-hover p-4 cursor-pointer rise-item" style="animation-delay:${100+i*60}ms" onclick="window._openSubject('${id}')"><div class="flex justify-between"><div><h3 class="font-semibold">${escapeHtml(sub.name)}</h3><p class="text-xs text-secondary">${qCount}题 · ${escapeHtml(sub.createdAt||'')}</p></div><svg width="20" height="20" viewBox="0 0 20 20"><path d="M7 4l8 6-8 6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div></div>`;
-        });
-        let logHtml = '';
-        CHANGELOG.forEach((log, i) => {
-          logHtml += `<div class="flex gap-3 items-start"><div class="flex flex-col items-center"><div class="timeline-dot" style="background:${i===0?'var(--accent)':i===1?'var(--purple)':'var(--green)'}"></div>${i<CHANGELOG.length-1?'<div class="timeline-line" style="min-height:28px;"></div>':''}</div><div><p class="font-medium text-sm">${log.date} · ${log.version}</p><p class="text-xs text-secondary">${log.content}</p></div></div>`;
-        });
-        const firstId = ids[0];
+          const q = sub.questions || {};
+          const qCount = ['single','multi','judge','fill','short'].reduce((a, t) => a + (q[t]?.length || 0), 0);
+          const wrong = totalWrongCount(id);
+          return `<button class="card-elegant card-hover p-4 text-left w-full" onclick="window._openSubject('${id}')">
+            <div class="flex justify-between items-start gap-3">
+              <div class="min-w-0">
+                <h3 class="font-semibold truncate" style="font-size:var(--fs-lg)">${escapeHtml(sub.name)}</h3>
+                <p class="text-xs text-secondary mt-1">${qCount} 题${wrong ? ` · ${wrong} 道错题` : ''} · ${escapeHtml(sub.createdAt||'')}</p>
+              </div>
+              <span style="color:var(--text-3);display:inline-flex;flex:none">${iconSvg('arrowRight', 18)}</span>
+            </div>
+          </button>`;
+        }).join('');
+
         return `
-        <div class="space-y-4">
-          <div class="card-elegant p-6 sm:p-8 rise-item" style="background:linear-gradient(135deg, rgba(0,113,227,.07), rgba(175,82,222,.07))">
+        <div class="space-y-5">
+          <div class="card-elegant p-6 sm:p-8 rise-item" style="background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, var(--card-bg)), color-mix(in srgb, var(--purple) 9%, var(--card-bg)));box-shadow:var(--elev-2), var(--inset-top)">
             <div class="flex justify-between items-start gap-3 flex-wrap">
               <div>
-                <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">期末复习系统</h1>
-                <p class="text-sm text-secondary mt-1">v${APP_VERSION} · 正式上线</p>
+                <h1 class="font-bold" style="font-size:var(--fs-3xl);letter-spacing:-0.03em">期末复习系统</h1>
+                <p class="text-sm text-secondary mt-1">v${APP_VERSION} · ${ids.length} 个题库 · 共 ${totalQuestions} 题</p>
               </div>
               <div class="flex gap-2 items-center">
-                <button class="btn-icon ${appState.motion?'on':''}" id="motionBtn" onclick="window._toggleMotion()" title="${appState.motion?'关闭动效':'开启动效'}">${iconSvg('motion', 16)}</button>
+                <button class="btn-icon ${appState.motionLevel!=='off'?'on':''}" id="motionBtn" onclick="window._cycleMotion()" title="${appState.motionLevel==='full'?'动效：完整':appState.motionLevel==='lite'?'动效：精简':'动效：关闭'}">${iconSvg('motion', 16)}</button>
                 <button class="btn-icon" id="darkModeBtn" onclick="window.toggleDarkMode()" title="深浅色模式">${iconSvg(appState.darkMode?'sun':'moon', 16)}</button>
               </div>
             </div>
-            <div class="flex flex-wrap gap-2 mt-4">
-              <button class="btn-primary" onclick="window._navigateTo('upload')">上传题库</button>
-              ${firstId?`<button class="btn-ghost" onclick="window._pickSubject('open')">开始复习</button>`:''}
-              ${firstId?`<button class="btn-ghost" onclick="window._pickSubject('comp')">去综合测试</button>`:''}
+            <div class="flex flex-wrap gap-2 mt-5">
+              <button class="btn-primary press" onclick="window._navigateTo('upload')">上传题库</button>
+              ${ids.length?`<button class="btn-ghost press" onclick="window._pickSubject('open')">开始复习</button>`:''}
+              ${ids.length?`<button class="btn-ghost press" onclick="window._pickSubject('comp')">去综合测试</button>`:''}
             </div>
           </div>
-          <div class="card-elegant p-4 rise-item" style="animation-delay:60ms;border-left:3px solid var(--accent);max-height:380px;overflow-y:auto;">
-            <h2 class="font-semibold mb-3">更新日志</h2><div class="space-y-3">${logHtml}</div>
-          </div>
+
           ${renderStatsCard()}
-          <div class="flex items-center justify-between rise-item" style="animation-delay:100ms">
-            <h2 class="font-semibold text-lg">我的题库</h2>
+
+          <div class="flex items-center justify-between">
+            <h2 class="font-semibold" style="font-size:var(--fs-lg)">我的题库</h2>
+            <span class="text-xs text-secondary">${ids.length} 个</span>
           </div>
-          <div class="grid gap-3">
+          <div class="grid gap-3 stagger sm:grid-cols-2">
             ${cards || `
-            <div class="card-elegant p-10 text-center rise-item">
-              <span style="color:var(--text-secondary);display:inline-flex">${iconSvg('book', 46)}</span>
-              <p class="font-semibold text-lg mt-3">还没有题库</p>
+            <div class="card-elegant p-10 text-center sm:col-span-2">
+              <span style="color:var(--text-3);display:inline-flex">${iconSvg('book', 46)}</span>
+              <p class="font-semibold mt-3" style="font-size:var(--fs-lg)">还没有题库</p>
               <p class="text-sm text-secondary mt-1">上传你的复习资料，AI 帮你识别成可练习的题库</p>
-              <button class="btn-primary mt-5" onclick="window._navigateTo('upload')">去上传题库</button>
+              <button class="btn-primary mt-5 press" onclick="window._navigateTo('upload')">去上传题库</button>
             </div>`}
           </div>
+
           <div class="flex gap-2 flex-wrap rise-item" style="animation-delay:120ms">
-            <button class="btn-ghost text-sm" onclick="window._navigateTo('upload')">上传文件</button>
-            <button class="btn-ghost text-sm" onclick="window._navigateTo('log')">完整日志</button>
-            <button class="btn-ghost text-sm" onclick="window._exportBackup()">导出备份</button>
-            <button class="btn-ghost text-sm" onclick="document.getElementById('backupImportInput').click()">导入备份</button>
+            <button class="btn-ghost text-sm press" onclick="window._navigateTo('upload')">上传文件</button>
+            <button class="btn-ghost text-sm press" onclick="window._navigateTo('changelog')">更新日志</button>
+            <button class="btn-ghost text-sm press" onclick="window._exportBackup()">导出备份</button>
+            <button class="btn-ghost text-sm press" onclick="document.getElementById('backupImportInput').click()">导入备份</button>
             <input type="file" id="backupImportInput" accept=".json,application/json" class="vh" onchange="window._importBackup(event)">
-            <button class="btn-ghost text-sm" onclick="window._resetAll()" style="color:var(--red)">重置数据</button>
+            <button class="btn-ghost text-sm press" onclick="window._resetAll()" style="color:var(--red)">重置数据</button>
           </div>
+        </div>`;
+      }
+
+      // ================= 更新日志（从首页抽出，独立视图） =================
+      function renderChangelogPage() {
+        const rows = CHANGELOG.map((log, i) => `
+          <div class="flex gap-3 items-start">
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot" style="background:${i===0?'var(--accent)':i===1?'var(--purple)':'var(--green)'}"></div>
+              ${i<CHANGELOG.length-1?'<div class="timeline-line"></div>':''}
+            </div>
+            <div class="pb-4 min-w-0">
+              <p class="font-medium text-sm">${log.date} · ${escapeHtml(log.version)}</p>
+              <p class="text-xs text-secondary mt-1">${escapeHtml(log.content)}</p>
+            </div>
+          </div>`).join('');
+        return `
+        <div class="space-y-4">
+          <div class="rise-item">
+            <button class="btn-ghost text-sm press" onclick="window._back()">← 返回</button>
+            <h2 class="text-xl font-semibold mt-2">更新日志</h2>
+            <p class="text-sm text-secondary">共 ${CHANGELOG.length} 个版本</p>
+          </div>
+          <div class="card-elegant p-5 rise-item" style="animation-delay:60ms">${rows}</div>
         </div>`;
       }
 
@@ -713,19 +1095,19 @@
         return `
         <div class="space-y-4">
           <div class="rise-item">
-            <button class="btn-ghost text-sm" onclick="window._navigateTo('home')">← 返回</button>
+            <button class="btn-ghost text-sm" onclick="window._back()">← 返回</button>
             <h2 class="text-xl font-semibold mt-2">${escapeHtml(sub.name)}</h2>
           </div>
           <div class="card-elegant card-hover p-4 cursor-pointer rise-item" style="animation-delay:50ms;border-left:3px solid var(--purple)" onclick="window._openModePicker('comprehensive')">
             <div class="flex items-center gap-3">
-              <span class="mode-opt-icon" style="background:rgba(175,82,222,.1);color:var(--purple)">${iconSvg('target', 22)}</span>
+              <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--purple) 10%, transparent);color:var(--purple)">${iconSvg('target', 22)}</span>
               <div class="flex-1"><div class="font-semibold">综合测试</div><p class="text-xs text-secondary">全题型混合 · 共 ${total} 题</p></div>
               <span class="tag-pill tag-comprehensive">${total} 题</span>
             </div>
           </div>
           <div class="card-elegant card-hover p-4 cursor-pointer rise-item" style="animation-delay:60ms;border-left:3px solid var(--red)" onclick="window._openModePicker('wrong')">
             <div class="flex items-center gap-3">
-              <span class="mode-opt-icon" style="background:rgba(255,59,48,.1);color:var(--red)">${iconSvg('bookmark', 22)}</span>
+              <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--red) 10%, transparent);color:var(--red)">${iconSvg('bookmark', 22)}</span>
               <div class="flex-1"><div class="font-semibold">错题复习</div><p class="text-xs text-secondary">${wrongTotal>0?`共 ${wrongTotal} 道错题 · 答对自动移出`:'暂无错题 · 答错后自动收录'}</p></div>
               <span class="tag-pill tag-wrong">${wrongTotal}</span>
             </div>
@@ -753,7 +1135,7 @@
         return `
         <div class="space-y-4">
           <div class="rise-item">
-            <button class="btn-ghost text-sm" onclick="window._navigateTo('subject')">← 返回</button>
+            <button class="btn-ghost text-sm" onclick="window._back()">← 返回</button>
             <h2 class="text-xl font-semibold mt-2">浏览题库：${escapeHtml(sub.name)}</h2>
           </div>
           <input type="text" class="input-elegant" id="searchInput" placeholder="搜索题目..." oninput="window._filterBrowse()">
@@ -772,25 +1154,33 @@
         const cat = appState.currentCategory;
         return `
         <div class="space-y-4">
-          <div class="flex items-center gap-2 flex-wrap rise-item">
-            <button class="btn-ghost text-sm" onclick="window._navigateTo('subject')">← 返回</button>
-            <span class="tag-pill tag-${cat}">${TYPE_NAMES[cat]||cat}</span>
-            <div class="seg" id="orderSeg">
-              <button class="seg-btn ${mode==='order'?'active':''}" data-mode="order" onclick="window._setMode('order')">顺序</button>
-              <button class="seg-btn ${mode==='shuffle'?'active':''}" data-mode="shuffle" onclick="window._setMode('shuffle')">乱序</button>
-              <button class="seg-btn ${mode==='view'?'active':''}" data-mode="view" onclick="window._setMode('view')">看题</button>
+          <div class="exam-bar rise-item">
+            <div class="flex items-center gap-2 flex-wrap">
+              <button class="btn-ghost text-sm" onclick="window._back()">← 返回</button>
+              <span class="tag-pill tag-${cat}">${TYPE_NAMES[cat]||cat}</span>
+              <div class="seg" id="orderSeg" role="tablist" aria-label="作答模式">
+                <span class="seg-ind" id="segInd" aria-hidden="true"></span>
+                <button class="seg-btn ${mode==='order'?'active':''}" role="tab" aria-selected="${mode==='order'}" data-mode="order" onclick="window._setMode('order')">顺序</button>
+                <button class="seg-btn ${mode==='shuffle'?'active':''}" role="tab" aria-selected="${mode==='shuffle'}" data-mode="shuffle" onclick="window._setMode('shuffle')">乱序</button>
+                <button class="seg-btn ${mode==='view'?'active':''}" role="tab" aria-selected="${mode==='view'}" data-mode="view" onclick="window._setMode('view')">看题</button>
+              </div>
+              <button class="btn-ghost text-sm" id="catalogBtn" onclick="window._openCatalog()" style="display:none">目录</button>
+              <button class="btn-primary text-sm ml-auto" id="resultBtn" onclick="window._goToResult()" style="display:none">查看结果</button>
             </div>
-            <button class="btn-ghost text-sm" id="catalogBtn" onclick="window._openCatalog()" style="display:none">目录</button>
-            <button class="btn-primary text-sm ml-auto" id="resultBtn" onclick="window._goToResult()" style="display:none">查看结果</button>
+            <div class="flex items-center gap-3 mt-3">
+              <div class="flex-1 progress-line"><div class="progress-line-fill" id="progressFill"></div></div>
+              <span class="text-xs num" id="answeredCount" aria-live="polite">${answered}/${total}</span>
+              <span class="text-xs num" style="color:var(--green)" id="correctCount">${correct}</span>
+              <span class="text-xs num" style="color:var(--red)" id="wrongCount">${answered-correct}</span>
+            </div>
           </div>
-          <div class="card-elegant p-3 rise-item" style="animation-delay:50ms"><div class="flex items-center gap-2"><span class="text-sm">进度</span><span class="font-semibold text-sm" id="answeredCount">${answered}/${total}</span><div class="flex-1 progress-line"><div class="progress-line-fill" id="progressFill" style="width:${total?answered/total*100:0}%"></div></div><span class="text-sm" style="color:var(--green)" id="correctCount">${correct}</span><span class="text-sm" style="color:var(--red)" id="wrongCount">${answered-correct}</span></div></div>
-          <div class="card-elegant p-4 sm:p-5 rise-item" style="animation-delay:90ms" id="questionCard"><div id="questionInner"></div></div>
-          <div class="flex justify-between items-center rise-item" style="animation-delay:120ms">
-            <button class="btn-ghost text-sm" onclick="window._prevQuestion()" id="prevBtn">上一题</button>
-            <div id="paginationDots" class="flex gap-1 flex-wrap justify-center"></div>
-            <button class="btn-ghost text-sm" onclick="window._nextQuestion()" id="nextBtn">下一题</button>
+          <div class="card-elegant p-4 sm:p-6" id="questionCard"><div id="questionInner"></div></div>
+          <div class="flex justify-between items-center gap-2 rise-item" style="animation-delay:60ms">
+            <button class="btn-ghost text-sm press" onclick="window._prevQuestion()" id="prevBtn">← 上一题</button>
+            <div id="jumpBar" class="flex-1 flex gap-1 overflow-x-auto py-1 justify-start sm:justify-center"></div>
+            <button class="btn-ghost text-sm press" onclick="window._nextQuestion()" id="nextBtn">下一题 →</button>
           </div>
-          <p class="text-center text-xs text-secondary rise-item" style="animation-delay:140ms" id="qIndicator"></p>
+          <p class="text-center text-xs text-secondary" id="qIndicator" aria-live="polite"></p>
         </div>`;
       }
 
@@ -828,7 +1218,7 @@
         navigateTo('exam');
       }
 
-      function updateExamUI() {
+      function updateExamUI(opts = {}) {
         const questions = appState.currentQuestions;
         if (!questions.length) return;
         const idx = appState.currentIndex;
@@ -839,7 +1229,51 @@
         const hasAnswered = appState.answeredSet[key] !== undefined;
         const inner = document.getElementById('questionInner');
         if (!inner) return;
-        let html = `<p class="text-xs text-secondary mb-2">第 ${idx+1} / ${questions.length} 题${isView?' · 看题模式':''}</p><h3 class="text-lg font-medium mb-4">${escapeHtml(qData.q)}</h3>`;
+        inner.innerHTML = renderQuestionInner(qData, cat, key, hasAnswered, isView);
+        // 切题方向动画：整块题目卡按方向滑入
+        const dir = opts.direction || appState._qDirection || 'right';
+        const card = document.getElementById('questionCard');
+        if (card && appState.motionLevel !== 'off') {
+          card.classList.remove('swap-in-right', 'swap-in-left');
+          void card.offsetWidth; // 强制重排，让动画能重复播放
+          card.classList.add(dir === 'left' ? 'swap-in-left' : 'swap-in-right');
+          card.addEventListener('animationend', () => {
+            card.classList.remove('swap-in-right', 'swap-in-left');
+          }, { once: true });
+        }
+        updateHeaderStats();
+        updatePagination();
+        refreshSeg();
+        const pf = document.getElementById('progressFill');
+        if (pf) {
+          const ratio = questions.length ? Object.keys(appState.answeredSet).length / questions.length : 0;
+          pf.style.transform = `scaleX(${ratio})`;
+        }
+        const qi = document.getElementById('qIndicator');
+        if (qi) qi.textContent = `第 ${idx+1} / ${questions.length} 题${isView?' · 看题模式':''} · 键盘 ← → 切题，数字键跳题`;
+        const pb = document.getElementById('prevBtn');
+        const nb = document.getElementById('nextBtn');
+        if (pb) { pb.disabled = idx <= 0; pb.style.opacity = idx <= 0 ? '.4' : '1'; }
+        if (nb) { nb.style.opacity = idx >= questions.length-1 ? '.4' : '1'; }
+        const rb = document.getElementById('resultBtn');
+        if (rb) {
+          const allDone = questions.length > 0 && Object.keys(appState.answeredSet).length === questions.length;
+          rb.style.display = (allDone && !isView) ? '' : 'none';
+        }
+        const cb = document.getElementById('catalogBtn');
+        if (cb) cb.style.display = isView ? '' : 'none';
+        // 焦点管理：切换题目后把焦点交回题目标题，键盘/读屏用户不会迷失
+        if (opts.focus !== false) {
+          const h = inner.querySelector('[data-question-title]');
+          if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+        }
+      }
+
+      // 只渲染题目区（供 updateExamUI 与后续局部刷新复用）
+      function renderQuestionInner(qData, cat, key, hasAnswered, isView) {
+        let html = `<p class="text-xs text-secondary mb-2">第 ${appState.currentIndex+1} / ${appState.currentQuestions.length} 题</p>`
+                 + `<h3 class="text-lg font-medium mb-4" data-question-title>${escapeHtml(qData.q)}</h3>`;
+        const optKey = i => `<span class="opt-key">${String.fromCharCode(65+i)}</span>`;
         if (cat === 'single') {
           for (let i=0;i<qData.opts.length;i++) {
             let cls = 'option-elegant';
@@ -850,11 +1284,11 @@
               if (hasAnswered && appState.userAnswers[key]===i && i!==qData.ans) cls += ' wrong-shake';
               if (!hasAnswered && appState.userAnswers[key]===i) cls += ' selected';
             }
-            html += `<button class="${cls}" onclick="window._selectSingle(${i},'${key}',${Number(qData.ans)||0})"><span style="font-weight:600">${String.fromCharCode(65+i)}</span><span>${escapeHtml(qData.opts[i])}</span>${(hasAnswered||isView)&&i===qData.ans?'<span>✓</span>':''}</button>`;
+            html += `<button class="${cls} mb-2" onclick="window._selectSingle(${i},'${key}',${Number(qData.ans)||0})">${optKey(i)}<span class="flex-1 text-left">${escapeHtml(qData.opts[i])}</span>${(hasAnswered||isView)&&i===qData.ans?'<span style="color:var(--green)">✓</span>':''}</button>`;
           }
-          if (hasAnswered || isView) html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:rgba(52,199,89,0.1);color:var(--green)">正确答案：${String.fromCharCode(65+qData.ans)}. ${escapeHtml(qData.opts[qData.ans])}</div>`;
+          if (hasAnswered || isView) html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">正确答案：${String.fromCharCode(65+Number(qData.ans)||0)}. ${escapeHtml(qData.opts[qData.ans])}</div>`;
         } else if (cat === 'multi') {
-          const correctAns = qData.ans || [];
+          const correctAns = (qData.ans || []).map(Number);
           const userSel = appState.userAnswers[key] || [];
           for (let i=0;i<qData.opts.length;i++) {
             let cls = 'option-elegant';
@@ -865,12 +1299,12 @@
               if (hasAnswered && userSel.includes(i) && !correctAns.includes(i)) cls += ' wrong-shake';
               if (!hasAnswered && appState.multiTempSelections.includes(i)) cls += ' selected';
             }
-            html += `<button class="${cls}" onclick="window._toggleMulti(${i},'${key}')"><span style="font-weight:600">${String.fromCharCode(65+i)}</span><span>${escapeHtml(qData.opts[i])}</span></button>`;
+            html += `<button class="${cls} mb-2" onclick="window._toggleMulti(${i},'${key}')">${optKey(i)}<span class="flex-1 text-left">${escapeHtml(qData.opts[i])}</span></button>`;
           }
-          if (!hasAnswered && !isView) html += `<button class="btn-primary w-full mt-3" onclick="window._submitMulti('${key}',[${correctAns.map(Number).join(',')}])">提交答案</button>`;
+          if (!hasAnswered && !isView) html += `<button class="btn-primary w-full mt-2" onclick="window._submitMulti('${key}',[${correctAns.join(',')}])">提交答案</button>`;
           if (hasAnswered || isView) {
-            const corrLabels = correctAns.map(i=>String.fromCharCode(65+i)).join('');
-            html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:rgba(52,199,89,0.1);color:var(--green)">正确答案：${corrLabels}</div>`;
+            const corrLabels = correctAns.map(i=>String.fromCharCode(65+i)).join(' ');
+            html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">正确答案：${corrLabels}</div>`;
           }
         } else if (cat === 'judge') {
           const labels = ['正确','错误'];
@@ -883,18 +1317,18 @@
               if (hasAnswered && appState.userAnswers[key]===val && val!==qData.ans) cls += ' wrong-shake';
               if (!hasAnswered && appState.userAnswers[key]===val) cls += ' selected';
             }
-            html += `<button class="${cls}" onclick="window._selectJudge(${val},'${key}',${qData.ans===true})">${labels[i]}</button>`;
+            html += `<button class="${cls} mb-2" onclick="window._selectJudge(${val},'${key}',${qData.ans===true})"><span class="flex-1 text-center">${labels[i]}</span></button>`;
           });
-          if (hasAnswered || isView) html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:rgba(52,199,89,0.1);color:var(--green)">正确答案：${qData.ans?'正确':'错误'}</div>`;
+          if (hasAnswered || isView) html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">正确答案：${qData.ans?'正确':'错误'}</div>`;
         } else if (cat === 'fill') {
           if (hasAnswered || isView) {
-            html += `<p>你的答案：<strong>${escapeHtml(appState.userAnswers[key]||'(未填写)')}</strong></p><div class="mt-2 p-3 rounded-xl text-sm" style="background:rgba(52,199,89,0.1);color:var(--green)">正确答案：${escapeHtml(fillAnswersText(qData.ans))}</div>`;
+            html += `<p>你的答案：<strong>${escapeHtml(appState.userAnswers[key]||'(未填写)')}</strong></p><div class="mt-2 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">正确答案：${escapeHtml(fillAnswersText(qData.ans))}</div>`;
           } else {
             html += `<input class="input-elegant" id="fillInput" placeholder="请输入答案" value="${escapeHtml(appState.userAnswers[key]||'')}"><button class="btn-primary w-full mt-3" onclick="window._submitFill('${key}')">提交答案</button>`;
           }
         } else if (cat === 'short') {
           if (hasAnswered || isView) {
-            html += `<p>你的回答：</p><p class="p-3 rounded-xl" style="background:var(--border-light)">${escapeHtml(appState.userAnswers[key]||'(未填写)')}</p><div class="p-3 rounded-xl text-sm" style="background:rgba(52,199,89,0.1);color:var(--green)">参考答案：${escapeHtml(qData.a)}</div>`;
+            html += `<p>你的回答：</p><p class="p-3 rounded-xl" style="background:var(--fill-quiet)">${escapeHtml(appState.userAnswers[key]||'(未填写)')}</p><div class="p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">参考答案：${escapeHtml(qData.a)}</div>`;
             if (appState.answeredSet[key] === 'pending' && !isView) {
               html += `<div class="flex gap-2 mt-3"><button class="btn-primary" onclick="window._selfGradeShort('${key}',true)">我答对了</button><button class="btn-ghost" onclick="window._selfGradeShort('${key}',false)">我答错了</button></div>`;
             }
@@ -902,30 +1336,27 @@
             html += `<textarea class="input-elegant" id="shortInput">${escapeHtml(appState.userAnswers[key]||'')}</textarea><button class="btn-primary w-full mt-3" onclick="window._submitShort('${key}')">提交回答</button>`;
           }
         }
-        inner.innerHTML = html;
-        updateHeaderStats();
-        updatePagination();
-        refreshSeg();
-        const pf = document.getElementById('progressFill');
-        if (pf) pf.style.width = `${questions.length?Object.keys(appState.answeredSet).length/questions.length*100:0}%`;
-        const qi = document.getElementById('qIndicator');
-        if (qi) qi.textContent = `第 ${idx+1} / ${questions.length} 题`;
-        const pb = document.getElementById('prevBtn');
-        const nb = document.getElementById('nextBtn');
-        if (pb) pb.style.opacity = idx<=0?'0.4':'1';
-        if (nb) nb.style.opacity = idx>=questions.length-1?'0.4':'1';
-        const rb = document.getElementById('resultBtn');
-        if (rb) {
-          const allDone = questions.length > 0 && Object.keys(appState.answeredSet).length === questions.length;
-          rb.style.display = (allDone && !isView) ? '' : 'none';
-        }
-        const cb = document.getElementById('catalogBtn');
-        if (cb) cb.style.display = isView ? '' : 'none';
+        return html;
       }
 
       function refreshSeg() {
         const m = appState.currentMode;
-        document.querySelectorAll('#orderSeg .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+        const seg = document.getElementById('orderSeg');
+        if (!seg) return;
+        const btns = Array.from(seg.querySelectorAll('.seg-btn'));
+        btns.forEach(b => {
+          const on = b.dataset.mode === m;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-selected', String(on));
+        });
+        const ind = document.getElementById('segInd');
+        const active = btns.find(b => b.dataset.mode === m);
+        if (!ind || !active) return;
+        // 指示器位置用 transform + width，两个属性都在 Task 4 声明了过渡
+        const segRect = seg.getBoundingClientRect();
+        const r = active.getBoundingClientRect();
+        ind.style.width = r.width + 'px';
+        ind.style.transform = `translateX(${r.left - segRect.left}px)`;
       }
 
       function updateHeaderStats() {
@@ -952,18 +1383,23 @@
       function updatePagination() {
         const total = appState.currentQuestions.length;
         const idx = appState.currentIndex;
-        const container = document.getElementById('paginationDots');
+        const container = document.getElementById('jumpBar') || document.getElementById('paginationDots');
         if (!container) return;
         let html = '';
-        for (let i=Math.max(0,idx-3); i<Math.min(total,idx+4); i++) {
+        for (let i=0; i<total; i++) {
           const key = `exam-${i}`;
-          let style = 'cursor:pointer;padding:4px 9px;border-radius:16px;border:0.5px solid var(--border);font-size:11px;';
-          if (i===idx) style += 'background:var(--accent);color:#fff;';
-          else if (appState.answeredSet[key]==='correct') style += 'border-color:var(--green);background:rgba(52,199,89,0.1);';
-          else if (appState.answeredSet[key]!==undefined && appState.answeredSet[key]!=='correct') style += 'border-color:var(--red);background:rgba(255,59,48,0.1);';
-          html += `<span style="${style}" onclick="window._goToQ(${i})">${i+1}</span>`;
+          const st = appState.answeredSet[key];
+          let cls = 'jump-dot';
+          if (st === 'correct') cls += ' ok';
+          else if (st !== undefined) cls += ' bad';
+          if (i === idx) cls += ' cur';
+          html += `<button class="${cls}" onclick="window._goToQ(${i})" aria-label="第 ${i+1} 题" title="第 ${i+1} 题">${i+1}</button>`;
         }
         container.innerHTML = html;
+        const cur = container.querySelector('.jump-dot.cur');
+        if (cur && typeof cur.scrollIntoView === 'function') {
+          cur.scrollIntoView({ inline: 'center', block: 'nearest', behavior: appState.motionLevel === 'off' ? 'auto' : 'smooth' });
+        }
       }
 
       function computeResult() {
@@ -994,38 +1430,53 @@
         const acc = r.total ? Math.round(r.correct / r.total * 100) : 0;
         const C = 2 * Math.PI * 52;
         const ringColor = acc >= 80 ? 'var(--green)' : acc >= 60 ? 'var(--accent)' : 'var(--red)';
+        const grade = acc >= 90 ? '优秀' : acc >= 75 ? '良好' : acc >= 60 ? '及格' : '需加强';
         return `
         <div class="space-y-4">
           <div class="rise-item">
-            <button class="btn-ghost text-sm" onclick="window._navigateTo('subject')">← 返回题库</button>
+            <button class="btn-ghost text-sm" onclick="window._back()">← 返回题库</button>
             <h2 class="text-xl font-semibold mt-2">${TYPE_NAMES[appState.currentCategory]||'练习'} · 作答报告</h2>
           </div>
           <div class="card-elegant p-6 text-center rise-item" style="animation-delay:60ms">
-            <h3 class="text-lg font-semibold">本次作答报告</h3>
-            <div class="relative inline-block mt-5" style="width:160px;height:160px">
-              <svg class="ring-svg" width="160" height="160" viewBox="0 0 160 160">
-                <circle class="ring-bg" cx="80" cy="80" r="52" fill="none" stroke-width="13"/>
-                <circle id="resultRing" cx="80" cy="80" r="52" fill="none" stroke-width="13" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="stroke:${ringColor}"/>
+            <span class="tag-pill" style="margin-bottom:12px">${grade}</span>
+            <div class="relative inline-block mt-3" style="width:172px;height:172px">
+              <svg class="ring-svg" width="172" height="172" viewBox="0 0 160 160" aria-hidden="true">
+                <circle class="ring-bg" cx="80" cy="80" r="52" fill="none" stroke-width="12"/>
+                <circle id="resultRing" cx="80" cy="80" r="52" fill="none" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="stroke:${ringColor};filter:drop-shadow(0 0 10px color-mix(in srgb, ${ringColor} 45%, transparent))"/>
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span class="text-4xl font-bold tracking-tight" id="resultAcc">0%</span>
+                <span class="text-4xl font-bold num" id="resultAcc" style="font-family:var(--font-num);letter-spacing:-0.04em">0%</span>
                 <span class="text-xs text-secondary mt-1">正确率</span>
               </div>
             </div>
-            <div class="grid grid-cols-3 gap-2 mt-6 text-center">
-              <div class="p-3 rounded-2xl" style="background:var(--border-light)"><div class="text-xl font-bold">${r.total}</div><div class="text-xs text-secondary">总题数</div></div>
-              <div class="p-3 rounded-2xl" style="background:var(--border-light)"><div class="text-xl font-bold" style="color:var(--green)">${r.correct}</div><div class="text-xs text-secondary">答对</div></div>
-              <div class="p-3 rounded-2xl" style="background:var(--border-light)"><div class="text-xl font-bold" style="color:var(--red)">${r.wrong}</div><div class="text-xs text-secondary">答错</div></div>
+            <div class="grid grid-cols-3 gap-2 mt-6">
+              <div class="stat-tile"><div class="stat-value">${r.total}</div><div class="stat-label">总题数</div></div>
+              <div class="stat-tile"><div class="stat-value" style="color:var(--green)">${r.correct}</div><div class="stat-label">答对</div></div>
+              <div class="stat-tile"><div class="stat-value" style="color:var(--red)">${r.wrong}</div><div class="stat-label">答错</div></div>
             </div>
             <p class="text-sm text-secondary mt-4">用时 ${fmtTime(r.seconds)}</p>
             ${r.wrong?`<p class="text-xs text-secondary mt-2">答错的 ${r.wrong} 题已自动存入错题本，可在题库页随时复习</p>`:''}
             <div class="flex flex-wrap gap-2 justify-center mt-5">
-              ${r.wrong ? `<button class="btn-primary" onclick="window._redoWrong()">重练错题（${r.wrong}）</button>` : '<button class="btn-primary">全部答对</button>'}
-              <button class="btn-ghost" onclick="window._restartExam()">再来一遍</button>
-              <button class="btn-ghost" onclick="window._navigateTo('subject')">返回题库</button>
+              ${r.wrong ? `<button class="btn-primary press" onclick="window._redoWrong()">重练错题（${r.wrong}）</button>` : '<button class="btn-primary" disabled>全部答对</button>'}
+              <button class="btn-ghost press" onclick="window._restartExam()">再来一遍</button>
+              <button class="btn-ghost press" onclick="window._navigateTo('subject', { replace: true })">返回题库</button>
             </div>
           </div>
         </div>`;
+      }
+
+      // 数字滚动：用 easeOutExpo 而非线性步进，且写等宽数字不抖
+      function countUp(el, target, dur = 900) {
+        if (!el) return;
+        if (appState.motionLevel === 'off') { el.textContent = target + '%'; return; }
+        const t0 = performance.now();
+        const tick = (now) => {
+          const p = Math.min(1, (now - t0) / dur);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased) + '%';
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
       }
 
       function animateResult() {
@@ -1036,32 +1487,37 @@
         const accEl = document.getElementById('resultAcc');
         requestAnimationFrame(() => {
           if (ring) ring.style.strokeDashoffset = C * (1 - acc / 100);
+          countUp(accEl, acc);
         });
-        if (accEl) {
-          let cur = 0;
-          const step = () => {
-            cur = Math.min(acc, cur + Math.max(1, Math.round(acc / 36)));
-            accEl.textContent = cur + '%';
-            if (cur < acc) requestAnimationFrame(step);
-          };
-          step();
-        }
-        if (acc === 100) spawnConfetti();
+        if (acc === 100) burstConfetti();
       }
 
-      function spawnConfetti() {
-        const colors = ['#0071e3','#34c759','#ff3b30','#ff9500','#af52de','#ffcc00','#30d158'];
-        for (let i = 0; i < 70; i++) {
+      // 中心爆发粒子（取代旧版从顶部飘落 5.2 秒的方片）
+      function burstConfetti() {
+        if (appState.motionLevel === 'off') return;
+        const colors = ['#0071e3','#34c759','#ff9500','#af52de','#ffcc00','#30d158'];
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight * 0.42;
+        const N = 44;
+        for (let i = 0; i < N; i++) {
           const el = document.createElement('div');
           el.className = 'confetti';
-          el.style.left = (Math.random() * 100) + 'vw';
+          const angle = (Math.PI * 2 * i) / N + (Math.random() - 0.5) * 0.5;
+          const dist = 130 + Math.random() * 260;
+          const size = 5 + Math.random() * 7;
+          el.style.left = cx + 'px';
+          el.style.top = cy + 'px';
+          el.style.width = size + 'px';
+          el.style.height = size + 'px';
           el.style.background = colors[i % colors.length];
-          el.style.animationDuration = (2.2 + Math.random() * 1.8) + 's';
-          el.style.animationDelay = (Math.random() * 0.7) + 's';
-          el.style.width = (6 + Math.random() * 6) + 'px';
-          el.style.height = (8 + Math.random() * 8) + 'px';
+          el.style.boxShadow = `0 0 12px ${colors[i % colors.length]}66`;
+          el.style.setProperty('--bx', Math.cos(angle) * dist + 'px');
+          el.style.setProperty('--by', (Math.sin(angle) * dist + 120) + 'px');
+          el.style.setProperty('--bs', (0.3 + Math.random() * 0.5).toFixed(2));
+          el.style.setProperty('--br', (Math.random() * 360 - 180) + 'deg');
+          el.style.setProperty('--burst-dur', (900 + Math.random() * 700) + 'ms');
           document.body.appendChild(el);
-          setTimeout(() => el.remove(), 5200);
+          setTimeout(() => el.remove(), 1900);
         }
       }
 
@@ -1073,12 +1529,12 @@
         return `
         <div class="space-y-4">
           <div class="rise-item">
-            <button class="btn-ghost text-sm" onclick="window._navigateTo('home')">← 返回</button>
+            <button class="btn-ghost text-sm" onclick="window._back()">← 返回</button>
             <h2 class="text-xl font-semibold mt-2">上传题库</h2>
             <p class="text-sm text-secondary">支持 .docx .xlsx .xls .pdf .txt .csv（旧版 .doc 请先另存为 .docx）</p>
           </div>
-          <div class="card-elegant p-4 rise-item" style="animation-delay:40ms;background:rgba(255,149,0,.08);border:0.5px solid rgba(255,149,0,.22)">
-            <p class="text-sm" style="color:#ff9500">温馨提示：AI 识别可能存在偏差，导入后请核对题目准确性。</p>
+          <div class="card-elegant p-4 rise-item" style="animation-delay:40ms;background:color-mix(in srgb, #ff9500 10%, var(--card-bg));border:0.5px solid color-mix(in srgb, #ff9500 26%, transparent)">
+            <p class="text-sm" style="color:#c2740a">温馨提示：AI 识别可能存在偏差，导入后请核对题目准确性。</p>
           </div>
           <div class="card-elegant p-4 rise-item" style="animation-delay:60ms">
             <div class="flex items-center gap-3">
@@ -1102,7 +1558,10 @@
               <p class="text-xs text-secondary mt-1">手机端点击即可直接选择文件</p>
             </label>
             <input type="file" id="fileInput" accept=".docx,.xlsx,.xls,.pdf,.txt,.csv" multiple class="vh" onchange="window._handleFileUpload(event)">
-            <div id="uploadStatus" class="mt-3 text-sm font-medium" style="color:var(--accent)"></div>
+            <div id="uploadStatus" class="mt-3 text-sm font-medium" style="color:var(--accent)" aria-live="polite"></div>
+            <div id="uploadProgress" style="display:none" class="mt-2">
+              <div class="progress-line"><div class="progress-line-fill" id="uploadProgressFill" style="transform:scaleX(0)"></div></div>
+            </div>
           </div>
           <div class="card-elegant p-4 rise-item" style="animation-delay:100ms">
             <h3 class="font-semibold mb-2">粘贴纯文本内容</h3>
@@ -1251,7 +1710,7 @@
           logHtml += `<div class="flex gap-3 items-start"><div class="flex flex-col items-center"><div class="timeline-dot" style="background:${i===0?'var(--accent)':i===1?'var(--purple)':'var(--green)'}"></div>${i<CHANGELOG.length-1?'<div class="timeline-line" style="min-height:40px;"></div>':''}</div><div><p class="font-semibold">${log.date} · ${log.version}</p><p class="text-sm text-secondary">${log.content}</p></div></div>`;
         });
         return `<div class="space-y-4">
-          <div class="rise-item"><button class="btn-ghost text-sm" onclick="window._navigateTo('home')">← 返回</button><h2 class="text-xl font-semibold mt-2">更新日志</h2></div>
+          <div class="rise-item"><button class="btn-ghost text-sm" onclick="window._back()">← 返回</button><h2 class="text-xl font-semibold mt-2">更新日志</h2></div>
           <div class="card-elegant p-5 space-y-5 rise-item" style="animation-delay:50ms">${logHtml}</div>
         </div>`;
       }
@@ -1259,19 +1718,12 @@
       // ================= 事件绑定（每次渲染全量绑定，保证所有入口可用） =================
       function bindEvents() {
         window._navigateTo = navigateTo;
+        window._back = goBack;
         window._closeModal = closeModal;
         window.toggleDarkMode = toggleDarkMode;
         window._setRecognitionMode = (mode) => { window._recognitionMode = mode; };
 
-        // 动效开关
-        window._toggleMotion = () => {
-          appState.motion = !appState.motion;
-          localStorage.setItem(MOTION_KEY, appState.motion ? '1' : '0');
-          document.body.classList.toggle('no-motion', !appState.motion);
-          const b = document.getElementById('motionBtn');
-          if (b) { b.classList.toggle('on', appState.motion); b.title = appState.motion ? '关闭动效' : '开启动效'; }
-          showToast(appState.motion ? '动效已开启' : '动效已关闭', 'info');
-        };
+        // 动效开关由 window._cycleMotion 承担（Task 4），此处不再重复绑定
 
         // 首页 / 通用
         window._pickSubject = (action) => {
@@ -1377,7 +1829,7 @@
           if (!count) return showToast(isWrong ? '错题本是空的，完成练习后会自动收录错题' : '该分类暂无题目','error');
           const name = isComp ? '综合测试' : isWrong ? '错题复习' : TYPE_NAMES[cat];
           const iconColor = isWrong ? 'var(--red)' : isComp ? 'var(--purple)' : 'var(--accent)';
-          const iconBg = isWrong ? 'rgba(255,59,48,.1)' : isComp ? 'rgba(175,82,222,.1)' : 'rgba(0,113,227,.1)';
+          const iconBg = isWrong ? 'color-mix(in srgb, var(--red) 10%, transparent)' : isComp ? 'color-mix(in srgb, var(--purple) 10%, transparent)' : 'color-mix(in srgb, var(--accent) 10%, transparent)';
           const iconName = isWrong ? 'bookmark' : isComp ? 'target' : 'doc';
           openModal(`
             <div class="p-5 sm:p-6 space-y-3">
@@ -1387,15 +1839,15 @@
                 <p class="text-sm text-secondary">共 ${count} 题 · 选择作答方式</p>
               </div>
               <button class="mode-opt" onclick="window._startExamWith('order')">
-                <span class="mode-opt-icon" style="background:rgba(0,113,227,.1);color:var(--accent)">${iconSvg('arrowRight', 22)}</span>
+                <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--accent) 10%, transparent);color:var(--accent)">${iconSvg('arrowRight', 22)}</span>
                 <span class="text-left"><span class="block font-semibold text-sm">顺序作答</span><span class="text-xs text-secondary">按${isComp?'题型分组':'题目'}顺序逐题作答，即时批改</span></span>
               </button>
               <button class="mode-opt" onclick="window._startExamWith('shuffle')">
-                <span class="mode-opt-icon" style="background:rgba(175,82,222,.1);color:var(--purple)">${iconSvg('shuffle', 22)}</span>
+                <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--purple) 10%, transparent);color:var(--purple)">${iconSvg('shuffle', 22)}</span>
                 <span class="text-left"><span class="block font-semibold text-sm">乱序作答${isComp?' · 推荐':''}</span><span class="text-xs text-secondary">打乱题目顺序，避免记忆题目位置</span></span>
               </button>
               <button class="mode-opt" onclick="window._startExamWith('view')">
-                <span class="mode-opt-icon" style="background:rgba(52,199,89,.1);color:var(--green)">${iconSvg('eye', 22)}</span>
+                <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--green) 10%, transparent);color:var(--green)">${iconSvg('eye', 22)}</span>
                 <span class="text-left"><span class="block font-semibold text-sm">看题模式</span><span class="text-xs text-secondary">直接浏览全部题目与答案，不答题</span></span>
               </button>
               ${isWrong?`<p class="text-xs text-secondary text-center">答对的题目会自动移出错题本</p>`:''}
@@ -1427,10 +1879,14 @@
         };
 
         // 练习页
-        window._selectSingle = (opt,key,correct) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; appState.userAnswers[key]=opt; const ok = opt===correct; appState.answeredSet[key]=ok?'correct':'wrong'; afterGrade(key, ok); updateExamUI(); };
-        window._toggleMulti = (opt,key) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; const idx = appState.multiTempSelections.indexOf(opt); if(idx>=0) appState.multiTempSelections.splice(idx,1); else appState.multiTempSelections.push(opt); appState.userAnswers[key]=[...appState.multiTempSelections]; updateExamUI(); };
-        window._submitMulti = (key,correct) => { if (appState.answeredSet[key]) return; const sel = [...appState.multiTempSelections]; appState.userAnswers[key]=sel; const ok = sel.sort().join(',')===correct.sort().join(','); appState.answeredSet[key]=ok?'correct':'wrong'; appState.multiTempSelections=[]; afterGrade(key, ok); updateExamUI(); };
-        window._selectJudge = (val,key,correct) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; appState.userAnswers[key]=val; const ok = val===correct; appState.answeredSet[key]=ok?'correct':'wrong'; afterGrade(key, ok); updateExamUI(); };
+        const answerFx = (ok) => {
+          if (appState.motionLevel === 'off') return;
+          if (navigator.vibrate) { try { navigator.vibrate(ok ? 12 : [10, 40, 10]); } catch (e) {} }
+        };
+        window._selectSingle = (opt,key,correct) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; appState.userAnswers[key]=opt; const ok = opt===correct; appState.answeredSet[key]=ok?'correct':'wrong'; afterGrade(key, ok); answerFx(ok); updateExamUI({ focus: false }); };
+        window._toggleMulti = (opt,key) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; const idx = appState.multiTempSelections.indexOf(opt); if(idx>=0) appState.multiTempSelections.splice(idx,1); else appState.multiTempSelections.push(opt); appState.userAnswers[key]=[...appState.multiTempSelections]; updateExamUI({ focus: false }); };
+        window._submitMulti = (key,correct) => { if (appState.answeredSet[key]) return; const sel = [...appState.multiTempSelections]; appState.userAnswers[key]=sel; const ok = sel.slice().sort().join(',')===correct.slice().sort().join(','); appState.answeredSet[key]=ok?'correct':'wrong'; appState.multiTempSelections=[]; afterGrade(key, ok); answerFx(ok); updateExamUI({ focus: false }); };
+        window._selectJudge = (val,key,correct) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; appState.userAnswers[key]=val; const ok = val===correct; appState.answeredSet[key]=ok?'correct':'wrong'; afterGrade(key, ok); answerFx(ok); updateExamUI({ focus: false }); };
         window._submitFill = (key) => {
           if (appState.answeredSet[key]) return;
           const input = document.getElementById('fillInput');
@@ -1441,18 +1897,37 @@
           appState.userAnswers[key]=ans;
           appState.answeredSet[key]=ok?'correct':'wrong';
           afterGrade(key, ok);
-          updateExamUI();
+          updateExamUI({ focus: false });
         };
-        window._submitShort = (key) => { if (appState.answeredSet[key]) return; const input=document.getElementById('shortInput'); appState.userAnswers[key]=input?.value.trim()||''; appState.answeredSet[key]='pending'; updateExamUI(); };
-        window._selfGradeShort = (key, ok) => { if (appState.answeredSet[key] !== 'pending') return; appState.answeredSet[key] = ok ? 'correct' : 'wrong'; afterGrade(key, ok); updateExamUI(); };
-        window._prevQuestion = () => { if (appState.currentIndex>0) { appState.currentIndex--; appState.multiTempSelections=[]; updateExamUI(); } };
+        window._submitShort = (key) => { if (appState.answeredSet[key]) return; const input=document.getElementById('shortInput'); appState.userAnswers[key]=input?.value.trim()||''; appState.answeredSet[key]='pending'; updateExamUI({ focus: false }); };
+        window._selfGradeShort = (key, ok) => { if (appState.answeredSet[key] !== 'pending') return; appState.answeredSet[key] = ok ? 'correct' : 'wrong'; afterGrade(key, ok); updateExamUI({ focus: false }); };
+        window._prevQuestion = () => {
+          if (appState.currentIndex <= 0) return;
+          appState.currentIndex--;
+          appState.multiTempSelections = [];
+          appState._qDirection = 'left';
+          updateExamUI({ direction: 'left' });
+        };
         window._nextQuestion = () => {
           const total = appState.currentQuestions.length;
-          if (appState.currentIndex < total - 1) { appState.currentIndex++; appState.multiTempSelections=[]; updateExamUI(); }
-          else if (total && Object.keys(appState.answeredSet).length === total) { window._goToResult(); }
-          else showToast('已到最后一题','info');
+          if (appState.currentIndex < total - 1) {
+            appState.currentIndex++;
+            appState.multiTempSelections = [];
+            appState._qDirection = 'right';
+            updateExamUI({ direction: 'right' });
+          } else if (total && Object.keys(appState.answeredSet).length === total) {
+            window._goToResult();
+          } else {
+            showToast('已到最后一题','info');
+          }
         };
-        window._goToQ = (i) => { appState.currentIndex = i; appState.multiTempSelections=[]; updateExamUI(); };
+        window._goToQ = (i) => {
+          const from = appState.currentIndex;
+          appState.currentIndex = i;
+          appState.multiTempSelections = [];
+          appState._qDirection = i < from ? 'left' : 'right';
+          updateExamUI({ direction: appState._qDirection });
+        };
         // 看题模式：题目目录跳转
         window._openCatalog = () => {
           const questions = appState.currentQuestions;
@@ -1460,7 +1935,7 @@
           const rows = questions.map((q, i) => {
             const cat = q._type || appState.currentCategory;
             const active = i === appState.currentIndex;
-            return `<button class="mode-opt" onclick="window._catalogGo(${i})" style="${active?'border-color:var(--accent);background:rgba(0,113,227,.05)':''}">
+            return `<button class="mode-opt" onclick="window._catalogGo(${i})" style="${active?'border-color:var(--accent);background:color-mix(in srgb, var(--accent) 5%, transparent)':''}">
               <span class="tag-pill tag-${cat}">${TYPE_NAMES[cat]||cat}</span>
               <span class="text-left flex-1 min-w-0"><span class="block text-sm truncate">${escapeHtml(q.q)}</span></span>
               <span class="text-xs" style="color:var(--text-secondary)">${i+1}</span>
@@ -2376,14 +2851,22 @@
 
       // ================= 全局事件 =================
       document.addEventListener('keydown', e => {
+        const inField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable;
+        const modalOpen = (document.getElementById('modalRoot') || {}).style?.display !== 'none';
         if (e.key === 'Escape') {
-          const root = document.getElementById('modalRoot');
-          if (root && root.style.display !== 'none') { closeModal(); return; }
+          if (modalOpen) { closeModal(); return; }
+          if (appState.currentView !== 'home') { goBack(); return; }
         }
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        if (appState.currentView === 'exam') {
-          if (e.key === 'ArrowLeft') window._prevQuestion?.();
-          else if (e.key === 'ArrowRight') window._nextQuestion?.();
+        if (inField) return;
+        if (appState.currentView === 'exam' && !modalOpen) {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); window._prevQuestion?.(); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); window._nextQuestion?.(); }
+          else if (e.key === ' ') { e.preventDefault(); window._nextQuestion?.(); }
+        }
+        // 数字键 1-9 直接跳题（仅答题页）
+        if (appState.currentView === 'exam' && !modalOpen && /^[1-9]$/.test(e.key)) {
+          const i = Number(e.key) - 1;
+          if (i < appState.currentQuestions.length) { e.preventDefault(); window._goToQ?.(i); }
         }
       });
 
@@ -2394,9 +2877,18 @@
         }
       });
 
-      document.addEventListener('dragover', e => e.preventDefault());
+      document.addEventListener('dragover', e => {
+        e.preventDefault();
+        const z = document.getElementById('uploadZone');
+        if (z && appState.currentView === 'upload') z.classList.add('dragover');
+      });
+      document.addEventListener('dragleave', e => {
+        const z = document.getElementById('uploadZone');
+        if (z && !e.relatedTarget) z.classList.remove('dragover');
+      });
       document.addEventListener('drop', e => {
         e.preventDefault();
+        document.getElementById('uploadZone')?.classList.remove('dragover');
         if (appState.currentView === 'upload' && e.dataTransfer.files.length) {
           const fileInput = document.getElementById('fileInput');
           if (fileInput) {
@@ -2408,20 +2900,45 @@
         }
       });
 
+      // ================= 动效档位 =================
+      function applyMotionLevel(level) {
+        const b = document.body;
+        b.classList.remove('motion-full', 'motion-lite', 'motion-off', 'no-motion');
+        b.classList.add('motion-' + level);
+        appState.motionLevel = level;
+        appState.motion = level !== 'off';
+      }
+      function cycleMotion() {
+        const order = ['full', 'lite', 'off'];
+        const next = order[(order.indexOf(appState.motionLevel) + 1) % 3];
+        applyMotionLevel(next);
+        localStorage.setItem(MOTION_KEY, next === 'full' ? '2' : next === 'lite' ? '1' : '0');
+        const btn = document.getElementById('motionBtn');
+        if (btn) {
+          btn.classList.toggle('on', next !== 'off');
+          btn.title = next === 'full' ? '动效：完整' : next === 'lite' ? '动效：精简' : '动效：关闭';
+        }
+        showToast(next === 'full' ? '动效：完整' : next === 'lite' ? '动效：精简' : '动效：关闭', 'info');
+      }
+      window._cycleMotion = cycleMotion;
+
       // ================= 启动 =================
       function initApp() {
         loadData();
         appState.aiConfig = loadAiConfig();
         appState.apiKey = appState.aiConfig.apiKey;
         appState.darkMode = localStorage.getItem(DARK_KEY) === 'true';
-        appState.motion = localStorage.getItem(MOTION_KEY) !== '0';
+        // 兼容旧值：旧版 '0'=关、'1'=开；新版 '2'=full '1'=lite '0'=off。必须显式处理 '1'（旧=开 / 新=精简）
+        const rawMotion = localStorage.getItem(MOTION_KEY);
+        appState.motionLevel = rawMotion === '0' ? 'off' : rawMotion === '1' ? 'lite' : 'full';
+        appState.motion = appState.motionLevel !== 'off';
         if (appState.darkMode) document.body.classList.add('dark');
-        document.body.classList.toggle('no-motion', !appState.motion);
+        applyMotionLevel(appState.motionLevel);
         renderView();
       }
 
       initApp();
-      console.log('✅ 期末复习系统 v' + APP_VERSION + ' 已就绪（官方品牌Logo · 趋势统计 · 题库选择 · 弹窗动画）');
+      console.log('✅ 期末复习系统 v' + APP_VERSION + ' 已就绪（设计令牌 · 三档动效 · 转场 · 跳题条）');
     })();
   </script>
 </body>
