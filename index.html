@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
   <title>期末复习系统</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -122,7 +122,7 @@
       background: var(--surface-0); color: var(--text);
       font-family: var(--font-ui);
       font-size: var(--fs-md);
-      margin: 0; padding: 0; min-height: 100vh; line-height: 1.5;
+      margin: 0; padding: 0; min-height: 100vh; min-height: 100dvh; line-height: 1.5;
       letter-spacing: var(--track-tight);
       -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
       /* 景深：两团极淡的品牌色光晕，让纯色背景不再是死平色 */
@@ -137,6 +137,15 @@
         radial-gradient(1100px 620px at 12% -8%, rgba(10,132,255,.16), transparent 60%),
         radial-gradient(900px 560px at 92% 4%, rgba(191,90,242,.12), transparent 58%);
     }
+    /* 移动端安全区：刘海屏左右内缩 + 底部 Home 指示条不被压住 */
+    #app { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+    @supports (padding: max(0px)) {
+      #app { padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+      @media (min-width: 640px) {
+        #app { padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+      }
+    }
+
     /* 数字统一用等宽数位，避免读数时抖动 */
     .num, #resultAcc, [id$="Count"], .stat-value { font-variant-numeric: tabular-nums; }
 
@@ -146,6 +155,8 @@
       outline-offset: 2px;
       border-radius: var(--r-sm);
     }
+    /* 切题后会把焦点交给题目标题（读屏/键盘不迷失），那是容器不是控件，不该画焦点框 */
+    [tabindex="-1"]:focus, [tabindex="-1"]:focus-visible { outline: none; }
     /* ===== 表面系统：visionOS 的「厚度」来自 三层玻璃 + 发丝边 + 顶部内高光 ===== */
     .glass {
       background: var(--surface-1);
@@ -296,6 +307,12 @@
     .jump-dot.cur { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.12); box-shadow: var(--elev-glow); }
     #jumpBar::-webkit-scrollbar { height: 3px; }
     #jumpBar::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 2px; }
+    /* 触屏：去掉双击缩放与 300ms 延迟；跳题条横向吸附 */
+    button, .jump-dot, .seg-btn, .option-elegant, label, a, .upload-zone { touch-action: manipulation; }
+    #jumpBar { -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; scroll-snap-type: x proximity; }
+    .jump-dot { scroll-snap-align: center; }
+    /* 触屏设备不显示「键盘 ← → 切题」这类桌面提示 */
+    @media (hover: none) { .kbd-only { display: none !important; } }
     /* 练习页顶栏：轻微玻璃，滚动时保持在顶部 */
     .exam-bar {
       position: sticky; top: 0; z-index: 50; padding: 10px 0 12px;
@@ -304,9 +321,29 @@
       border-bottom: 0.5px solid var(--hairline);
     }
     @media (max-width: 640px) {
-      .option-elegant { padding: 13px 14px; font-size: 14px; }
+      .option-elegant { padding: 13px 14px; font-size: 14px; overflow-wrap: anywhere; }
       .btn-primary { padding: 11px 18px; font-size: 14px; }
       .card-elegant { border-radius: var(--r-md); }
+      /* 顶栏：不再换行，控件横滑；玻璃模糊降档（手机 GPU 上 24px 模糊很贵） */
+      .exam-bar { padding: 8px 0 10px; -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5); }
+      .exam-bar-row { flex-wrap: nowrap !important; overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+      .exam-bar-row::-webkit-scrollbar { display: none; }
+      .exam-bar-row > * { flex: none; }
+      /* 跳题条独占一行：手指够得着，上一题/下一题 各占一边 */
+      .exam-nav { flex-wrap: wrap; row-gap: 6px; }
+      .exam-nav #jumpBar { order: -1; flex: 1 0 100%; justify-content: flex-start; }
+      .jump-dot { min-width: 32px; height: 32px; font-size: 12px; }
+      /* 顶栏分段控件收紧，320~390 宽也能露出「看题」 */
+      .seg-btn { padding: 7px 11px; font-size: 13px; }
+      /* 移动端不显示跳题条滚动槽（会像一条多余的灰线） */
+      #jumpBar::-webkit-scrollbar { display: none; }
+      #jumpBar { scrollbar-width: none; }
+      /* iOS 聚焦不放大：输入控件字号 ≥16px */
+      input, textarea, select { font-size: 16px; }
+      /* 大面积固定渐变 + 滚动 = 移动端掉帧来源，窄屏改成随内容滚动 */
+      body { background-attachment: scroll; }
+      /* 窄屏卡片内边距收紧一点，题干能多显示一行 */
+      #questionCard { padding: 14px; }
     }
     @media (min-width: 1024px) {
       /* 桌面宽屏提高信息密度：首页题库卡两列、指标三列 */
@@ -320,13 +357,15 @@
     /* ========== 动效层 ==========
        三档：.motion-full（默认）/ .motion-lite（只保留必要的位移与淡入）/ .motion-off（关闭装饰性动效，保留状态反馈）
        旧版的 .no-motion 用 `transition:none !important` 把按钮按压反馈也一起杀了，本版按档位降级而不是一刀切 */
-    body { --motion-scale: 1; }
+    body { --motion-scale: 1; --motion-dist: 22px; --motion-rise: 14px; }
+    /* 窄屏位移幅度减半：同样的动效，手机上更稳不晃眼 */
+    @media (max-width: 640px) { body { --motion-dist: 12px; --motion-rise: 8px; } }
     .motion-lite { --motion-scale: .55; }
     .motion-off  { --motion-scale: 0; }
 
     /* 入场：整体上浮淡入 */
     .rise-item { animation: riseIn calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-out) both; }
-    @keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(var(--motion-rise, 14px)); } to { opacity: 1; transform: none; } }
 
     /* 子项依次入场：父加 .stagger，子元素自动递增延迟（最多 12 个） */
     .stagger > * { animation: riseIn calc(var(--dur-2) * var(--motion-scale, 1) + 1ms) var(--ease-out) both; }
@@ -343,8 +382,8 @@
     /* 切题方向动画（Task 8 使用） */
     .swap-in-right { animation: swapInRight calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-out) both; }
     .swap-in-left  { animation: swapInLeft  calc(var(--dur-3) * var(--motion-scale, 1) + 1ms) var(--ease-out) both; }
-    @keyframes swapInRight { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
-    @keyframes swapInLeft  { from { opacity: 0; transform: translateX(-22px); } to { opacity: 1; transform: none; } }
+    @keyframes swapInRight { from { opacity: 0; transform: translateX(var(--motion-dist, 22px)); } to { opacity: 1; transform: none; } }
+    @keyframes swapInLeft  { from { opacity: 0; transform: translateX(calc(var(--motion-dist, 22px) * -1)); } to { opacity: 1; transform: none; } }
 
     /* 关闭装饰动效时：去掉入场/位移/彩带，但保留 140ms 的按压与颜色反馈 */
     .motion-off .rise-item,
@@ -541,7 +580,7 @@
 
   <script>
     (() => {
-      const APP_VERSION = '1.3';
+      const APP_VERSION = '1.3.1';
       const STORAGE_KEY = 'final_review_system_data_v141';
       const DARK_KEY = 'final_review_dark_mode';
       const MOTION_KEY = 'final_review_motion';
@@ -566,6 +605,7 @@
       ];
 
       const CHANGELOG = [
+        { date:'2026.09.13', version:'v1.3.1', content:'移动端专项适配：补齐刘海屏/底部 Home 条安全区（viewport-fit=cover + safe-area-inset），底部题号提示不再被遮挡；练习页顶栏窄屏改为横向滑动不再换行、跳题条独占一行且圆点加大到 32px；触屏去掉双击缩放与点击延迟，键盘快捷键提示仅在非触屏显示，输入框字号提到 16px（iOS 聚焦不再自动放大页面）；长公式/长单词自动换行不再撑破卡片；窄屏关闭大面积固定背景、粘顶栏玻璃模糊降档、切题位移幅度减半，滚动与切题更跟手。' },
         { date:'2026.09.12', version:'v1.3', content:'视觉与动效全面升级：建立完整设计令牌与三层玻璃表面系统；深色模式改为圆形揭示转场；页面转场只作用于内容区并带前进/后退方向感；新增三档动效开关（完整/精简/关闭）与系统减弱动效适配；练习页新增切题方向动画、滑动模式指示器、可横向滚动的跳题条与键盘跳题；结果页改为弹性计数、发光圆环与中心爆发粒子；更新日志移出首页；修复：动效关闭后按钮失去按压反馈、弹窗未做焦点陷阱、返回上一层丢失滚动位置。' },
         { date:'2026.08.23', version:'v1.2.2.2', content:'（热更）该应用正式上线！' },
         { date:'2026.08.23', version:'v1.2.2.1', content:'供应商品牌 Logo 全部更新为官方图形；弹窗新增关闭动画；新增正确率趋势统计（首页展示练习次数、平均正确率、最佳成绩）；主页「开始复习」「去综合测试」新增题库选择；看题模式新增题目目录跳转；更新日志措辞修订。' },
@@ -1157,7 +1197,7 @@
         return `
         <div class="space-y-4">
           <div class="exam-bar rise-item">
-            <div class="flex items-center gap-2 flex-wrap">
+            <div class="exam-bar-row flex items-center gap-2 flex-wrap">
               <button class="btn-ghost text-sm" onclick="window._back()">← 返回</button>
               <span class="tag-pill tag-${cat}">${TYPE_NAMES[cat]||cat}</span>
               <div class="seg" id="orderSeg" role="tablist" aria-label="作答模式">
@@ -1177,7 +1217,7 @@
             </div>
           </div>
           <div class="card-elegant p-4 sm:p-6" id="questionCard"><div id="questionInner"></div></div>
-          <div class="flex justify-between items-center gap-2 rise-item" style="animation-delay:60ms">
+          <div class="exam-nav flex justify-between items-center gap-2 rise-item" style="animation-delay:60ms">
             <button class="btn-ghost text-sm press" onclick="window._prevQuestion()" id="prevBtn">← 上一题</button>
             <div id="jumpBar" class="flex-1 flex gap-1 overflow-x-auto py-1 justify-start sm:justify-center"></div>
             <button class="btn-ghost text-sm press" onclick="window._nextQuestion()" id="nextBtn">下一题 →</button>
@@ -1252,7 +1292,7 @@
           pf.style.transform = `scaleX(${ratio})`;
         }
         const qi = document.getElementById('qIndicator');
-        if (qi) qi.textContent = `第 ${idx+1} / ${questions.length} 题${isView?' · 看题模式':''} · 键盘 ← → 切题，数字键跳题`;
+        if (qi) qi.innerHTML = `第 ${idx+1} / ${questions.length} 题${isView?' · 看题模式':''}<span class="kbd-only"> · 键盘 ← → 切题，数字键跳题</span>`;
         const pb = document.getElementById('prevBtn');
         const nb = document.getElementById('nextBtn');
         if (pb) { pb.disabled = idx <= 0; pb.style.opacity = idx <= 0 ? '.4' : '1'; }
