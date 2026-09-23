@@ -14,41 +14,41 @@
   <style>
     :root {
       /* ---- 兼容旧变量名（老代码在用，不许删） ---- */
-      --bg: #f5f3ed;
-      --card-bg: #fffefa;
-      --text-secondary: #6d706a;
-      --border: #d8d6cd;
-      --border-light: #e8e5dc;
-      --accent: #0071e3;
-      --accent-hover: #0077ed;
+      --bg: #f6f8fc;
+      --card-bg: #ffffff;
+      --text-secondary: #667085;
+      --border: #d9e0ea;
+      --border-light: #e8edf4;
+      --accent: #245dff;
+      --accent-hover: #174bdc;
       --green: #34c759;
       --green-text: #187a35;
       --orange-text: #9a5a00;
       --red: #ff3b30;
-      --purple: #af52de;
+      --purple: #4778ff;
       --radius-lg: 22px;
       --radius-md: 16px;
 
       /* ---- 文本层级 ---- */
-      --text: #20231f;
-      --text-2: #4b504a;
-      --text-3: #7c8078;
+      --text: #111827;
+      --text-2: #475467;
+      --text-3: #748094;
 
       /* ---- 表面层级（visionOS：越靠上越「厚」） ---- */
-      --surface-0: #f5f3ed;
-      --surface-1: rgba(255,254,250,.88);
-      --surface-2: #fffefa;
-      --surface-glass: rgba(249,247,241,.9);
-      --hairline: rgba(45,47,39,.09);
-      --hairline-strong: rgba(45,47,39,.15);
-      --fill-quiet: rgba(72,75,66,.06);
-      --fill-hover: rgba(72,75,66,.10);
+      --surface-0: #f6f8fc;
+      --surface-1: rgba(255,255,255,.9);
+      --surface-2: #ffffff;
+      --surface-glass: rgba(250,252,255,.92);
+      --hairline: rgba(17,24,39,.09);
+      --hairline-strong: rgba(17,24,39,.15);
+      --fill-quiet: rgba(17,24,39,.045);
+      --fill-hover: rgba(17,24,39,.08);
 
       /* ---- 高度与光晕 ---- */
-      --elev-1: 0 1px 2px rgba(38,36,28,.04), 0 8px 20px -16px rgba(38,36,28,.14);
-      --elev-2: 0 2px 6px rgba(38,36,28,.06), 0 18px 36px -22px rgba(38,36,28,.18);
+      --elev-1: 0 1px 2px rgba(17,24,39,.04), 0 8px 20px -16px rgba(17,24,39,.14);
+      --elev-2: 0 2px 6px rgba(17,24,39,.06), 0 18px 36px -22px rgba(17,24,39,.18);
       --elev-3: 0 8px 16px rgba(0,0,0,.08), 0 40px 90px -30px rgba(0,0,0,.32);
-      --elev-glow: 0 0 0 1px rgba(0,113,227,.14), 0 6px 18px -10px rgba(0,113,227,.32);
+      --elev-glow: 0 0 0 1px rgba(36,93,255,.16), 0 6px 18px -10px rgba(36,93,255,.3);
       --inset-top: inset 0 1px 0 rgba(255,255,255,.82);
       --shadow-sm: var(--elev-1);
 
@@ -77,41 +77,42 @@
       color-scheme: light;
     }
     .dark {
-      --bg: #111310;
-      --card-bg: #1b1d19;
-      --text-secondary: #a3a79d;
-      --border: #393b34;
-      --border-light: #2b2d27;
-      --accent: #0a84ff;
-      --accent-hover: #409cff;
+      --bg: #111318;
+      --card-bg: #1b2029;
+      --text-secondary: #aab4c4;
+      --border: #3b4351;
+      --border-light: #2b313c;
+      --accent: #75a2ff;
+      --accent-hover: #9abaef;
       --green: #30d158;
       --green-text: #5ee57b;
       --orange-text: #ffb340;
       --red: #ff453a;
-      --purple: #bf5af2;
+      --purple: #6c9dff;
 
-      --text: #f2f1e9;
-      --text-2: #c7c9c0;
-      --text-3: #9a9d94;
+      --text: #f4f6fb;
+      --text-2: #c7cfdb;
+      --text-3: #98a3b5;
 
-      --surface-0: #111310;
-      --surface-1: rgba(28,30,25,.9);
-      --surface-2: #1b1d19;
-      --surface-glass: rgba(18,20,16,.88);
-      --hairline: rgba(238,236,224,.10);
-      --hairline-strong: rgba(238,236,224,.17);
-      --fill-quiet: rgba(220,220,205,.07);
-      --fill-hover: rgba(220,220,205,.12);
+      --surface-0: #111318;
+      --surface-1: rgba(27,32,41,.92);
+      --surface-2: #1b2029;
+      --surface-glass: rgba(18,22,30,.9);
+      --hairline: rgba(235,240,250,.10);
+      --hairline-strong: rgba(235,240,250,.17);
+      --fill-quiet: rgba(220,230,245,.07);
+      --fill-hover: rgba(220,230,245,.12);
 
       --elev-1: 0 1px 2px rgba(0,0,0,.5), 0 10px 30px -14px rgba(0,0,0,.7);
       --elev-2: 0 2px 8px rgba(0,0,0,.55), 0 22px 52px -20px rgba(0,0,0,.8);
       --elev-3: 0 10px 20px rgba(0,0,0,.6), 0 48px 100px -34px rgba(0,0,0,.9);
-      --elev-glow: 0 0 0 1px rgba(10,132,255,.2), 0 6px 22px -10px rgba(10,132,255,.42);
+      --elev-glow: 0 0 0 1px rgba(75,134,255,.22), 0 6px 22px -10px rgba(75,134,255,.42);
       --inset-top: inset 0 1px 0 rgba(255,255,255,.07);
       --shadow-sm: var(--elev-1);
 
       color-scheme: dark;
     }
+    .dark .btn-primary { color:#111827; }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       background: var(--surface-0); color: var(--text);
@@ -120,13 +121,13 @@
       margin: 0; padding: 0; min-height: 100vh; min-height: 100dvh; line-height: 1.5;
       letter-spacing: var(--track-tight);
       -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-      /* 一层低对比暖光，让背景有纸面层次但不抢内容 */
-      background-image: radial-gradient(1000px 560px at 100% 0%, rgba(190,176,142,.16), transparent 60%);
+      /* 一层低对比蓝光，让白底有层次但不抢内容 */
+      background-image: radial-gradient(1000px 560px at 100% 0%, rgba(36,93,255,.055), transparent 60%);
       background-attachment: fixed;
       transition: background-color var(--dur-2) var(--ease-soft), color var(--dur-2) var(--ease-soft);
     }
     body.dark {
-      background-image: radial-gradient(1000px 560px at 100% 0%, rgba(102,126,200,.13), transparent 60%);
+      background-image: radial-gradient(1000px 560px at 100% 0%, rgba(75,134,255,.09), transparent 60%);
     }
     /* 移动端安全区：刘海屏左右内缩 + 底部 Home 指示条不被压住 */
     #app { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
@@ -336,62 +337,126 @@
       /* 窄屏卡片内边距收紧一点，题干能多显示一行 */
       #questionCard { padding: 14px; }
     }
-    /* 首页：纸面主层级、克制阴影，窄屏自然纵排 */
-    .home-bento { display: flex; flex-direction: column; gap: var(--sp-5); }
-    .home-hero {
-      position: relative; overflow: hidden; padding: 28px 32px;
-      background: var(--surface-2); border: 1px solid var(--hairline);
-      border-radius: var(--r-xl); box-shadow: var(--elev-1), var(--inset-top);
+    /* 首页：Kott 的留白与居中构图，保留现有功能和学习数据 */
+    #app:has(.home-bento) { width:100%; max-width:none!important; padding:0!important; }
+    .home-bento { --home-blue:var(--accent); --home-blue-hover:var(--accent-hover); --home-line:var(--accent); display:flex; flex-direction:column; row-gap:clamp(24px,3.5vw,42px); padding-bottom:clamp(76px,12vh,140px); }
+    .home-hero-track { position:relative; height:480vh; height:480svh; }
+    .home-hero { position:sticky; top:0; display:flex; width:100%; height:100vh; height:100svh; min-height:100vh; min-height:100svh; flex-direction:column; overflow:hidden; padding:max(clamp(24px,4.5vw,54px),env(safe-area-inset-top,0px)) max(clamp(24px,4.5vw,54px),env(safe-area-inset-right,0px)) max(clamp(24px,4.5vw,54px),env(safe-area-inset-bottom,0px)) max(clamp(24px,4.5vw,54px),env(safe-area-inset-left,0px)); color:var(--text); background:var(--surface-0); border:0; border-radius:0; box-shadow:none; }
+    .home-hero::before { display:none; }
+    .home-hero-topline { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+    .home-hero-topline,.home-hero-footer { opacity:var(--hero-chrome-opacity,1); will-change:opacity; }
+    .home-kicker,.home-index,.home-visual-foot { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:10px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; }
+    .home-kicker { display:inline-flex; align-items:center; gap:9px; color:var(--text-2); }
+    .home-kicker-dot { width:7px; height:7px; border-radius:50%; background:var(--home-blue); box-shadow:0 0 12px color-mix(in srgb,var(--home-blue) 40%,transparent); }
+    .home-controls { flex:none; }
+    .home-controls .btn-icon { width:34px; height:34px; margin-left:2px; color:var(--text-2); background:transparent; border-color:transparent; border-radius:50%; box-shadow:none; transform:scale(1); transition:color 240ms var(--ease-soft),background-color 240ms var(--ease-soft),transform 240ms var(--ease-soft); }
+    .home-controls .btn-icon:hover,.home-controls .btn-icon:focus-visible { color:var(--text); background:var(--fill-quiet); border-color:transparent; box-shadow:none; transform:scale(1.035); }
+    .home-controls .btn-icon:active { transform:scale(.985); }
+    .home-controls .btn-icon.on { color:var(--text-2); background:transparent; border-color:transparent; }
+    .home-controls .btn-icon:focus-visible { outline:2px solid var(--home-blue); outline-offset:2px; }
+    .home-hero-body { position:relative; isolation:isolate; display:flex; flex:1; min-height:0; flex-direction:column; align-items:center; justify-content:center; gap:clamp(14px,2.5vh,28px); padding-block:clamp(20px,4vh,44px); }
+    .home-reveal-panel { position:absolute; z-index:2; top:50%; left:50%; width:min(42vw,240px); min-width:120px; aspect-ratio:1; opacity:var(--panel-opacity,0); background:color-mix(in srgb,var(--surface-2) calc(100% - var(--panel-gray,0%)),var(--surface-0) var(--panel-gray,0%)); border:1px solid color-mix(in srgb,var(--text) 9%,transparent); border-radius:var(--panel-radius,20px); box-shadow:0 24px 84px -24px rgba(17,24,39,.24); transform:translate3d(-50%,-50%,0) scale(var(--panel-scale,.12)); transform-origin:center; will-change:transform,opacity,background-color; pointer-events:none; }
+    .home-backdrop-word { position:absolute; z-index:0; top:39%; left:50%; width:max-content; max-width:none; color:var(--text); font-size:clamp(68px,16vw,320px); font-weight:620; line-height:.82; letter-spacing:-.09em; white-space:nowrap; user-select:none; opacity:var(--backdrop-opacity,1); transform:translate(-50%,-50%) translateX(var(--backdrop-shift,0px)) scale(var(--backdrop-scale,1)); will-change:transform,opacity; }
+    .home-backdrop-accent { color:var(--home-blue); }
+    .home-split-left,.home-split-right { display:inline-block; opacity:var(--split-opacity,1); filter:blur(var(--split-blur,0px)); will-change:transform,opacity,filter; }
+    .home-split-left { transform:translateX(var(--split-left-x,0px)); }
+    .home-split-right { transform:translateX(var(--split-right-x,0px)); }
+    .home-copy { position:relative; z-index:3; display:flex; width:min(100%,820px); flex-direction:column; align-items:center; text-align:center; opacity:var(--title-opacity,1); transform:translateY(var(--title-shift,0px)); will-change:opacity,transform; }
+    .home-title-accessible { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    .home-index { margin:0 0 18px; color:var(--home-blue); }
+    .home-meta { margin:clamp(10px,1.4vh,16px) 0 0; color:var(--text-3); font-size:clamp(12px,1.1vw,15px); font-weight:600; letter-spacing:.16em; line-height:1.4; opacity:var(--meta-opacity,1); transform:translateY(var(--meta-shift,0px)); will-change:opacity,transform; }
+    .home-actions { display:flex; flex-wrap:wrap; gap:4px; margin:0; }
+    .home-controls { flex:none; display:flex; align-items:center; justify-content:flex-end; gap:clamp(6px,1vw,12px); }
+    .home-controls .home-actions { align-items:center; animation:homeReveal 460ms cubic-bezier(.2,.72,.25,1) 140ms both; }
+    .home-controls .home-actions button { min-height:36px; padding:8px 11px; color:var(--text); background:transparent; border:1px solid transparent; border-radius:3px; box-shadow:none; font-size:13px; font-weight:600; white-space:nowrap; }
+    .home-controls .home-actions .btn-primary { color:var(--home-blue); font-weight:750; }
+    .home-controls .home-actions button:hover { color:var(--home-blue); background:var(--fill-quiet); border-color:var(--hairline); box-shadow:none; transform:none; }
+    .home-controls .btn-icon { flex:none; }
+    .home-hero .btn-primary { color:#fff; background:var(--home-blue); border-radius:4px; box-shadow:none; font-weight:700; transition:transform var(--dur-2) var(--ease-out),background-color var(--dur-2),box-shadow var(--dur-2); }
+    .dark .home-hero .btn-primary { color:#111827; }
+    .home-hero .btn-primary:hover { background:var(--home-blue-hover); box-shadow:0 8px 24px -12px color-mix(in srgb,var(--home-blue) 55%,transparent); transform:translateY(-2px); }
+    .home-hero .btn-ghost { color:var(--text); background:transparent; border-color:var(--hairline-strong); border-radius:4px; }
+    .home-hero .btn-ghost:hover { background:var(--fill-quiet); }
+    .home-visual { position:relative; z-index:1; display:grid; width:clamp(220px,32vh,400px); aspect-ratio:1; place-items:center; overflow:visible; opacity:var(--logo-opacity,1); transform:scale(var(--logo-scale,.9)); transform-origin:center; will-change:opacity,transform; }
+    .home-visual-mark { display:block; width:100%; height:100%; overflow:visible; pointer-events:none; }
+    @keyframes homeScrollNudge { 50% { transform:translateY(7px); } }
+    .home-hero .home-kicker,.home-hero .home-copy > * { animation:homeReveal 520ms cubic-bezier(.2,.72,.25,1) both; }
+    .home-hero .home-kicker { animation-delay:30ms; }
+    .home-hero .home-meta { animation-delay:280ms; }
+    .home-hero-footer { display:flex; justify-content:space-between; align-items:center; gap:24px; padding-top:14px; border-top:1px solid var(--hairline); }
+    .home-hero-metrics { display:flex; align-items:center; gap:clamp(20px,4vw,46px); }
+    .home-visual-count,.home-visual-index { position:static; display:flex; align-items:baseline; gap:8px; color:var(--text); }
+    .home-visual-count strong,.home-visual-index strong { font-size:20px; font-weight:650; line-height:1; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+    .home-visual-count span,.home-visual-index small { max-width:none; color:var(--text-3); font-size:12px; font-weight:600; line-height:1.35; }
+    .home-visual-foot { position:static; display:inline; padding:0; color:var(--text-3); white-space:nowrap; }
+    .home-scroll-cue { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0; padding:0; color:var(--text-3); font:700 10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; letter-spacing:.1em; text-decoration:none; animation:homeReveal 460ms cubic-bezier(.2,.72,.25,1) 620ms both; }
+    .home-scroll-cue:hover { color:var(--home-blue); }
+    .home-scroll-cue-arrow { color:var(--home-blue); font:400 18px/1 var(--font-ui); animation:homeScrollNudge 1.2s var(--ease-soft) 1.1s infinite; }
+    .home-library .home-section-head,.home-progress .home-section-head { animation:homeReveal 460ms cubic-bezier(.2,.72,.25,1) 180ms both; }
+    .home-subject-list .subject-card { animation:homeListIn 420ms cubic-bezier(.2,.72,.25,1) both; }
+    .home-subject-list .subject-card:nth-child(1) { animation-delay:260ms; }
+    .home-subject-list .subject-card:nth-child(2) { animation-delay:305ms; }
+    .home-subject-list .subject-card:nth-child(3) { animation-delay:350ms; }
+    .home-subject-list .subject-card:nth-child(4) { animation-delay:395ms; }
+    .home-subject-list .subject-card:nth-child(5) { animation-delay:440ms; }
+    .home-subject-list .subject-card:nth-child(6) { animation-delay:485ms; }
+    .home-subject-list .subject-card:nth-child(n+7) { animation-delay:530ms; }
+    @keyframes homeReveal { from { opacity:0; transform:translateY(var(--home-reveal-distance,16px)); } to { opacity:1; transform:translateY(0); } }
+    @keyframes homeListIn { from { opacity:0; translate:0 var(--home-reveal-distance,14px); } to { opacity:1; translate:0 0; } }
+    .home-trend-line { stroke-dasharray:100; stroke-dashoffset:100; animation:homeDrawLine 950ms cubic-bezier(.2,.72,.25,1) 320ms both; }
+    .home-trend-area { opacity:0; animation:homeFadeIn 700ms ease-out 520ms both; }
+    .home-trend-dot { opacity:0; transform:scale(.3); transform-box:fill-box; transform-origin:center; animation:homeDotIn 320ms cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes homeDrawLine { to { stroke-dashoffset:0; } }
+    @keyframes homeFadeIn { to { opacity:1; } }
+    @keyframes homeDotIn { to { opacity:1; transform:scale(1); } }
+    .home-library,.home-progress,.home-utilities { padding-inline:clamp(22px,5vw,72px); padding-left:max(clamp(22px,5vw,72px),env(safe-area-inset-left,0px)); padding-right:max(clamp(22px,5vw,72px),env(safe-area-inset-right,0px)); }
+    .home-utilities { padding-bottom:max(18px,env(safe-area-inset-bottom,0px)); }
+    .home-section-head { display:flex; justify-content:space-between; align-items:end; gap:16px; padding-bottom:14px; border-bottom:1px solid var(--hairline-strong); }
+    .home-section-head .home-index { margin-bottom:8px; }
+    .home-section-head h2 { margin:0; font-size:clamp(23px,3vw,30px); line-height:1.15; letter-spacing:-.045em; }
+    .home-count-chip { padding:7px 10px; color:var(--text-2); background:var(--fill-quiet); font-size:12px; font-variant-numeric:tabular-nums; }
+    .home-subject-list { display:flex; flex-direction:column; }
+    .subject-card { display:grid; grid-template-columns:42px minmax(0,1fr) auto; align-items:center; gap:12px; min-height:82px; width:100%; padding:14px 8px; color:var(--text); text-align:left; background:transparent; border:0; border-bottom:1px solid var(--hairline); border-radius:0; box-shadow:none; transition:transform var(--dur-2) var(--ease-out),background-color var(--dur-2); }
+    .subject-card:hover { transform:translateX(4px); background:color-mix(in srgb,var(--home-blue) 7%,transparent); box-shadow:none; }
+    .subject-number { color:var(--text-3); font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; font-variant-numeric:tabular-nums; }
+    .subject-copy { min-width:0; }
+    .subject-copy h3 { overflow:hidden; margin:0; font-size:17px; font-weight:650; text-overflow:ellipsis; white-space:nowrap; }
+    .subject-copy p { margin:5px 0 0; color:var(--text-3); font-size:12px; letter-spacing:0; }
+    .subject-side { display:flex; align-items:center; gap:14px; color:var(--text-3); }
+    .subject-count { color:var(--text); font-size:20px; font-variant-numeric:tabular-nums; letter-spacing:-.05em; }
+    .subject-arrow { display:inline-flex; color:var(--home-line); transition:transform var(--dur-2) var(--ease-out); }
+    .subject-card:hover .subject-arrow { transform:translateX(4px); }
+    .home-empty { padding:30px 12px; color:var(--text-2); border-bottom:1px solid var(--hairline); }
+    .home-empty p { margin:8px 0 0; }
+    .home-progress-card { height:100%; padding:18px; background:var(--surface-2); border:1px solid var(--hairline); border-radius:4px; box-shadow:none; }
+    .home-progress-card .stat-tile { border-radius:0; background:transparent; }
+    .home-progress-card .stat-tile:nth-child(2) .stat-value { color:var(--home-line)!important; }
+    .home-utilities { display:flex; flex-wrap:wrap; gap:8px; padding-top:16px; border-top:1px solid var(--hairline); }
+    .home-utilities .btn-ghost { border-radius:4px; }
+    .motion-lite { --home-reveal-distance:6px; }
+    .motion-lite .home-scroll-cue { animation-duration:380ms; }
+    .motion-lite .home-scroll-cue-arrow { animation-duration:1.8s; }
+    .motion-lite .home-hero .home-kicker,.motion-lite .home-hero .home-copy > *, .motion-lite .home-visual,.motion-lite .home-library .home-section-head,.motion-lite .home-progress .home-section-head,.motion-lite .home-subject-list .subject-card { animation-duration:300ms; }
+    .motion-lite .home-trend-line { animation-duration:560ms; }
+    .motion-off .home-hero .home-kicker,.motion-off .home-hero .home-copy > *, .motion-off .home-controls .home-actions,.motion-off .home-visual,.motion-off .home-library .home-section-head,.motion-off .home-progress .home-section-head,.motion-off .home-subject-list .subject-card,.motion-off .home-trend-line,.motion-off .home-trend-area,.motion-off .home-trend-dot { animation:none!important; opacity:1; transform:none; translate:none; stroke-dashoffset:0; }
+    .motion-off .home-scroll-cue,.motion-off .home-scroll-cue-arrow { animation:none!important; opacity:1; transform:none; }
+    @media (max-width:900px) { .home-hero-body { gap:20px; } .home-visual { width:clamp(190px,32vw,280px); } }
+    @media (max-width:680px) {
+      .home-hero-track { height:400vh; height:400svh; }
+      .home-hero { padding:max(22px,env(safe-area-inset-top,0px)) max(22px,env(safe-area-inset-right,0px)) max(22px,env(safe-area-inset-bottom,0px)) max(22px,env(safe-area-inset-left,0px)); } .home-hero-topline { flex-wrap:wrap; } .home-hero-body { gap:14px; padding-block:12px; } .home-backdrop-word { top:35%; font-size:clamp(68px,22vw,180px); } .home-visual { width:clamp(176px,52vw,260px); }
+      .home-controls { max-width:100%; flex-wrap:wrap; gap:4px; } .home-controls .home-actions { justify-content:flex-end; gap:0; } .home-controls .home-actions button { min-height:32px; padding:6px 7px; font-size:12px; }
+      .home-hero-footer { align-items:flex-start; flex-wrap:wrap; gap:12px 20px; } .home-hero-metrics { gap:22px; } .home-visual-foot { width:100%; }
+      .home-section-head { align-items:end; } .subject-card { grid-template-columns:30px minmax(0,1fr) auto; gap:9px; min-height:76px; }
+      .subject-side { gap:8px; } .subject-count { font-size:18px; } .home-progress-card { padding:14px; } .home-scroll-cue { margin-left:auto; }
     }
-    .home-hero::before {
-      content: ""; position: absolute; inset: 0 auto 0 0; width: 4px;
-      background: var(--accent);
+    @media (max-width:360px) { .home-hero-topline { align-items:flex-start; } .home-kicker { max-width:170px; line-height:1.6; } .home-hero-metrics { width:100%; justify-content:space-between; gap:8px; } .home-visual-count,.home-visual-index { gap:5px; } .home-visual-count strong,.home-visual-index strong { font-size:18px; } .home-visual-count span,.home-visual-index small { font-size:11px; } }
+    @media (min-width:1024px) { .home-bento { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); align-items:start; column-gap:clamp(24px,3vw,48px); row-gap:clamp(32px,4vw,48px); } .home-hero-track { grid-column:1/-1; } .home-library { grid-column:span 7; } .home-progress { grid-column:span 5; } .home-utilities { grid-column:1/-1; } }
+    @media (hover:none) { .subject-card:hover { transform:none; background:transparent; } }
+    @media (prefers-reduced-motion:reduce) {
+      body:not(.motion-explicit-full) .home-hero .home-kicker,body:not(.motion-explicit-full) .home-hero .home-copy > *,body:not(.motion-explicit-full) .home-controls .home-actions,body:not(.motion-explicit-full) .home-visual,body:not(.motion-explicit-full) .home-library .home-section-head,body:not(.motion-explicit-full) .home-progress .home-section-head,body:not(.motion-explicit-full) .home-subject-list .subject-card,body:not(.motion-explicit-full) .home-trend-line,body:not(.motion-explicit-full) .home-trend-area,body:not(.motion-explicit-full) .home-trend-dot { animation:none!important; opacity:1; transform:none; translate:none; stroke-dashoffset:0; }
+      body:not(.motion-explicit-full) .home-scroll-cue,body:not(.motion-explicit-full) .home-scroll-cue-arrow { animation:none!important; opacity:1; transform:none; }
+      body:not(.motion-explicit-full) .subject-card,body:not(.motion-explicit-full) .subject-arrow,body:not(.motion-explicit-full) .home-hero .btn-primary { transition:none!important; }
     }
-    .home-kicker {
-      margin: 0 0 8px; color: var(--accent); font-size: var(--fs-xs);
-      font-weight: 700; letter-spacing: .09em;
-    }
-    .home-title { margin: 0; font-size: var(--fs-3xl); line-height: 1.2; letter-spacing: -.03em; }
-    .home-meta { margin: 9px 0 0; color: var(--text-secondary); font-size: var(--fs-sm); }
-    .home-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 24px; }
-    .home-controls { flex: none; }
-    .home-stats > .card-elegant {
-      display: flex; height: 100%; flex-direction: column; justify-content: center;
-      background: var(--surface-2); box-shadow: var(--elev-1), var(--inset-top);
-    }
-    .home-section-head { padding-bottom: 10px; border-bottom: 1px solid var(--hairline); }
-    .home-subject-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); }
-    .subject-card {
-      min-height: 84px; background: var(--surface-2); border: 1px solid var(--hairline);
-      border-radius: var(--r-md); box-shadow: none;
-    }
-    .subject-card:hover {
-      transform: translateY(-1px); background: color-mix(in srgb, var(--accent) 3%, var(--surface-2));
-      border-color: color-mix(in srgb, var(--accent) 28%, var(--hairline)); box-shadow: none;
-    }
-    .home-empty { grid-column: 1 / -1; }
-    .home-utilities { padding-top: var(--sp-4); border-top: 1px solid var(--hairline); }
-    @media (hover: none) {
-      .subject-card:hover { transform: none; background: var(--surface-2); border-color: var(--hairline); }
-    }
-    @media (min-width: 640px) {
-      .home-subject-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 640px) {
-      .home-hero { padding: 22px 18px 20px 22px; border-radius: var(--r-lg); }
-      .home-title { font-size: var(--fs-2xl); }
-      .home-actions { margin-top: 20px; }
-    }
-    @media (min-width: 1024px) {
-      /* 桌面宽屏：行动区与趋势并列，题库保持整齐两列 */
-      .home-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: stretch; }
-      .home-bento > .span-hero { grid-column: span 8; }
-      .home-bento > .span-side { grid-column: span 4; }
-      .home-bento > .span-full { grid-column: span 12; }
-      .home-subject-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
-      .home-subject-grid > .subject-card { grid-column: span 6; }
-    }
-
     /* ========== 动效层 ==========
        三档：.motion-full（默认）/ .motion-lite（只保留必要的位移与淡入）/ .motion-off（关闭装饰性动效，保留状态反馈）
        旧版的 .no-motion 用 `transition:none !important` 把按钮按压反馈也一起杀了，本版按档位降级而不是一刀切 */
@@ -437,8 +502,8 @@
 
     /* 系统级降级：尊重操作系统「减弱动态效果」 */
     @media (prefers-reduced-motion: reduce) {
-      .rise-item, .stagger > *, .swap-in-right, .swap-in-left { animation: none !important; }
-      .card-hover:hover, .mode-opt:hover, .btn-primary:hover { transform: none !important; }
+      body:not(.motion-explicit-full) .rise-item,body:not(.motion-explicit-full) .stagger > *,body:not(.motion-explicit-full) .swap-in-right,body:not(.motion-explicit-full) .swap-in-left { animation:none!important; }
+      body:not(.motion-explicit-full) .card-hover:hover,body:not(.motion-explicit-full) .mode-opt:hover,body:not(.motion-explicit-full) .btn-primary:hover { transform:none!important; }
       ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .01ms !important; }
     }
 
@@ -639,6 +704,7 @@
       ];
 
       const CHANGELOG = [
+        { date:'2026.09.23', version:'v1.3.2', content:'首页首屏重构：新增长程莫比乌斯环带 3D 滚动揭示，联动旋转、放大、蓝色转白、白块扩展与灰化；标题保留单一可见展示，副标题更新为“Simply Lovely”；柔化首页控件反馈，并调整题库与学习轨迹区域位置。' },
         { date:'2026.09.18', version:'v1.3.1', content:'移动端专项适配：补齐刘海屏/底部 Home 条安全区（viewport-fit=cover + safe-area-inset），底部题号提示不再被遮挡；练习页顶栏窄屏改为横向滑动不再换行、跳题条独占一行且圆点加大到 32px；触屏去掉双击缩放与点击延迟，键盘快捷键提示仅在非触屏显示，输入框字号提到 16px（iOS 聚焦不再自动放大页面）；长公式/长单词自动换行不再撑破卡片；窄屏关闭大面积固定背景、粘顶栏玻璃模糊降档、切题位移幅度减半，滚动与切题更跟手。' },
         { date:'2026.09.12', version:'v1.3', content:'视觉与动效全面升级：建立完整设计令牌与三层玻璃表面系统；深色模式改为圆形揭示转场；页面转场只作用于内容区并带前进/后退方向感；新增三档动效开关（完整/精简/关闭）与系统减弱动效适配；练习页新增切题方向动画、滑动模式指示器、可横向滚动的跳题条与键盘跳题；结果页改为弹性计数、发光圆环与中心爆发粒子；更新日志移出首页；修复：动效关闭后按钮失去按压反馈、弹窗未做焦点陷阱、返回上一层丢失滚动位置。' },
         { date:'2026.08.23', version:'v1.2.2.2', content:'（热更）该应用正式上线！' },
@@ -1061,6 +1127,7 @@
         const swapContent = (h) => {
           app.innerHTML = h;
           bindEvents();
+          if (appState.currentView === 'home') { animateHomeMetrics(); bindHomeScrollReveal(); }
           if (appState.currentView === 'exam') updateExamUI();
           if (appState.currentView === 'browse') window._filterBrowse?.();
           if (appState.currentView === 'result') animateResult();
@@ -1095,7 +1162,7 @@
         const stats = (appState.stats || []).slice(-14);
         const total = (appState.stats || []).length;
         if (!stats.length) {
-          return `<div class="card-elegant p-4 rise-item" style="animation-delay:80ms">
+          return `<div class="card-elegant home-progress-card p-4 rise-item" style="animation-delay:80ms">
             <h2 class="font-semibold mb-1">正确率趋势</h2>
             <p class="text-xs text-secondary py-4 text-center">完成一次练习后，这里会生成正确率趋势图</p>
           </div>`;
@@ -1111,22 +1178,22 @@
         const areaPath = pts.length > 1 ? `M${pts[0].x},${H - P} L${pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L')} L${pts[pts.length-1].x},${H - P} Z` : '';
         const avg = Math.round(stats.reduce((s2, x) => s2 + x.acc, 0) / stats.length);
         const best = Math.max(...stats.map(s => s.acc));
-        const dotColor = acc => acc >= 80 ? '#34c759' : acc >= 60 ? '#0071e3' : '#ff3b30';
+        const dotColor = acc => acc >= 80 ? '#174bdc' : acc >= 60 ? '#4b86ff' : '#a8c4ff';
         const grid = [25, 50, 75].map(g => {
           const y = lineY - (g / 100) * (H - P * 2 - 16);
           return `<line x1="${P}" y1="${y.toFixed(1)}" x2="${W - P}" y2="${y.toFixed(1)}" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="3 4"/>`;
         }).join('');
-        const dots = pts.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.2" fill="${dotColor(p.s.acc)}"><title>${escapeHtml(p.s.date)} · ${p.s.acc}%（${escapeHtml(p.s.subjectName || '')}）</title></circle>`).join('');
+        const dots = pts.map(p => `<circle class="home-trend-dot" style="animation-delay:${520 + p.i * 36}ms" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.2" fill="${dotColor(p.s.acc)}"><title>${escapeHtml(p.s.date)} · ${p.s.acc}%（${escapeHtml(p.s.subjectName || '')}）</title></circle>`).join('');
         return `
-        <div class="card-elegant p-4 rise-item" style="animation-delay:80ms">
+        <div class="card-elegant home-progress-card p-4 rise-item" style="animation-delay:80ms">
           <div class="flex justify-between items-center mb-2">
             <h2 class="font-semibold">正确率趋势</h2>
             <span class="text-xs text-secondary">最近 ${stats.length} 次练习</span>
           </div>
           <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="最近 ${stats.length} 次练习的正确率趋势，平均 ${avg}%，最佳 ${best}%" style="width:100%;height:auto" preserveAspectRatio="none">
             ${grid}
-            ${pts.length > 1 ? `<polyline points="${poly}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : ''}
-            ${pts.length > 1 ? `<path d="${areaPath}" fill="rgba(0,113,227,.06)"/>` : ''}
+            ${pts.length > 1 ? `<polyline class="home-trend-line" pathLength="100" points="${poly}" fill="none" stroke="var(--home-line)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : ''}
+            ${pts.length > 1 ? `<path class="home-trend-area" d="${areaPath}" fill="rgba(36,93,255,.12)"/>` : ''}
             ${dots}
           </svg>
           <div class="flex justify-between mt-1" style="font-size:10px;color:var(--text-secondary)">
@@ -1147,66 +1214,68 @@
           const q = appState.subjects[id].questions || {};
           return s + ['single','multi','judge','fill','short'].reduce((a, t) => a + (q[t]?.length || 0), 0);
         }, 0);
-        const cards = ids.map(id => {
-          const sub = appState.subjects[id];
-          const q = sub.questions || {};
+        const rows = ids.map((id, i) => {
+          const sub = appState.subjects[id], q = sub.questions || {};
           const qCount = ['single','multi','judge','fill','short'].reduce((a, t) => a + (q[t]?.length || 0), 0);
           const wrong = totalWrongCount(id);
-          return `<button class="card-elegant card-hover subject-card p-4 text-left w-full" onclick="window._openSubject('${id}')">
-            <div class="flex justify-between items-start gap-3">
-              <div class="min-w-0">
-                <h3 class="font-semibold truncate" style="font-size:var(--fs-lg)">${escapeHtml(sub.name)}</h3>
-                <p class="text-xs text-secondary mt-1">${qCount} 题${wrong ? ` · ${wrong} 道错题` : ''} · ${escapeHtml(sub.createdAt||'')}</p>
-              </div>
-              <span style="color:var(--text-3);display:inline-flex;flex:none">${iconSvg('arrowRight', 18)}</span>
-            </div>
+          return `<button type="button" class="subject-card" onclick="window._openSubject('${id}')">
+            <span class="subject-number">${String(i + 1).padStart(2,'0')}</span>
+            <span class="subject-copy"><h3>${escapeHtml(sub.name)}</h3><p>${wrong ? `${wrong} 道错题 · ` : ''}${escapeHtml(sub.createdAt || '')}</p></span>
+            <span class="subject-side"><span class="subject-count">${qCount}</span><span class="subject-arrow">${iconSvg('arrowRight',18)}</span></span>
           </button>`;
         }).join('');
-
         return `
         <div class="home-bento">
-          <section class="card-elegant home-hero span-hero rise-item">
-            <div class="flex justify-between items-start gap-4 flex-wrap">
-              <div class="min-w-0">
-                <p class="home-kicker">期末复习 · 学习工作台</p>
-                <h1 class="home-title">期末复习系统</h1>
-                <p class="home-meta">v${APP_VERSION} · ${ids.length} 个题库 · 共 ${totalQuestions} 题</p>
+          <div class="home-hero-track" id="homeRevealTrack">
+            <section class="home-hero">
+              <div class="home-hero-topline">
+                <p class="home-kicker"><span class="home-kicker-dot"></span> FINAL REVIEW / 学习工作台</p>
+                <div class="home-controls flex gap-2 items-center">
+                  <div class="home-actions">
+                    ${ids.length ? `
+                      <button class="btn-primary press" onclick="window._pickSubject('open')">开始复习 <span aria-hidden="true">↗</span></button>
+                      <button class="btn-ghost press" onclick="window._navigateTo('upload')">上传题库</button>
+                      <button class="btn-ghost press" onclick="window._pickSubject('comp')">综合测试</button>
+                    ` : `
+                      <button class="btn-ghost press" onclick="window._navigateTo('upload')">上传题库</button>
+                    `}
+                  </div>
+                  <button class="btn-icon ${appState.motionLevel !== 'off' ? 'on' : ''}" id="motionBtn" onclick="window._cycleMotion()" aria-label="${motionLevelTitle()}" title="${motionLevelTitle()}">${iconSvg('motion',16)}</button>
+                  <button class="btn-icon" id="darkModeBtn" onclick="window.toggleDarkMode()" aria-label="${appState.darkMode ? '切换到浅色模式' : '切换到深色模式'}" title="深浅色模式">${iconSvg(appState.darkMode ? 'sun' : 'moon',16)}</button>
+                </div>
               </div>
-              <div class="home-controls flex gap-2 items-center">
-                <button class="btn-icon ${appState.motionLevel!=='off'?'on':''}" id="motionBtn" onclick="window._cycleMotion()" aria-label="切换动效级别" title="${appState.motionLevel==='full'?'动效：完整':appState.motionLevel==='lite'?'动效：精简':'动效：关闭'}">${iconSvg('motion', 16)}</button>
-                <button class="btn-icon" id="darkModeBtn" onclick="window.toggleDarkMode()" aria-label="${appState.darkMode?'切换到浅色模式':'切换到深色模式'}" title="深浅色模式">${iconSvg(appState.darkMode?'sun':'moon', 16)}</button>
+            <div class="home-hero-body">
+              <div class="home-reveal-panel" aria-hidden="true"></div>
+              <div class="home-backdrop-word" aria-hidden="true"><span class="home-backdrop-accent home-split-left">步步</span><span class="home-split-right">有数</span></div>
+              <div class="home-visual" role="img" aria-label="立体莫比乌斯环带标志">
+                <canvas class="home-visual-mark" id="homeMobiusCanvas" width="480" height="480" aria-hidden="true"></canvas>
+              </div>
+              <div class="home-copy">
+                <h1 class="home-title-accessible">步步有数</h1>
+                <p class="home-meta">Simply Lovely</p>
               </div>
             </div>
-            <div class="home-actions">
-              ${ids.length ? `
-                <button class="btn-primary press" onclick="window._pickSubject('open')">开始复习</button>
-                <button class="btn-ghost press" onclick="window._navigateTo('upload')">上传题库</button>
-                <button class="btn-ghost press" onclick="window._pickSubject('comp')">综合测试</button>
-              ` : `
-                <button class="btn-primary press" onclick="window._navigateTo('upload')">上传题库</button>
-              `}
+            <div class="home-hero-footer">
+              <div class="home-visual-foot">SMALL STEPS, CLEAR PROGRESS</div>
+              <div class="home-hero-metrics">
+                <div class="home-visual-count"><strong data-home-count="${totalQuestions}">0</strong><span>道练习题<br>已收录</span></div>
+                <div class="home-visual-index"><strong data-home-count="${ids.length}" data-home-pad="2">00</strong><small>个题库<br>已建立</small></div>
+              </div>
+              <a class="home-scroll-cue" href="#homeLibraryTitle"><span>SCROLL TO INSPECT · 向下浏览题库与学习轨迹</span><span class="home-scroll-cue-arrow" aria-hidden="true">↓</span></a>
+            </div>
+            </section>
+          </div>
+          <section class="home-library" aria-labelledby="homeLibraryTitle">
+            <header class="home-section-head"><div><p class="home-index">02 / YOUR LIBRARY</p><h2 id="homeLibraryTitle">我的题库</h2></div><span class="home-count-chip">${ids.length} 个题库</span></header>
+            <div class="home-subject-list">${rows || `
+              <div class="home-empty"><p class="font-semibold">还没有题库</p><p class="text-sm text-secondary">上传复习资料后，即可整理题目并开始练习</p></div>`}
             </div>
           </section>
-
-          <div class="home-stats span-side">${renderStatsCard()}</div>
-
-          <div class="home-section-head span-full flex items-center justify-between">
-            <div>
-              <h2 class="font-semibold" style="font-size:var(--fs-lg)">我的题库</h2>
-              <p class="text-xs text-secondary mt-1">选择题库开始练习，或继续整理复习资料</p>
-            </div>
-            <span class="text-xs text-secondary">${ids.length} 个</span>
-          </div>
-          <div class="home-subject-grid span-full stagger">
-            ${cards || `
-            <div class="home-empty card-elegant p-8 text-center">
-              <span style="color:var(--text-3);display:inline-flex">${iconSvg('book', 42)}</span>
-              <p class="font-semibold mt-3" style="font-size:var(--fs-lg)">还没有题库</p>
-              <p class="text-sm text-secondary mt-1">上传复习资料后，即可整理题目并开始练习</p>
-            </div>`}
-          </div>
-
-          <div class="home-utilities span-full flex gap-2 flex-wrap">
+          <aside class="home-progress" aria-labelledby="homeProgressTitle">
+            <header class="home-section-head"><div><p class="home-index">03 / PRACTICE TRACE</p><h2 id="homeProgressTitle">学习轨迹</h2></div></header>
+            ${renderStatsCard()}
+          </aside>
+          <div class="home-utilities">
             <button class="btn-ghost text-sm press" onclick="window._navigateTo('changelog')">更新日志</button>
             <button class="btn-ghost text-sm press" onclick="window._exportBackup()">导出备份</button>
             <button class="btn-ghost text-sm press" onclick="document.getElementById('backupImportInput').click()">导入备份</button>
@@ -1215,7 +1284,176 @@
           </div>
         </div>`;
       }
+      function animateHomeMetrics() {
+        const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches && !document.body.classList.contains('motion-explicit-full');
+        const duration = appState.motionLevel === 'lite' ? 320 : 680;
+        document.querySelectorAll('#app [data-home-count]').forEach(el => {
+          const target = Number(el.dataset.homeCount) || 0;
+          const pad = Number(el.dataset.homePad) || 0;
+          const paint = value => { el.textContent = String(value).padStart(pad, '0'); };
+          if (appState.motionLevel === 'off' || reduced) { paint(target); return; }
+          const start = performance.now();
+          const tick = now => {
+            const p = Math.min(1, (now - start) / duration);
+            paint(Math.round(target * (1 - Math.pow(1 - p, 4))));
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        });
+      }
+      function drawHomeMobius(canvas, progress, turn, overshoot, tileWhite) {
+        const width = canvas.clientWidth, height = canvas.clientHeight;
+        if (!width || !height) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+        const pixelWidth = Math.round(width * dpr), pixelHeight = Math.round(height * dpr);
+        if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) { canvas.width = pixelWidth; canvas.height = pixelHeight; }
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, width, height);
 
+        const size = Math.min(width, height), unit = size * 0.35;
+        const yaw = -0.62 + Math.PI * 1.55 * turn + 0.18 * overshoot;
+        const pitch = 0.34 * (1 - turn) - 0.22 * turn - 0.07 * overshoot;
+        const roll = 0.06 + 0.36 * Math.sin(Math.PI * Math.max(0, Math.min(1, progress / 0.94)));
+        const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch), cr = Math.cos(roll), sr = Math.sin(roll);
+        const rotate = p => {
+          const x = p.x * cy + p.z * sy, z = -p.x * sy + p.z * cy;
+          const y = p.y * cp - z * sp, rz = p.y * sp + z * cp;
+          return { x: x * cr - y * sr, y: x * sr + y * cr, z: rz };
+        };
+        // Standard one-half-twist parameterization of a Möbius ribbon.
+        const pointAt = (u, v) => {
+          const radius = 1 + v * Math.cos(u / 2);
+          return { x: radius * Math.cos(u), y: radius * Math.sin(u), z: v * Math.sin(u / 2) };
+        };
+        const camera = 4.6, cx = width / 2, midY = height / 2;
+        const project = p => {
+          const q = rotate(p), perspective = camera / (camera - q.z);
+          return { x: cx + q.x * unit * perspective, y: midY - q.y * unit * perspective, z: q.z };
+        };
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(13,20,35,.16)';
+        ctx.shadowColor = 'rgba(13,20,35,.18)';
+        ctx.shadowBlur = size * 0.075;
+        ctx.beginPath();
+        ctx.ellipse(cx, midY + unit * 0.82, unit * 0.88, unit * 0.16, -0.08, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        const uSteps = 80, vSteps = 12, halfBand = 0.34, vertices = [];
+        for (let i = 0; i <= uSteps; i++) {
+          const row = [], u = Math.PI * 2 * i / uSteps;
+          for (let j = 0; j <= vSteps; j++) row.push(project(pointAt(u, -halfBand + 2 * halfBand * j / vSteps)));
+          vertices.push(row);
+        }
+        const light = { x: -0.34, y: 0.58, z: 0.74 };
+        const lightLength = Math.hypot(light.x, light.y, light.z);
+        const patches = [];
+        for (let i = 0; i < uSteps; i++) for (let j = 0; j < vSteps; j++) {
+          const u = Math.PI * 2 * (i + 0.5) / uSteps;
+          const v = -halfBand + 2 * halfBand * (j + 0.5) / vSteps;
+          const p00 = vertices[i][j], p10 = vertices[i + 1][j], p11 = vertices[i + 1][j + 1], p01 = vertices[i][j + 1];
+          const du0 = pointAt(u + 0.008, v), du1 = pointAt(u - 0.008, v);
+          const dv0 = pointAt(u, v + 0.008), dv1 = pointAt(u, v - 0.008);
+          const du = { x: du0.x - du1.x, y: du0.y - du1.y, z: du0.z - du1.z };
+          const dv = { x: dv0.x - dv1.x, y: dv0.y - dv1.y, z: dv0.z - dv1.z };
+          const normal = rotate({ x: du.y * dv.z - du.z * dv.y, y: du.z * dv.x - du.x * dv.z, z: du.x * dv.y - du.y * dv.x });
+          const normalLength = Math.hypot(normal.x, normal.y, normal.z) || 1;
+          const facing = Math.abs((normal.x * light.x + normal.y * light.y + normal.z * light.z) / (normalLength * lightLength));
+          const shade = 0.36 + 0.68 * facing + 0.06 * (1 - Math.abs(v / halfBand));
+          const accentRamp = Math.max(0, 1 - Math.abs(u - 1.15) / 0.56);
+          const accent = accentRamp * accentRamp * (3 - 2 * accentRamp);
+          const base = [13 + 37 * shade, 18 + 43 * shade, 28 + 54 * shade];
+          const blue = [21, 88, 245].map(channel => (channel * (1 - tileWhite) + 255 * tileWhite) * (0.78 + 0.28 * facing));
+          const color = base.map((channel, k) => Math.round(Math.min(255, channel * (1 - accent) + blue[k] * accent)));
+          patches.push({ depth: (p00.z + p10.z + p11.z + p01.z) / 4, points: [p00, p10, p11, p01], color });
+        }
+        patches.sort((a, b) => a.depth - b.depth);
+        for (const patch of patches) {
+          ctx.fillStyle = `rgb(${patch.color[0]} ${patch.color[1]} ${patch.color[2]})`;
+          ctx.beginPath();
+          ctx.moveTo(patch.points[0].x, patch.points[0].y);
+          for (let i = 1; i < patch.points.length; i++) ctx.lineTo(patch.points[i].x, patch.points[i].y);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.lineWidth = Math.max(0.8, size * 0.003);
+        ctx.strokeStyle = 'rgba(235,241,252,.42)';
+        for (const edge of [0, vSteps]) {
+          ctx.beginPath();
+          for (let i = 0; i <= uSteps; i++) {
+            const p = vertices[i][edge];
+            if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+          }
+          ctx.stroke();
+        }
+        ctx.beginPath();
+        for (let i = 0; i <= uSteps; i++) {
+          const p = vertices[i][vSteps / 2];
+          if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+        }
+        ctx.lineWidth = Math.max(0.7, size * 0.002);
+        ctx.strokeStyle = 'rgba(255,255,255,.15)';
+        ctx.stroke();
+      }
+      let homeRevealRaf = null;
+      function updateHomeScrollReveal() {
+        if (homeRevealRaf !== null) return;
+        homeRevealRaf = requestAnimationFrame(() => {
+          homeRevealRaf = null;
+          const track = document.getElementById('homeRevealTrack');
+          if (!track) return;
+          const travel = Math.max(1, track.offsetHeight - window.innerHeight);
+          const scrollProgress = Math.max(0, Math.min(1, -track.getBoundingClientRect().top / travel));
+          const reduceMotion = appState.motionLevel === 'off' || (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches && !document.body.classList.contains('motion-explicit-full'));
+          const progress = reduceMotion ? 0 : scrollProgress;
+          const smooth = value => { const t = Math.max(0, Math.min(1, value)); return t * t * (3 - 2 * t); };
+          const turn = smooth(progress / 0.72);
+          const settle = smooth((progress - 0.62) / 0.16);
+          const overshoot = turn * (1 - settle);
+          const grow = smooth((progress - 0.12) / 0.68);
+          const absorb = smooth((progress - 0.82) / 0.17);
+          const tileWhite = smooth(progress / 0.82);
+          const panelIn = smooth((progress - 0.55) / 0.42);
+          const panelGray = smooth((progress - 0.78) / 0.22);
+          const split = smooth((progress - 0.68) / 0.32);
+          const mobile = window.matchMedia('(max-width:900px)').matches;
+          const peakScale = mobile ? 1.55 : 2.12;
+          const panelBase = Math.max(120, Math.min(240, window.innerWidth * 0.42));
+          const panelScale = Math.max(window.innerWidth, window.innerHeight) / panelBase * 1.45;
+          const splitDistance = window.innerWidth * 0.58 * split;
+          track.style.setProperty('--logo-scale', (0.9 + (peakScale - 0.9) * grow).toFixed(3));
+          track.style.setProperty('--logo-opacity', (1 - 0.99 * absorb).toFixed(3));
+          track.style.setProperty('--backdrop-shift', `${(-window.innerWidth * 0.05 * progress).toFixed(1)}px`);
+          track.style.setProperty('--backdrop-scale', (0.9 + 0.15 * grow).toFixed(3));
+          track.style.setProperty('--backdrop-opacity', (1 - split).toFixed(3));
+          track.style.setProperty('--panel-scale', (0.12 + (panelScale - 0.12) * panelIn).toFixed(3));
+          track.style.setProperty('--panel-opacity', (0.98 * panelIn).toFixed(3));
+          track.style.setProperty('--panel-gray', `${(panelGray * 100).toFixed(1)}%`);
+          track.style.setProperty('--panel-radius', `${(20 * (1 - panelIn)).toFixed(1)}px`);
+          track.style.setProperty('--hero-chrome-opacity', (1 - smooth((progress - 0.90) / 0.10)).toFixed(3));
+          track.style.setProperty('--split-opacity', (1 - split).toFixed(3));
+          track.style.setProperty('--split-blur', `${(12 * split).toFixed(1)}px`);
+          track.style.setProperty('--split-left-x', `${(-splitDistance).toFixed(1)}px`);
+          track.style.setProperty('--split-right-x', `${splitDistance.toFixed(1)}px`);
+          track.style.setProperty('--meta-opacity', (1 - split).toFixed(3));
+          track.style.setProperty('--meta-shift', `${(10 * split).toFixed(1)}px`);
+          track.style.setProperty('--title-opacity', '1');
+          track.style.setProperty('--title-shift', '0px');
+          const canvas = document.getElementById('homeMobiusCanvas');
+          if (canvas) drawHomeMobius(canvas, progress, turn, overshoot, tileWhite);
+        });
+      }
+      function bindHomeScrollReveal() {
+        if (!window._homeRevealScrollBound) {
+          window.addEventListener('scroll', updateHomeScrollReveal, { passive:true });
+          window.addEventListener('resize', updateHomeScrollReveal, { passive:true });
+          window._homeRevealScrollBound = true;
+        }
+        updateHomeScrollReveal();
+      }
       // ================= 更新日志（从首页抽出，独立视图） =================
       function renderChangelogPage() {
         const rows = CHANGELOG.map((log, i) => `
@@ -3330,24 +3568,36 @@
       });
 
       // ================= 动效档位 =================
-      function applyMotionLevel(level) {
+      function motionLevelTitle() {
+        const systemReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+        const explicitFull = document.body.classList.contains('motion-explicit-full');
+        if (appState.motionLevel === 'full' && systemReduced && !explicitFull) return '动效：完整（系统减少动态中，点击启用）';
+        return appState.motionLevel === 'full' ? '动效：完整' : appState.motionLevel === 'lite' ? '动效：精简' : '动效：关闭';
+      }
+      function applyMotionLevel(level, explicitlyFull = false) {
         const b = document.body;
         b.classList.remove('motion-full', 'motion-lite', 'motion-off', 'no-motion');
         b.classList.add('motion-' + level);
+        b.classList.toggle('motion-explicit-full', level === 'full' && explicitlyFull);
         appState.motionLevel = level;
         appState.motion = level !== 'off';
       }
       function cycleMotion() {
         const order = ['full', 'lite', 'off'];
-        const next = order[(order.indexOf(appState.motionLevel) + 1) % 3];
-        applyMotionLevel(next);
+        const systemReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+        const explicitFull = document.body.classList.contains('motion-explicit-full');
+        const enableFullOverride = appState.motionLevel === 'full' && systemReduced && !explicitFull;
+        const next = enableFullOverride ? 'full' : order[(order.indexOf(appState.motionLevel) + 1) % 3];
+        applyMotionLevel(next, next === 'full');
         localStorage.setItem(MOTION_KEY, next === 'full' ? '2' : next === 'lite' ? '1' : '0');
         const btn = document.getElementById('motionBtn');
         if (btn) {
           btn.classList.toggle('on', next !== 'off');
-          btn.title = next === 'full' ? '动效：完整' : next === 'lite' ? '动效：精简' : '动效：关闭';
+          btn.title = motionLevelTitle();
+          btn.setAttribute('aria-label', motionLevelTitle());
         }
-        showToast(next === 'full' ? '动效：完整' : next === 'lite' ? '动效：精简' : '动效：关闭', 'info');
+        updateHomeScrollReveal();
+        showToast(enableFullOverride ? '已按你的选择启用完整动效' : motionLevelTitle(), 'info');
       }
       window._cycleMotion = cycleMotion;
 
@@ -3362,7 +3612,7 @@
         appState.motionLevel = rawMotion === '0' ? 'off' : rawMotion === '1' ? 'lite' : 'full';
         appState.motion = appState.motionLevel !== 'off';
         if (appState.darkMode) document.body.classList.add('dark');
-        applyMotionLevel(appState.motionLevel);
+        applyMotionLevel(appState.motionLevel, rawMotion === '2');
         renderView();
       }
 
