@@ -7,56 +7,49 @@
   <meta name="format-detection" content="telephone=no">
   <title>期末复习系统</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
   <script>
     // Tailwind 未配置时 darkMode 默认 media，与基于 .dark 类的切换冲突；preflight 会覆盖本文件自带的 :root/body 基础样式
     tailwind.config = { darkMode: 'class', corePlugins: { preflight: false } };
   </script>
-  <script>
-    if (typeof pdfjsLib !== 'undefined') {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-  </script>
   <style>
     :root {
       /* ---- 兼容旧变量名（老代码在用，不许删） ---- */
-      --bg: #f2f2f7;
-      --card-bg: #ffffff;
-      --text-secondary: #6e6e73;
-      --border: #d2d2d7;
-      --border-light: #e6e6eb;
+      --bg: #f5f3ed;
+      --card-bg: #fffefa;
+      --text-secondary: #6d706a;
+      --border: #d8d6cd;
+      --border-light: #e8e5dc;
       --accent: #0071e3;
       --accent-hover: #0077ed;
       --green: #34c759;
+      --green-text: #187a35;
+      --orange-text: #9a5a00;
       --red: #ff3b30;
       --purple: #af52de;
       --radius-lg: 22px;
       --radius-md: 16px;
 
       /* ---- 文本层级 ---- */
-      --text: #1d1d1f;
-      --text-2: #48484a;
-      --text-3: #8e8e93;
+      --text: #20231f;
+      --text-2: #4b504a;
+      --text-3: #7c8078;
 
       /* ---- 表面层级（visionOS：越靠上越「厚」） ---- */
-      --surface-0: #f2f2f7;
-      --surface-1: rgba(255,255,255,.72);
-      --surface-2: #ffffff;
-      --surface-glass: rgba(255,255,255,.66);
-      --hairline: rgba(0,0,0,.07);
-      --hairline-strong: rgba(0,0,0,.12);
-      --fill-quiet: rgba(120,120,128,.09);
-      --fill-hover: rgba(120,120,128,.14);
+      --surface-0: #f5f3ed;
+      --surface-1: rgba(255,254,250,.88);
+      --surface-2: #fffefa;
+      --surface-glass: rgba(249,247,241,.9);
+      --hairline: rgba(45,47,39,.09);
+      --hairline-strong: rgba(45,47,39,.15);
+      --fill-quiet: rgba(72,75,66,.06);
+      --fill-hover: rgba(72,75,66,.10);
 
       /* ---- 高度与光晕 ---- */
-      --elev-1: 0 1px 2px rgba(0,0,0,.05), 0 8px 24px -12px rgba(0,0,0,.12);
-      --elev-2: 0 2px 6px rgba(0,0,0,.06), 0 18px 44px -18px rgba(0,0,0,.2);
+      --elev-1: 0 1px 2px rgba(38,36,28,.04), 0 8px 20px -16px rgba(38,36,28,.14);
+      --elev-2: 0 2px 6px rgba(38,36,28,.06), 0 18px 36px -22px rgba(38,36,28,.18);
       --elev-3: 0 8px 16px rgba(0,0,0,.08), 0 40px 90px -30px rgba(0,0,0,.32);
-      --elev-glow: 0 0 0 1px rgba(0,113,227,.16), 0 6px 22px -8px rgba(0,113,227,.4);
-      --inset-top: inset 0 1px 0 rgba(255,255,255,.6);
+      --elev-glow: 0 0 0 1px rgba(0,113,227,.14), 0 6px 18px -10px rgba(0,113,227,.32);
+      --inset-top: inset 0 1px 0 rgba(255,255,255,.82);
       --shadow-sm: var(--elev-1);
 
       /* ---- 间距刻度 ---- */
@@ -84,34 +77,36 @@
       color-scheme: light;
     }
     .dark {
-      --bg: #0b0b0d;
-      --card-bg: #1c1c1e;
-      --text-secondary: #98989d;
-      --border: #3a3a3c;
-      --border-light: #2a2a2c;
+      --bg: #111310;
+      --card-bg: #1b1d19;
+      --text-secondary: #a3a79d;
+      --border: #393b34;
+      --border-light: #2b2d27;
       --accent: #0a84ff;
       --accent-hover: #409cff;
       --green: #30d158;
+      --green-text: #5ee57b;
+      --orange-text: #ffb340;
       --red: #ff453a;
       --purple: #bf5af2;
 
-      --text: #f5f5f7;
-      --text-2: #c7c7cc;
-      --text-3: #8e8e93;
+      --text: #f2f1e9;
+      --text-2: #c7c9c0;
+      --text-3: #9a9d94;
 
-      --surface-0: #0b0b0d;
-      --surface-1: rgba(28,28,30,.72);
-      --surface-2: #1c1c1e;
-      --surface-glass: rgba(22,22,24,.7);
-      --hairline: rgba(255,255,255,.09);
-      --hairline-strong: rgba(255,255,255,.16);
-      --fill-quiet: rgba(120,120,128,.16);
-      --fill-hover: rgba(120,120,128,.24);
+      --surface-0: #111310;
+      --surface-1: rgba(28,30,25,.9);
+      --surface-2: #1b1d19;
+      --surface-glass: rgba(18,20,16,.88);
+      --hairline: rgba(238,236,224,.10);
+      --hairline-strong: rgba(238,236,224,.17);
+      --fill-quiet: rgba(220,220,205,.07);
+      --fill-hover: rgba(220,220,205,.12);
 
       --elev-1: 0 1px 2px rgba(0,0,0,.5), 0 10px 30px -14px rgba(0,0,0,.7);
       --elev-2: 0 2px 8px rgba(0,0,0,.55), 0 22px 52px -20px rgba(0,0,0,.8);
       --elev-3: 0 10px 20px rgba(0,0,0,.6), 0 48px 100px -34px rgba(0,0,0,.9);
-      --elev-glow: 0 0 0 1px rgba(10,132,255,.24), 0 6px 26px -8px rgba(10,132,255,.5);
+      --elev-glow: 0 0 0 1px rgba(10,132,255,.2), 0 6px 22px -10px rgba(10,132,255,.42);
       --inset-top: inset 0 1px 0 rgba(255,255,255,.07);
       --shadow-sm: var(--elev-1);
 
@@ -125,17 +120,13 @@
       margin: 0; padding: 0; min-height: 100vh; min-height: 100dvh; line-height: 1.5;
       letter-spacing: var(--track-tight);
       -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-      /* 景深：两团极淡的品牌色光晕，让纯色背景不再是死平色 */
-      background-image:
-        radial-gradient(1100px 620px at 12% -8%, rgba(0,113,227,.10), transparent 62%),
-        radial-gradient(900px 560px at 92% 4%, rgba(175,82,222,.08), transparent 60%);
+      /* 一层低对比暖光，让背景有纸面层次但不抢内容 */
+      background-image: radial-gradient(1000px 560px at 100% 0%, rgba(190,176,142,.16), transparent 60%);
       background-attachment: fixed;
       transition: background-color var(--dur-2) var(--ease-soft), color var(--dur-2) var(--ease-soft);
     }
     body.dark {
-      background-image:
-        radial-gradient(1100px 620px at 12% -8%, rgba(10,132,255,.16), transparent 60%),
-        radial-gradient(900px 560px at 92% 4%, rgba(191,90,242,.12), transparent 58%);
+      background-image: radial-gradient(1000px 560px at 100% 0%, rgba(102,126,200,.13), transparent 60%);
     }
     /* 移动端安全区：刘海屏左右内缩 + 底部 Home 指示条不被压住 */
     #app { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
@@ -157,7 +148,7 @@
     }
     /* 切题后会把焦点交给题目标题（读屏/键盘不迷失），那是容器不是控件，不该画焦点框 */
     [tabindex="-1"]:focus, [tabindex="-1"]:focus-visible { outline: none; }
-    /* ===== 表面系统：visionOS 的「厚度」来自 三层玻璃 + 发丝边 + 顶部内高光 ===== */
+    /* ===== 表面系统：以纸面与细边为主，玻璃效果仅用于浮层 ===== */
     .glass {
       background: var(--surface-1);
       -webkit-backdrop-filter: blur(30px) saturate(1.8);
@@ -274,8 +265,8 @@
     }
     .tag-single { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
     .tag-multi { background: color-mix(in srgb, var(--purple) 14%, transparent); color: var(--purple); }
-    .tag-judge { background: color-mix(in srgb, #ff9500 15%, transparent); color: #ff9500; }
-    .tag-fill { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green); }
+    .tag-judge { background: color-mix(in srgb, #ff9500 15%, transparent); color: var(--orange-text); }
+    .tag-fill { background: color-mix(in srgb, var(--green) 15%, transparent); color: var(--green-text); }
     .tag-short { background: color-mix(in srgb, #5ac8fa 16%, transparent); color: #3aa8dd; }
     .tag-comprehensive { background: color-mix(in srgb, #ffcc00 18%, transparent); color: #b8860b; }
     .tag-wrong { background: color-mix(in srgb, var(--red) 13%, transparent); color: var(--red); }
@@ -345,13 +336,60 @@
       /* 窄屏卡片内边距收紧一点，题干能多显示一行 */
       #questionCard { padding: 14px; }
     }
+    /* 首页：纸面主层级、克制阴影，窄屏自然纵排 */
+    .home-bento { display: flex; flex-direction: column; gap: var(--sp-5); }
+    .home-hero {
+      position: relative; overflow: hidden; padding: 28px 32px;
+      background: var(--surface-2); border: 1px solid var(--hairline);
+      border-radius: var(--r-xl); box-shadow: var(--elev-1), var(--inset-top);
+    }
+    .home-hero::before {
+      content: ""; position: absolute; inset: 0 auto 0 0; width: 4px;
+      background: var(--accent);
+    }
+    .home-kicker {
+      margin: 0 0 8px; color: var(--accent); font-size: var(--fs-xs);
+      font-weight: 700; letter-spacing: .09em;
+    }
+    .home-title { margin: 0; font-size: var(--fs-3xl); line-height: 1.2; letter-spacing: -.03em; }
+    .home-meta { margin: 9px 0 0; color: var(--text-secondary); font-size: var(--fs-sm); }
+    .home-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 24px; }
+    .home-controls { flex: none; }
+    .home-stats > .card-elegant {
+      display: flex; height: 100%; flex-direction: column; justify-content: center;
+      background: var(--surface-2); box-shadow: var(--elev-1), var(--inset-top);
+    }
+    .home-section-head { padding-bottom: 10px; border-bottom: 1px solid var(--hairline); }
+    .home-subject-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); }
+    .subject-card {
+      min-height: 84px; background: var(--surface-2); border: 1px solid var(--hairline);
+      border-radius: var(--r-md); box-shadow: none;
+    }
+    .subject-card:hover {
+      transform: translateY(-1px); background: color-mix(in srgb, var(--accent) 3%, var(--surface-2));
+      border-color: color-mix(in srgb, var(--accent) 28%, var(--hairline)); box-shadow: none;
+    }
+    .home-empty { grid-column: 1 / -1; }
+    .home-utilities { padding-top: var(--sp-4); border-top: 1px solid var(--hairline); }
+    @media (hover: none) {
+      .subject-card:hover { transform: none; background: var(--surface-2); border-color: var(--hairline); }
+    }
+    @media (min-width: 640px) {
+      .home-subject-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .home-hero { padding: 22px 18px 20px 22px; border-radius: var(--r-lg); }
+      .home-title { font-size: var(--fs-2xl); }
+      .home-actions { margin-top: 20px; }
+    }
     @media (min-width: 1024px) {
-      /* 桌面宽屏提高信息密度：首页题库卡两列、指标三列 */
-      .home-bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--sp-4); }
+      /* 桌面宽屏：行动区与趋势并列，题库保持整齐两列 */
+      .home-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: stretch; }
       .home-bento > .span-hero { grid-column: span 8; }
       .home-bento > .span-side { grid-column: span 4; }
       .home-bento > .span-full { grid-column: span 12; }
-      .home-bento > .span-half { grid-column: span 6; }
+      .home-subject-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+      .home-subject-grid > .subject-card { grid-column: span 6; }
     }
 
     /* ========== 动效层 ==========
@@ -390,8 +428,7 @@
     .motion-off .stagger > *,
     .motion-off .swap-in-right,
     .motion-off .swap-in-left,
-    .motion-off .confetti,
-    .motion-off .think-dot { animation: none !important; }
+    .motion-off .confetti { animation: none !important; }
     .motion-off .card-hover:hover,
     .motion-off .mode-opt:hover,
     .motion-off .provider-chip:hover,
@@ -506,18 +543,6 @@
     .model-item.active { background: rgba(0,113,227,.09); color: var(--accent); font-weight: 600; }
     .input-eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px 6px; color: var(--text-secondary); display: inline-flex; }
 
-    /* 思考过程实时展示 */
-    .think-box {
-      margin-top: 10px; font-size: 12.5px; line-height: 1.75; color: var(--text-secondary);
-      background: var(--border-light); border-radius: 14px; padding: 12px 14px;
-      max-height: 240px; overflow-y: auto; word-break: break-word;
-      border: 0.5px solid var(--border-light);
-    }
-    #thinkBody { white-space: pre-wrap; }
-    .think-box::-webkit-scrollbar { width: 6px; }
-    .think-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    .think-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulseDot 1.1s ease-in-out infinite; flex: none; }
-    @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: .2; } }
 
     /* 作答报告环形 */
     .ring-svg { transform: rotate(-90deg); }
@@ -575,7 +600,7 @@
 </head>
 <body>
   <div id="app" class="mx-auto px-3 sm:px-5 py-4 sm:py-6" style="max-width:68rem"></div>
-  <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;"></div>
+  <div id="toastContainer" aria-live="polite" aria-atomic="false" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;"></div>
   <div id="modalRoot" style="display:none;"></div>
 
   <script>
@@ -587,6 +612,15 @@
       const API_KEY_STORAGE = 'deepseek_api_key';
       const AI_CONFIG_KEY = 'final_review_ai_config_v3';
       const TUTORIAL_URL = 'https://www.bilibili.com/video/BV1FvE86iEQU/?spm_id_from=333.337.search-card.all.click&amp;vd_source=d59558cf86748b6c5849116bccffb75';
+      const LIBRARIES = {
+        mammoth: { global:'mammoth', src:'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js' },
+        xlsx: { global:'XLSX', src:'https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js' },
+        pdf: { global:'pdfjsLib', src:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js' },
+        tesseract: { global:'Tesseract', src:'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js' },
+      };
+      const libraryLoads = {};
+      let recognitionController = null;
+      let recognitionWorker = null;
       const TYPE_NAMES = { single:'单选题', multi:'多选题', judge:'判断题', fill:'填空题', short:'简答题', comprehensive:'综合测试', wrong:'错题复习' };
 
       // 常见 OpenAI 兼容供应商预设（品牌色与 Logo 均采用官方图形；模型列表为建议值，可用「获取模型」拉取实时列表）
@@ -637,11 +671,7 @@
 
       // ================= 基础工具 =================
       function escapeHtml(str) {
-        if (str === 0) return '0';
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        return String(str ?? '').replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[ch]);
       }
       function shuffleArr(a) {
         const arr = a.slice();
@@ -655,6 +685,69 @@
         s = Math.max(1, Math.round(Number(s) || 0));
         const m = Math.floor(s / 60), ss = s % 60;
         return m ? m + '分' + ss + '秒' : ss + '秒';
+      }
+      function ensureLibrary(name) {
+        const lib = LIBRARIES[name];
+        if (!lib) return Promise.reject(new Error('未知组件：' + name));
+        if (window[lib.global]) return Promise.resolve(window[lib.global]);
+        if (libraryLoads[name]) return libraryLoads[name];
+        libraryLoads[name] = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = lib.src;
+          script.async = true;
+          script.onload = () => window[lib.global] ? resolve(window[lib.global]) : reject(new Error(name + ' 组件加载失败'));
+          script.onerror = () => reject(new Error(name + ' 组件加载失败，请检查网络'));
+          document.head.appendChild(script);
+        }).catch(error => { delete libraryLoads[name]; throw error; });
+        return libraryLoads[name];
+      }
+      async function fetchWithTimeout(url, options = {}, timeoutMs = 90000, consume = response => response) {
+        const controller = new AbortController();
+        const upstream = options.signal;
+        const cancel = () => controller.abort();
+        if (upstream?.aborted) cancel();
+        else upstream?.addEventListener('abort', cancel, { once: true });
+        const timer = setTimeout(cancel, timeoutMs);
+        try {
+          const response = await fetch(url, Object.assign({}, options, { signal: controller.signal }));
+          return await consume(response);
+        } catch (error) {
+          if (upstream?.aborted) throw new Error('识别已取消');
+          if (controller.signal.aborted || error?.name === 'AbortError') throw new Error('请求超时，请稍后重试');
+          throw error;
+        } finally {
+          clearTimeout(timer);
+          upstream?.removeEventListener('abort', cancel);
+        }
+      }
+      function throwIfRecognitionCancelled() {
+        if (recognitionController?.signal.aborted) throw new Error('识别已取消');
+      }
+      function createSubjectId() {
+        return 'sub_' + (globalThis.crypto?.randomUUID?.() || Date.now() + '_' + Math.random().toString(36).slice(2));
+      }
+      function isSafeSubjectId(id) {
+        const value = String(id || '');
+        return /^[A-Za-z0-9_-]{1,100}$/.test(value) && !['__proto__','prototype','constructor'].includes(value);
+      }
+      function sanitizeSubject(raw) {
+        if (!raw || typeof raw !== 'object') return null;
+        const name = String(raw.name || '').trim().slice(0, 200) || '未命名题库';
+        const createdAt = String(raw.createdAt || '').trim().slice(0, 40);
+        return { name, createdAt, questions: normalizeParsedQuestions(raw.questions || {}) };
+      }
+      function sanitizeStats(raw, idMap = {}) {
+        if (!Array.isArray(raw)) return [];
+        return raw.filter(x => x && typeof x === 'object' && /^\d{4}-\d{2}-\d{2}$/.test(String(x.date || '')) && Number.isFinite(Number(x.acc)))
+          .slice(-200).map(x => ({
+            t: Number.isFinite(Number(x.t)) ? Number(x.t) : 0,
+            date: String(x.date), acc: Math.max(0, Math.min(100, Number(x.acc))),
+            total: Math.max(0, Number(x.total) || 0), correct: Math.max(0, Number(x.correct) || 0),
+            wrong: Math.max(0, Number(x.wrong) || 0),
+            subjectId: idMap[x.subjectId] || (isSafeSubjectId(x.subjectId) ? x.subjectId : ''),
+            subjectName: String(x.subjectName || '').slice(0, 200),
+            category: TYPE_NAMES[x.category] ? x.category : 'single',
+          }));
       }
       function showToast(msg, type = 'info') {
         const container = document.getElementById('toastContainer');
@@ -731,24 +824,34 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if (raw) {
             const data = JSON.parse(raw);
-            appState.subjects = data.subjects || {};
-            appState.wrongBook = (data.wrongBook && typeof data.wrongBook === 'object') ? data.wrongBook : {};
-            appState.stats = Array.isArray(data.stats) ? data.stats : [];
-            for (const [id, sub] of Object.entries(appState.subjects)) {
-              if (sub && typeof sub === 'object') {
-                sub.questions = sub.questions || {};
-                for (let type of ['single','multi','judge','fill','short']) {
-                  if (!Array.isArray(sub.questions[type])) sub.questions[type] = [];
-                }
-              } else {
-                delete appState.subjects[id];
-              }
+            const cleanSubjects = Object.create(null), cleanWrongBook = Object.create(null), idMap = Object.create(null);
+            for (const [oldId, rawSubject] of Object.entries(data.subjects || {})) {
+              const sub = sanitizeSubject(rawSubject);
+              if (!sub) continue;
+              let id = isSafeSubjectId(oldId) && !cleanSubjects[oldId] ? oldId : createSubjectId();
+              while (cleanSubjects[id]) id = createSubjectId();
+              cleanSubjects[id] = sub;
+              idMap[oldId] = id;
             }
+            for (const [oldId, rawQuestions] of Object.entries(data.wrongBook || {})) {
+              const id = idMap[oldId];
+              if (id && rawQuestions && typeof rawQuestions === 'object') cleanWrongBook[id] = normalizeParsedQuestions(rawQuestions);
+            }
+            appState.subjects = cleanSubjects;
+            appState.wrongBook = cleanWrongBook;
+            appState.stats = sanitizeStats(data.stats, idMap);
           }
         } catch (e) { appState.subjects = {}; appState.wrongBook = {}; appState.stats = []; }
       }
-      function saveData() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ subjects: appState.subjects, wrongBook: appState.wrongBook, stats: appState.stats }));
+      function saveData(data = appState) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ subjects: data.subjects, wrongBook: data.wrongBook, stats: data.stats }));
+          return true;
+        } catch (e) {
+          console.error('保存失败:', e);
+          showToast('保存失败：浏览器存储空间可能已满，请先导出备份','error');
+          return false;
+        }
       }
       function toggleDarkMode() {
         const next = !appState.darkMode;
@@ -757,7 +860,10 @@
           document.body.classList.toggle('dark', next);
           localStorage.setItem(DARK_KEY, String(next));
           const darkBtn = document.getElementById('darkModeBtn');
-          if (darkBtn) darkBtn.innerHTML = iconSvg(next ? 'sun' : 'moon', 16);
+          if (darkBtn) {
+            darkBtn.innerHTML = iconSvg(next ? 'sun' : 'moon', 16);
+            darkBtn.setAttribute('aria-label', next ? '切换到浅色模式' : '切换到深色模式');
+          }
         };
         // 从按钮位置扩散的圆形揭示（Apple 手感）；不支持或不需动效时直接切换
         if (appState.motionLevel === 'off' || typeof document.startViewTransition !== 'function') { apply(); return; }
@@ -781,9 +887,10 @@
 
       function defaultAiConfig() {
         const p = PROVIDER_PRESETS[0];
+        const savedKey = localStorage.getItem(API_KEY_STORAGE) || '';
         return {
           providerId: p.id, name: p.name, baseUrl: p.baseUrl, model: p.models[0],
-          displayName: p.displayName, apiKey: localStorage.getItem(API_KEY_STORAGE) || '', proxyUrl: '',
+          displayName: p.displayName, apiKey: savedKey, proxyUrl: '', rememberKey: Boolean(savedKey),
         };
       }
       function loadAiConfig() {
@@ -792,14 +899,24 @@
           if (saved && saved.baseUrl && saved.model) {
             saved.apiKey = saved.apiKey || localStorage.getItem(API_KEY_STORAGE) || '';
             saved.proxyUrl = saved.proxyUrl || '';
+            saved.rememberKey = saved.rememberKey !== false && Boolean(saved.apiKey);
             return saved;
           }
         } catch (e) {}
         return defaultAiConfig();
       }
       function saveAiConfigToStorage(cfg) {
-        localStorage.setItem(AI_CONFIG_KEY, JSON.stringify(cfg));
-        localStorage.setItem(API_KEY_STORAGE, cfg.apiKey || '');
+        try {
+          const stored = Object.assign({}, cfg);
+          if (!cfg.rememberKey) delete stored.apiKey;
+          localStorage.setItem(AI_CONFIG_KEY, JSON.stringify(stored));
+          if (cfg.rememberKey) localStorage.setItem(API_KEY_STORAGE, cfg.apiKey || '');
+          else localStorage.removeItem(API_KEY_STORAGE);
+          return true;
+        } catch (e) {
+          showToast('AI 配置保存失败，请检查浏览器存储权限','error');
+          return false;
+        }
       }
 
       // ================= 错题本 =================
@@ -840,8 +957,10 @@
       const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
       function clearModalRoot() {
         const root = document.getElementById('modalRoot');
+        const app = document.getElementById('app');
         root.innerHTML = '';
         root.style.display = 'none';
+        if (app) { app.inert = false; app.removeAttribute('aria-hidden'); }
         document.body.style.overflow = '';
         if (modalLastFocus && typeof modalLastFocus.focus === 'function') {
           try { modalLastFocus.focus({ preventScroll: true }); } catch (e) {}
@@ -864,8 +983,10 @@
         if (modalCloseTimer) { clearTimeout(modalCloseTimer); modalCloseTimer = null; }
         modalLastFocus = document.activeElement;
         const root = document.getElementById('modalRoot');
-        root.innerHTML = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal-panel ${panelClass}" role="dialog" aria-modal="true">${innerHtml}</div></div>`;
+        root.innerHTML = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal-panel ${panelClass}" role="dialog" aria-modal="true" aria-label="对话框">${innerHtml}</div></div>`;
         root.style.display = 'block';
+        const app = document.getElementById('app');
+        if (app) { app.inert = true; app.setAttribute('aria-hidden', 'true'); }
         document.body.style.overflow = 'hidden';
         root.querySelector('#modalBackdrop').addEventListener('click', e => {
           if (e.target.id === 'modalBackdrop') closeModal();
@@ -912,12 +1033,7 @@
         const prev = appState.currentView;
         rememberScroll();
         const push = (v) => { if (appState.navStack[appState.navStack.length - 1] !== v) appState.navStack.push(v); };
-        if (view === 'exam') {
-          appState.currentIndex = 0;
-          appState.answeredSet = {};
-          appState.userAnswers = {};
-          appState.multiTempSelections = [];
-        }
+        if (prev === 'upload' && view !== 'upload') window._cancelRecognition?.(true);
         const noStack = appState._suppressStack;
         appState._suppressStack = false;
         appState._navDirection = opts.back ? 'back' : 'forward';
@@ -930,6 +1046,7 @@
         if (appState.navStack.length <= 1) return;
         rememberScroll();
         appState.navStack.pop();
+        if (appState.currentView === 'result' && appState.navStack[appState.navStack.length - 1] === 'exam') appState.navStack.pop();
         const target = appState.navStack[appState.navStack.length - 1] || 'home';
         appState._suppressStack = true;
         appState._navDirection = 'back';
@@ -1006,19 +1123,19 @@
             <h2 class="font-semibold">正确率趋势</h2>
             <span class="text-xs text-secondary">最近 ${stats.length} 次练习</span>
           </div>
-          <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" preserveAspectRatio="none">
+          <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="最近 ${stats.length} 次练习的正确率趋势，平均 ${avg}%，最佳 ${best}%" style="width:100%;height:auto" preserveAspectRatio="none">
             ${grid}
             ${pts.length > 1 ? `<polyline points="${poly}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : ''}
             ${pts.length > 1 ? `<path d="${areaPath}" fill="rgba(0,113,227,.06)"/>` : ''}
             ${dots}
           </svg>
           <div class="flex justify-between mt-1" style="font-size:10px;color:var(--text-secondary)">
-            <span>${pts[0].s.date}</span><span>${pts[pts.length-1].s.date}</span>
+            <span>${escapeHtml(pts[0].s.date)}</span><span>${escapeHtml(pts[pts.length-1].s.date)}</span>
           </div>
           <div class="grid grid-cols-3 gap-2 mt-3">
             <div class="stat-tile"><div class="stat-value">${total}</div><div class="stat-label">练习次数</div></div>
             <div class="stat-tile"><div class="stat-value" style="color:var(--accent)">${avg}%</div><div class="stat-label">平均正确率</div></div>
-            <div class="stat-tile"><div class="stat-value" style="color:var(--green)">${best}%</div><div class="stat-label">最佳成绩</div></div>
+            <div class="stat-tile"><div class="stat-value" style="color:var(--green-text)">${best}%</div><div class="stat-label">最佳成绩</div></div>
           </div>
         </div>`;
       }
@@ -1035,7 +1152,7 @@
           const q = sub.questions || {};
           const qCount = ['single','multi','judge','fill','short'].reduce((a, t) => a + (q[t]?.length || 0), 0);
           const wrong = totalWrongCount(id);
-          return `<button class="card-elegant card-hover p-4 text-left w-full" onclick="window._openSubject('${id}')">
+          return `<button class="card-elegant card-hover subject-card p-4 text-left w-full" onclick="window._openSubject('${id}')">
             <div class="flex justify-between items-start gap-3">
               <div class="min-w-0">
                 <h3 class="font-semibold truncate" style="font-size:var(--fs-lg)">${escapeHtml(sub.name)}</h3>
@@ -1047,43 +1164,49 @@
         }).join('');
 
         return `
-        <div class="space-y-5">
-          <div class="card-elegant p-6 sm:p-8 rise-item" style="background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, var(--card-bg)), color-mix(in srgb, var(--purple) 9%, var(--card-bg)));box-shadow:var(--elev-2), var(--inset-top)">
-            <div class="flex justify-between items-start gap-3 flex-wrap">
-              <div>
-                <h1 class="font-bold" style="font-size:var(--fs-3xl);letter-spacing:-0.03em">期末复习系统</h1>
-                <p class="text-sm text-secondary mt-1">v${APP_VERSION} · ${ids.length} 个题库 · 共 ${totalQuestions} 题</p>
+        <div class="home-bento">
+          <section class="card-elegant home-hero span-hero rise-item">
+            <div class="flex justify-between items-start gap-4 flex-wrap">
+              <div class="min-w-0">
+                <p class="home-kicker">期末复习 · 学习工作台</p>
+                <h1 class="home-title">期末复习系统</h1>
+                <p class="home-meta">v${APP_VERSION} · ${ids.length} 个题库 · 共 ${totalQuestions} 题</p>
               </div>
-              <div class="flex gap-2 items-center">
-                <button class="btn-icon ${appState.motionLevel!=='off'?'on':''}" id="motionBtn" onclick="window._cycleMotion()" title="${appState.motionLevel==='full'?'动效：完整':appState.motionLevel==='lite'?'动效：精简':'动效：关闭'}">${iconSvg('motion', 16)}</button>
-                <button class="btn-icon" id="darkModeBtn" onclick="window.toggleDarkMode()" title="深浅色模式">${iconSvg(appState.darkMode?'sun':'moon', 16)}</button>
+              <div class="home-controls flex gap-2 items-center">
+                <button class="btn-icon ${appState.motionLevel!=='off'?'on':''}" id="motionBtn" onclick="window._cycleMotion()" aria-label="切换动效级别" title="${appState.motionLevel==='full'?'动效：完整':appState.motionLevel==='lite'?'动效：精简':'动效：关闭'}">${iconSvg('motion', 16)}</button>
+                <button class="btn-icon" id="darkModeBtn" onclick="window.toggleDarkMode()" aria-label="${appState.darkMode?'切换到浅色模式':'切换到深色模式'}" title="深浅色模式">${iconSvg(appState.darkMode?'sun':'moon', 16)}</button>
               </div>
             </div>
-            <div class="flex flex-wrap gap-2 mt-5">
-              <button class="btn-primary press" onclick="window._navigateTo('upload')">上传题库</button>
-              ${ids.length?`<button class="btn-ghost press" onclick="window._pickSubject('open')">开始复习</button>`:''}
-              ${ids.length?`<button class="btn-ghost press" onclick="window._pickSubject('comp')">去综合测试</button>`:''}
+            <div class="home-actions">
+              ${ids.length ? `
+                <button class="btn-primary press" onclick="window._pickSubject('open')">开始复习</button>
+                <button class="btn-ghost press" onclick="window._navigateTo('upload')">上传题库</button>
+                <button class="btn-ghost press" onclick="window._pickSubject('comp')">综合测试</button>
+              ` : `
+                <button class="btn-primary press" onclick="window._navigateTo('upload')">上传题库</button>
+              `}
             </div>
-          </div>
+          </section>
 
-          ${renderStatsCard()}
+          <div class="home-stats span-side">${renderStatsCard()}</div>
 
-          <div class="flex items-center justify-between">
-            <h2 class="font-semibold" style="font-size:var(--fs-lg)">我的题库</h2>
+          <div class="home-section-head span-full flex items-center justify-between">
+            <div>
+              <h2 class="font-semibold" style="font-size:var(--fs-lg)">我的题库</h2>
+              <p class="text-xs text-secondary mt-1">选择题库开始练习，或继续整理复习资料</p>
+            </div>
             <span class="text-xs text-secondary">${ids.length} 个</span>
           </div>
-          <div class="grid gap-3 stagger sm:grid-cols-2">
+          <div class="home-subject-grid span-full stagger">
             ${cards || `
-            <div class="card-elegant p-10 text-center sm:col-span-2">
-              <span style="color:var(--text-3);display:inline-flex">${iconSvg('book', 46)}</span>
+            <div class="home-empty card-elegant p-8 text-center">
+              <span style="color:var(--text-3);display:inline-flex">${iconSvg('book', 42)}</span>
               <p class="font-semibold mt-3" style="font-size:var(--fs-lg)">还没有题库</p>
-              <p class="text-sm text-secondary mt-1">上传你的复习资料，AI 帮你识别成可练习的题库</p>
-              <button class="btn-primary mt-5 press" onclick="window._navigateTo('upload')">去上传题库</button>
+              <p class="text-sm text-secondary mt-1">上传复习资料后，即可整理题目并开始练习</p>
             </div>`}
           </div>
 
-          <div class="flex gap-2 flex-wrap rise-item" style="animation-delay:120ms">
-            <button class="btn-ghost text-sm press" onclick="window._navigateTo('upload')">上传文件</button>
+          <div class="home-utilities span-full flex gap-2 flex-wrap">
             <button class="btn-ghost text-sm press" onclick="window._navigateTo('changelog')">更新日志</button>
             <button class="btn-ghost text-sm press" onclick="window._exportBackup()">导出备份</button>
             <button class="btn-ghost text-sm press" onclick="document.getElementById('backupImportInput').click()">导入备份</button>
@@ -1132,7 +1255,7 @@
         const wrongTotal = totalWrongCount(appState.currentSubjectId);
         let catCards = '';
         cats.forEach((c, i) => {
-          catCards += `<div class="card-elegant card-hover p-4 cursor-pointer rise-item" style="animation-delay:${80+i*50}ms" onclick="window._openModePicker('${c.key}')"><div class="flex justify-between items-center"><div><div class="font-semibold">${c.name}</div><p class="text-xs text-secondary">${c.count}题 · 选择作答方式</p></div><span class="tag-pill tag-${c.key}">${c.count}</span></div></div>`;
+          catCards += `<button type="button" class="card-elegant card-hover p-4 cursor-pointer rise-item w-full text-left" style="animation-delay:${80+i*50}ms" onclick="window._openModePicker('${c.key}')"><div class="flex justify-between items-center"><div><div class="font-semibold">${c.name}</div><p class="text-xs text-secondary">${c.count}题 · 选择作答方式</p></div><span class="tag-pill tag-${c.key}">${c.count}</span></div></button>`;
         });
         return `
         <div class="space-y-4">
@@ -1140,20 +1263,20 @@
             <button class="btn-ghost text-sm" onclick="window._back()">← 返回</button>
             <h2 class="text-xl font-semibold mt-2">${escapeHtml(sub.name)}</h2>
           </div>
-          <div class="card-elegant card-hover p-4 cursor-pointer rise-item" style="animation-delay:50ms;border-left:3px solid var(--purple)" onclick="window._openModePicker('comprehensive')">
+          <button type="button" class="card-elegant card-hover p-4 cursor-pointer rise-item w-full text-left" style="animation-delay:50ms;border-left:3px solid var(--purple)" onclick="window._openModePicker('comprehensive')">
             <div class="flex items-center gap-3">
               <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--purple) 10%, transparent);color:var(--purple)">${iconSvg('target', 22)}</span>
               <div class="flex-1"><div class="font-semibold">综合测试</div><p class="text-xs text-secondary">全题型混合 · 共 ${total} 题</p></div>
               <span class="tag-pill tag-comprehensive">${total} 题</span>
             </div>
-          </div>
-          <div class="card-elegant card-hover p-4 cursor-pointer rise-item" style="animation-delay:60ms;border-left:3px solid var(--red)" onclick="window._openModePicker('wrong')">
+          </button>
+          <button type="button" class="card-elegant card-hover p-4 cursor-pointer rise-item w-full text-left" style="animation-delay:60ms;border-left:3px solid var(--red)" onclick="window._openModePicker('wrong')">
             <div class="flex items-center gap-3">
               <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--red) 10%, transparent);color:var(--red)">${iconSvg('bookmark', 22)}</span>
               <div class="flex-1"><div class="font-semibold">错题复习</div><p class="text-xs text-secondary">${wrongTotal>0?`共 ${wrongTotal} 道错题 · 答对自动移出`:'暂无错题 · 答错后自动收录'}</p></div>
               <span class="tag-pill tag-wrong">${wrongTotal}</span>
             </div>
-          </div>
+          </button>
           <div class="flex gap-2 flex-wrap rise-item" style="animation-delay:70ms">
             <button class="btn-ghost text-sm" onclick="window._browseSubject('${appState.currentSubjectId}')">浏览全部题目</button>
             ${wrongTotal>0?`<button class="btn-ghost text-sm" style="color:var(--red)" onclick="window._clearWrongBook()">清空错题本</button>`:''}
@@ -1212,8 +1335,8 @@
             <div class="flex items-center gap-3 mt-3">
               <div class="flex-1 progress-line"><div class="progress-line-fill" id="progressFill"></div></div>
               <span class="text-xs num" id="answeredCount" aria-live="polite">${answered}/${total}</span>
-              <span class="text-xs num" style="color:var(--green)" id="correctCount">${correct}</span>
-              <span class="text-xs num" style="color:var(--red)" id="wrongCount">${answered-correct}</span>
+              <span class="text-xs num" style="color:var(--green-text)" id="correctCount">${correct}</span>
+              <span class="text-xs num" style="color:var(--red)" id="wrongCount">${Object.values(appState.answeredSet).filter(v=>v==='wrong').length}</span>
             </div>
           </div>
           <div class="card-elegant p-4 sm:p-6" id="questionCard"><div id="questionInner"></div></div>
@@ -1243,6 +1366,11 @@
         } else {
           for (const q of (sub.questions[cat] || [])) items.push(Object.assign({}, q, { _type: cat }));
         }
+        if (mode !== 'view') {
+          const before = items.length;
+          items = items.filter(q => !questionNeedsReview(q._type, q));
+          if (before !== items.length) showToast(`${before - items.length} 道答案待核对的题目已跳过，请修正后再练习`,'info');
+        }
         if (!items.length) return showToast('该分类暂无题目','error');
         appState.currentSubjectId = subId;
         appState.currentCategory = cat;
@@ -1271,7 +1399,12 @@
         const hasAnswered = appState.answeredSet[key] !== undefined;
         const inner = document.getElementById('questionInner');
         if (!inner) return;
+        appState.multiTempSelections = Array.isArray(appState.userAnswers[key]) ? [...appState.userAnswers[key]] : [];
         inner.innerHTML = renderQuestionInner(qData, cat, key, hasAnswered, isView);
+        if (!hasAnswered && !isView) {
+          const draft = inner.querySelector('#fillInput, #shortInput');
+          if (draft) draft.value = appState.userAnswers[key] || '';
+        }
         // 切题方向动画：整块题目卡按方向滑入
         const dir = opts.direction || appState._qDirection || 'right';
         const card = document.getElementById('questionCard');
@@ -1299,7 +1432,8 @@
         if (nb) { nb.style.opacity = idx >= questions.length-1 ? '.4' : '1'; }
         const rb = document.getElementById('resultBtn');
         if (rb) {
-          const allDone = questions.length > 0 && Object.keys(appState.answeredSet).length === questions.length;
+          const answerStates = Object.values(appState.answeredSet);
+          const allDone = questions.length > 0 && answerStates.length === questions.length && answerStates.every(v => v === 'correct' || v === 'wrong');
           rb.style.display = (allDone && !isView) ? '' : 'none';
         }
         const cb = document.getElementById('catalogBtn');
@@ -1315,6 +1449,7 @@
       function renderQuestionInner(qData, cat, key, hasAnswered, isView) {
         let html = `<p class="text-xs text-secondary mb-2">第 ${appState.currentIndex+1} / ${appState.currentQuestions.length} 题</p>`
                  + `<h3 class="text-lg font-medium mb-4" data-question-title>${escapeHtml(qData.q)}</h3>`;
+        if (questionNeedsReview(cat, qData)) return html + '<p class="text-sm" style="color:var(--orange-text)">答案待核对，暂不能参与评分。请在导入预览中修正答案。</p>';
         const optKey = i => `<span class="opt-key">${String.fromCharCode(65+i)}</span>`;
         if (cat === 'single') {
           for (let i=0;i<qData.opts.length;i++) {
@@ -1326,9 +1461,9 @@
               if (hasAnswered && appState.userAnswers[key]===i && i!==qData.ans) cls += ' wrong-shake';
               if (!hasAnswered && appState.userAnswers[key]===i) cls += ' selected';
             }
-            html += `<button class="${cls} mb-2" onclick="window._selectSingle(${i},'${key}',${Number(qData.ans)||0})">${optKey(i)}<span class="flex-1 text-left">${escapeHtml(qData.opts[i])}</span>${(hasAnswered||isView)&&i===qData.ans?'<span style="color:var(--green)">✓</span>':''}</button>`;
+            html += `<button class="${cls} mb-2" aria-pressed="${appState.userAnswers[key]===i}"${hasAnswered||isView?' disabled aria-disabled="true"':''} onclick="window._selectSingle(${i},'${key}',${Number(qData.ans)||0})">${optKey(i)}<span class="flex-1 text-left">${escapeHtml(qData.opts[i])}</span>${(hasAnswered||isView)&&i===qData.ans?'<span style="color:var(--green-text)">✓</span>':''}</button>`;
           }
-          if (hasAnswered || isView) html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">正确答案：${String.fromCharCode(65+Number(qData.ans)||0)}. ${escapeHtml(qData.opts[qData.ans])}</div>`;
+          if (hasAnswered || isView) html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green-text)">正确答案：${String.fromCharCode(65+Number(qData.ans)||0)}. ${escapeHtml(qData.opts[qData.ans])}</div>`;
         } else if (cat === 'multi') {
           const correctAns = (qData.ans || []).map(Number);
           const userSel = appState.userAnswers[key] || [];
@@ -1339,14 +1474,14 @@
               if (hasAnswered) cls += ' disabled';
               if (hasAnswered && correctAns.includes(i)) cls += ' correct-flash';
               if (hasAnswered && userSel.includes(i) && !correctAns.includes(i)) cls += ' wrong-shake';
-              if (!hasAnswered && appState.multiTempSelections.includes(i)) cls += ' selected';
+              if (!hasAnswered && userSel.includes(i)) cls += ' selected';
             }
-            html += `<button class="${cls} mb-2" onclick="window._toggleMulti(${i},'${key}')">${optKey(i)}<span class="flex-1 text-left">${escapeHtml(qData.opts[i])}</span></button>`;
+            html += `<button class="${cls} mb-2" aria-pressed="${userSel.includes(i)}"${hasAnswered||isView?' disabled aria-disabled="true"':''} onclick="window._toggleMulti(${i},'${key}')">${optKey(i)}<span class="flex-1 text-left">${escapeHtml(qData.opts[i])}</span></button>`;
           }
           if (!hasAnswered && !isView) html += `<button class="btn-primary w-full mt-2" onclick="window._submitMulti('${key}',[${correctAns.join(',')}])">提交答案</button>`;
           if (hasAnswered || isView) {
             const corrLabels = correctAns.map(i=>String.fromCharCode(65+i)).join(' ');
-            html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">正确答案：${corrLabels}</div>`;
+            html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green-text)">正确答案：${corrLabels}</div>`;
           }
         } else if (cat === 'judge') {
           const labels = ['正确','错误'];
@@ -1359,23 +1494,23 @@
               if (hasAnswered && appState.userAnswers[key]===val && val!==qData.ans) cls += ' wrong-shake';
               if (!hasAnswered && appState.userAnswers[key]===val) cls += ' selected';
             }
-            html += `<button class="${cls} mb-2" onclick="window._selectJudge(${val},'${key}',${qData.ans===true})"><span class="flex-1 text-center">${labels[i]}</span></button>`;
+            html += `<button class="${cls} mb-2" aria-pressed="${appState.userAnswers[key]===val}"${hasAnswered||isView?' disabled aria-disabled="true"':''} onclick="window._selectJudge(${val},'${key}',${qData.ans===true})"><span class="flex-1 text-center">${labels[i]}</span></button>`;
           });
-          if (hasAnswered || isView) html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">正确答案：${qData.ans?'正确':'错误'}</div>`;
+          if (hasAnswered || isView) html += `<div class="mt-3 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green-text)">正确答案：${qData.ans?'正确':'错误'}</div>`;
         } else if (cat === 'fill') {
           if (hasAnswered || isView) {
-            html += `<p>你的答案：<strong>${escapeHtml(appState.userAnswers[key]||'(未填写)')}</strong></p><div class="mt-2 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">正确答案：${escapeHtml(fillAnswersText(qData.ans))}</div>`;
+            html += `<p>你的答案：<strong>${escapeHtml(appState.userAnswers[key]||'(未填写)')}</strong></p><div class="mt-2 p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green-text)">正确答案：${escapeHtml(fillAnswersText(qData.ans))}</div>`;
           } else {
-            html += `<input class="input-elegant" id="fillInput" placeholder="请输入答案" value="${escapeHtml(appState.userAnswers[key]||'')}"><button class="btn-primary w-full mt-3" onclick="window._submitFill('${key}')">提交答案</button>`;
+            html += `<input class="input-elegant" id="fillInput" placeholder="请输入答案" oninput="window._saveDraft('${key}',this.value)"><button class="btn-primary w-full mt-3" onclick="window._submitFill('${key}')">提交答案</button>`;
           }
         } else if (cat === 'short') {
           if (hasAnswered || isView) {
-            html += `<p>你的回答：</p><p class="p-3 rounded-xl" style="background:var(--fill-quiet)">${escapeHtml(appState.userAnswers[key]||'(未填写)')}</p><div class="p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green)">参考答案：${escapeHtml(qData.a)}</div>`;
+            html += `<p>你的回答：</p><p class="p-3 rounded-xl" style="background:var(--fill-quiet)">${escapeHtml(appState.userAnswers[key]||'(未填写)')}</p><div class="p-3 rounded-xl text-sm" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green-text)">参考答案：${escapeHtml(qData.a)}</div>`;
             if (appState.answeredSet[key] === 'pending' && !isView) {
               html += `<div class="flex gap-2 mt-3"><button class="btn-primary" onclick="window._selfGradeShort('${key}',true)">我答对了</button><button class="btn-ghost" onclick="window._selfGradeShort('${key}',false)">我答错了</button></div>`;
             }
           } else {
-            html += `<textarea class="input-elegant" id="shortInput">${escapeHtml(appState.userAnswers[key]||'')}</textarea><button class="btn-primary w-full mt-3" onclick="window._submitShort('${key}')">提交回答</button>`;
+            html += `<textarea class="input-elegant" id="shortInput" oninput="window._saveDraft('${key}',this.value)"></textarea><button class="btn-primary w-full mt-3" onclick="window._submitShort('${key}')">提交回答</button>`;
           }
         }
         return html;
@@ -1405,7 +1540,7 @@
         const total = appState.currentQuestions.length;
         const answered = Object.keys(appState.answeredSet).length;
         const correct = Object.values(appState.answeredSet).filter(v => v === 'correct').length;
-        const wrong = Object.values(appState.answeredSet).filter(v => v !== 'correct').length;
+        const wrong = Object.values(appState.answeredSet).filter(v => v === 'wrong').length;
         const ac = document.getElementById('answeredCount');
         const cc = document.getElementById('correctCount');
         const wc = document.getElementById('wrongCount');
@@ -1433,7 +1568,7 @@
           const st = appState.answeredSet[key];
           let cls = 'jump-dot';
           if (st === 'correct') cls += ' ok';
-          else if (st !== undefined) cls += ' bad';
+          else if (st === 'wrong') cls += ' bad';
           if (i === idx) cls += ' cur';
           html += `<button class="${cls}" onclick="window._goToQ(${i})" aria-label="第 ${i+1} 题" title="第 ${i+1} 题">${i+1}</button>`;
         }
@@ -1446,6 +1581,10 @@
 
       function computeResult() {
         const vals = Object.values(appState.answeredSet);
+        if (vals.length !== appState.currentQuestions.length || vals.some(v => v === 'pending')) {
+          showToast('请完成全部题目，并对简答题完成自评','error');
+          return false;
+        }
         const correct = vals.filter(v => v === 'correct').length;
         const wrong = vals.filter(v => v !== 'correct').length;
         const seconds = Math.max(1, Math.round((Date.now() - (appState.examStartTime || Date.now())) / 1000));
@@ -1464,6 +1603,7 @@
         });
         if (appState.stats.length > 200) appState.stats = appState.stats.slice(-200);
         saveData();
+        return true;
       }
 
       // ================= 作答报告 =================
@@ -1493,7 +1633,7 @@
             </div>
             <div class="grid grid-cols-3 gap-2 mt-6">
               <div class="stat-tile"><div class="stat-value">${r.total}</div><div class="stat-label">总题数</div></div>
-              <div class="stat-tile"><div class="stat-value" style="color:var(--green)">${r.correct}</div><div class="stat-label">答对</div></div>
+              <div class="stat-tile"><div class="stat-value" style="color:var(--green-text)">${r.correct}</div><div class="stat-label">答对</div></div>
               <div class="stat-tile"><div class="stat-value" style="color:var(--red)">${r.wrong}</div><div class="stat-label">答错</div></div>
             </div>
             <p class="text-sm text-secondary mt-4">用时 ${fmtTime(r.seconds)}</p>
@@ -1501,7 +1641,7 @@
             <div class="flex flex-wrap gap-2 justify-center mt-5">
               ${r.wrong ? `<button class="btn-primary press" onclick="window._redoWrong()">重练错题（${r.wrong}）</button>` : '<button class="btn-primary" disabled>全部答对</button>'}
               <button class="btn-ghost press" onclick="window._restartExam()">再来一遍</button>
-              <button class="btn-ghost press" onclick="window._navigateTo('subject', { replace: true })">返回题库</button>
+              <button class="btn-ghost press" onclick="window._back()">返回题库</button>
             </div>
           </div>
         </div>`;
@@ -1615,6 +1755,7 @@
             <input class="input-elegant" id="subjectNameInput" placeholder="请输入题库名称（留空自动生成）">
             <select class="input-elegant mt-2" id="existingSubjectSelect"><option value="">创建新题库</option>${subjectsOptions}</select>
             <button class="btn-primary w-full mt-3" id="processUploadBtn" onclick="window._processUploadedFile()" disabled>开始识别并导入</button>
+            <button class="btn-ghost w-full mt-2" id="cancelRecognitionBtn" onclick="window._cancelRecognition()" style="display:none">取消识别</button>
           </div>
           <div class="card-elegant p-4 rise-item" style="animation-delay:140ms;display:none" id="previewArea">
             <div class="flex justify-between"><h3 class="font-semibold">识别预览</h3><button class="btn-ghost text-sm" onclick="window._showDetailPreview()">查看/编辑详情</button></div>
@@ -1664,8 +1805,9 @@
               <label class="field-label">API Key</label>
               <div style="position:relative">
                 <input class="input-elegant" id="aiKeyInput" type="password" placeholder="sk-..." value="${escapeHtml(cfg.apiKey || '')}">
-                <button type="button" class="input-eye" onclick="window._toggleKeyVis(this)">${iconSvg('eye', 16)}</button>
+                <button type="button" class="input-eye" aria-label="显示或隐藏 API Key" onclick="window._toggleKeyVis(this)">${iconSvg('eye', 16)}</button>
               </div>
+              <label class="text-xs text-secondary mt-2" style="display:flex;gap:6px;align-items:center"><input id="rememberAiKey" type="checkbox" ${cfg.rememberKey?'checked':''}> 在此浏览器中记住 API Key</label>
             </div>
             <div>
               <label class="field-label">API 地址（OpenAI 兼容）</label>
@@ -1683,7 +1825,7 @@
                   <button type="button" class="btn-ghost text-sm w-full mt-2" id="fetchModelsBtn" onclick="window._fetchModels()">获取供应商可用模型</button>
                 </div>
               </div>
-              <button type="button" class="btn-ghost flex-none" title="获取可用模型" onclick="window._fetchModels()">${iconSvg('refresh', 16)}</button>
+              <button type="button" class="btn-ghost flex-none" aria-label="获取可用模型" title="获取可用模型" onclick="window._fetchModels()">${iconSvg('refresh', 16)}</button>
             </div>
             <p class="text-xs text-secondary mt-1">可手动输入模型名，或点击「获取供应商可用模型」联网拉取当前可用列表。</p>
           </div>
@@ -1700,7 +1842,7 @@
           <div id="regList" style="display:none;background:var(--border-light)" class="text-xs text-secondary space-y-1 p-3 rounded-xl">
             ${regList || '<p>所选供应商暂无注册入口，可自定义。</p>'}
           </div>
-          <p class="text-xs text-secondary">密钥仅保存在当前浏览器中，直接发送给你选择的供应商接口。若浏览器提示 CORS/网络错误，请换用支持浏览器调用的供应商，或在高级设置中填写反向代理地址。</p>
+          <p class="text-xs text-secondary">密钥会直接发送给你选择的供应商或反向代理；仅在勾选上方选项时长期保存在当前浏览器中。</p>
           <div class="flex gap-2 pt-1">
             <button class="btn-primary flex-1" onclick="window._saveAiConfigModal()">保存配置</button>
             <button class="btn-ghost" onclick="window._closeModal()">取消</button>
@@ -1720,6 +1862,7 @@
           displayName: get('aiDisplayInput'),
           apiKey: get('aiKeyInput'),
           proxyUrl: get('aiProxyInput'),
+          rememberKey: Boolean(document.getElementById('rememberAiKey')?.checked),
         };
       }
 
@@ -1736,10 +1879,13 @@
         const items = pool.filter(m => !kw || String(m).toLowerCase().includes(kw));
         const cur = window._modalCfg.model;
         if (items.length) {
-          listEl.innerHTML = items.map(m => {
-            const safe = String(m).replace(/'/g, "\\'");
-            return `<button type="button" class="model-item ${m===cur?'active':''}" onclick="window._pickModel('${safe}')"><span class="truncate">${escapeHtml(m)}</span>${m===cur?'<span>✓</span>':''}</button>`;
+          listEl.innerHTML = items.map((m, i) => {
+            return `<button type="button" class="model-item ${m===cur?'active':''}" data-model-index="${i}"><span class="truncate">${escapeHtml(m)}</span>${m===cur?'<span>✓</span>':''}</button>`;
           }).join('');
+          listEl.onclick = e => {
+            const button = e.target.closest('[data-model-index]');
+            if (button && listEl.contains(button)) window._pickModel(String(items[Number(button.dataset.modelIndex)]));
+          };
         } else {
           listEl.innerHTML = `<p class="text-xs text-secondary p-2">${kw ? '没有匹配的模型，可直接在上方输入' : '该供应商暂无预置模型，点击下方按钮获取'}</p>`;
         }
@@ -1820,28 +1966,49 @@
         window._importBackup = (event) => {
           const file = event.target.files?.[0];
           if (!file) return;
+          if (file.size > 5 * 1024 * 1024) { showToast('备份文件不能超过 5MB','error'); event.target.value = ''; return; }
           readFileAsText(file).then(text => {
             try {
               const data = JSON.parse(text);
-              if (!data || typeof data.subjects !== 'object') throw new Error('格式错误');
+              if (!data || !data.subjects || typeof data.subjects !== 'object' || Array.isArray(data.subjects)) throw new Error('格式错误');
               let newCount = 0, mergeCount = 0;
-              for (let [id, sub] of Object.entries(data.subjects)) {
-                if (!appState.subjects[id]) { appState.subjects[id] = sub; newCount++; }
+              const idMap = Object.create(null);
+              const subjects = Object.assign(Object.create(null), appState.subjects);
+              const wrongBook = Object.assign(Object.create(null), appState.wrongBook);
+              for (const [oldId, rawSubject] of Object.entries(data.subjects)) {
+                const sub = sanitizeSubject(rawSubject);
+                if (!sub) continue;
+                const id = isSafeSubjectId(oldId) ? oldId : createSubjectId();
+                idMap[oldId] = id;
+                if (!subjects[id]) { subjects[id] = sub; newCount++; }
                 else {
+                  const merged = { ...subjects[id], questions: { ...subjects[id].questions } };
                   for (let type of ['single','multi','judge','fill','short']) {
-                    appState.subjects[id].questions[type] = [...(appState.subjects[id].questions?.[type]||[]), ...(sub.questions?.[type]||[])];
+                    merged.questions[type] = [...(merged.questions[type] || []), ...(sub.questions[type] || [])];
                   }
+                  merged.questions = dedupeParsedQuestions(normalizeParsedQuestions(merged.questions));
+                  subjects[id] = merged;
                   mergeCount++;
                 }
               }
               if (data.wrongBook && typeof data.wrongBook === 'object') {
-                appState.wrongBook = Object.assign({}, appState.wrongBook, data.wrongBook);
+                for (const [oldId, rawQuestions] of Object.entries(data.wrongBook)) {
+                  const id = idMap[oldId];
+                  if (!id || !rawQuestions || typeof rawQuestions !== 'object') continue;
+                  const incoming = normalizeParsedQuestions(rawQuestions);
+                  const current = wrongBook[id] || {};
+                  for (const type of ['single','multi','judge','fill','short']) current[type] = [...(current[type] || []), ...(incoming[type] || [])];
+                  wrongBook[id] = dedupeParsedQuestions(normalizeParsedQuestions(current));
+                }
               }
-              if (Array.isArray(data.stats)) {
-                appState.stats = [...(appState.stats || []), ...data.stats].slice(-200);
+              const stats = [...(appState.stats || []), ...sanitizeStats(data.stats, idMap)].slice(-200);
+              if (saveData({ subjects, wrongBook, stats })) {
+                appState.subjects = subjects;
+                appState.wrongBook = wrongBook;
+                appState.stats = stats;
+                renderView();
+                showToast(`备份导入完成：新增${newCount}个题库，合并${mergeCount}个题库`,'success');
               }
-              saveData(); renderView();
-              showToast(`备份导入完成：新增${newCount}个题库，合并${mergeCount}个题库`,'success');
             } catch (e) { showToast('备份文件解析失败','error'); }
           });
           event.target.value = '';
@@ -1889,7 +2056,7 @@
                 <span class="text-left"><span class="block font-semibold text-sm">乱序作答${isComp?' · 推荐':''}</span><span class="text-xs text-secondary">打乱题目顺序，避免记忆题目位置</span></span>
               </button>
               <button class="mode-opt" onclick="window._startExamWith('view')">
-                <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--green) 10%, transparent);color:var(--green)">${iconSvg('eye', 22)}</span>
+                <span class="mode-opt-icon" style="background:color-mix(in srgb, var(--green) 10%, transparent);color:var(--green-text)">${iconSvg('eye', 22)}</span>
                 <span class="text-left"><span class="block font-semibold text-sm">看题模式</span><span class="text-xs text-secondary">直接浏览全部题目与答案，不答题</span></span>
               </button>
               ${isWrong?`<p class="text-xs text-secondary text-center">答对的题目会自动移出错题本</p>`:''}
@@ -1911,11 +2078,11 @@
               <div class="card-elegant card-hover p-3">
                 <div class="flex justify-between"><span class="tag-pill tag-${q.type}">${q.typeName} #${q.index+1}</span></div>
                 <p class="font-medium mt-1">${escapeHtml(q.question.q)}</p>
-                ${q.type==='single'?`<div class="text-sm text-secondary">选项：${q.question.opts?.map((o,i)=>String.fromCharCode(65+i)+'. '+escapeHtml(o)).join('；')}</div><p class="text-sm" style="color:var(--green)">答案：${String.fromCharCode(65+Number(q.question.ans))}</p>`:''}
-                ${q.type==='multi'?`<div class="text-sm text-secondary">选项：${q.question.opts?.map((o,i)=>String.fromCharCode(65+i)+'. '+escapeHtml(o)).join('；')}</div><p class="text-sm" style="color:var(--green)">答案：${(Array.isArray(q.question.ans)?q.question.ans:[]).map(i=>String.fromCharCode(65+Number(i))).join('')}</p>`:''}
-                ${q.type==='judge'?`<p class="text-sm" style="color:var(--green)">答案：${q.question.ans?'正确':'错误'}</p>`:''}
-                ${q.type==='fill'?`<p class="text-sm" style="color:var(--green)">答案：${escapeHtml(q.question.ans)}</p>`:''}
-                ${q.type==='short'?`<p class="text-sm" style="color:var(--green)">参考答案：${escapeHtml(q.question.a)}</p>`:''}
+                ${q.type==='single'?`<div class="text-sm text-secondary">选项：${q.question.opts?.map((o,i)=>String.fromCharCode(65+i)+'. '+escapeHtml(o)).join('；')}</div><p class="text-sm" style="color:var(--green-text)">答案：${String.fromCharCode(65+Number(q.question.ans))}</p>`:''}
+                ${q.type==='multi'?`<div class="text-sm text-secondary">选项：${q.question.opts?.map((o,i)=>String.fromCharCode(65+i)+'. '+escapeHtml(o)).join('；')}</div><p class="text-sm" style="color:var(--green-text)">答案：${(Array.isArray(q.question.ans)?q.question.ans:[]).map(i=>String.fromCharCode(65+Number(i))).join('')}</p>`:''}
+                ${q.type==='judge'?`<p class="text-sm" style="color:var(--green-text)">答案：${q.question.ans?'正确':'错误'}</p>`:''}
+                ${q.type==='fill'?`<p class="text-sm" style="color:var(--green-text)">答案：${escapeHtml(q.question.ans)}</p>`:''}
+                ${q.type==='short'?`<p class="text-sm" style="color:var(--green-text)">参考答案：${escapeHtml(q.question.a)}</p>`:''}
               </div>`).join('') || '<p class="text-secondary">无匹配题目</p>';
           }
         };
@@ -1925,9 +2092,10 @@
           if (appState.motionLevel === 'off') return;
           if (navigator.vibrate) { try { navigator.vibrate(ok ? 12 : [10, 40, 10]); } catch (e) {} }
         };
+        window._saveDraft = (key, value) => { if (appState.answeredSet[key] === undefined) appState.userAnswers[key] = value; };
         window._selectSingle = (opt,key,correct) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; appState.userAnswers[key]=opt; const ok = opt===correct; appState.answeredSet[key]=ok?'correct':'wrong'; afterGrade(key, ok); answerFx(ok); updateExamUI({ focus: false }); };
-        window._toggleMulti = (opt,key) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; const idx = appState.multiTempSelections.indexOf(opt); if(idx>=0) appState.multiTempSelections.splice(idx,1); else appState.multiTempSelections.push(opt); appState.userAnswers[key]=[...appState.multiTempSelections]; updateExamUI({ focus: false }); };
-        window._submitMulti = (key,correct) => { if (appState.answeredSet[key]) return; const sel = [...appState.multiTempSelections]; appState.userAnswers[key]=sel; const ok = sel.slice().sort().join(',')===correct.slice().sort().join(','); appState.answeredSet[key]=ok?'correct':'wrong'; appState.multiTempSelections=[]; afterGrade(key, ok); answerFx(ok); updateExamUI({ focus: false }); };
+        window._toggleMulti = (opt,key) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; const selected = [...(appState.userAnswers[key] || [])]; const idx = selected.indexOf(opt); if(idx>=0) selected.splice(idx,1); else selected.push(opt); appState.userAnswers[key]=selected; updateExamUI({ focus: false }); };
+        window._submitMulti = (key,correct) => { if (appState.answeredSet[key]) return; const sel = [...(appState.userAnswers[key] || [])]; appState.userAnswers[key]=sel; const ok = sel.slice().sort().join(',')===correct.slice().sort().join(','); appState.answeredSet[key]=ok?'correct':'wrong'; afterGrade(key, ok); answerFx(ok); updateExamUI({ focus: false }); };
         window._selectJudge = (val,key,correct) => { if (appState.answeredSet[key]||appState.currentMode==='view') return; appState.userAnswers[key]=val; const ok = val===correct; appState.answeredSet[key]=ok?'correct':'wrong'; afterGrade(key, ok); answerFx(ok); updateExamUI({ focus: false }); };
         window._submitFill = (key) => {
           if (appState.answeredSet[key]) return;
@@ -1999,9 +2167,13 @@
         window._setMode = (m) => {
           if (appState.currentMode === m) return;
           if (m === 'view') { appState.currentMode = 'view'; updateExamUI(); return; }
-          if (appState.currentMode === 'view') { appState.currentMode = m; appState._lastAnswerMode = m; updateExamUI(); return; }
+          if (appState.currentMode === 'view' && m === appState._lastAnswerMode && appState.currentQuestions.every(q => !questionNeedsReview(q._type, q))) {
+            appState.currentMode = m; updateExamUI(); return;
+          }
           if (Object.keys(appState.answeredSet).length && !confirm('切换作答顺序将清空当前答题进度，继续？')) return;
-          appState.currentQuestions = m === 'shuffle' ? shuffleArr(appState._originalOrder) : appState._originalOrder.slice();
+          const available = appState._originalOrder.filter(q => !questionNeedsReview(q._type, q));
+          if (!available.length) return showToast('所有题目答案待核对，暂不能作答','error');
+          appState.currentQuestions = m === 'shuffle' ? shuffleArr(available) : available;
           appState.currentMode = m;
           appState._lastAnswerMode = m;
           appState.currentIndex = 0;
@@ -2013,8 +2185,7 @@
         };
         window._goToResult = () => {
           if (!Object.keys(appState.answeredSet).length) return showToast('还没有作答记录','error');
-          computeResult();
-          navigateTo('result');
+          if (computeResult()) navigateTo('result');
         };
         window._restartExam = () => {
           if (!appState.currentSubjectId || !appState.currentCategory) return navigateTo('subject');
@@ -2027,7 +2198,7 @@
             .filter(i => i >= 0)
             .sort((a,b) => a-b);
           if (!wrongIdx.length) return showToast('本次没有错题','success');
-          const items = wrongIdx.map(i => appState._originalOrder[i]).filter(Boolean);
+          const items = wrongIdx.map(i => appState.currentQuestions[i]).filter(Boolean);
           if (!items.length) return showToast('没有可重练的错题','error');
           appState._originalOrder = items;
           appState.currentQuestions = items.slice();
@@ -2049,10 +2220,26 @@
         window._parsedQuestions = null;
         window._pendingFiles = null;
         window._recognitionUsedFallback = false;
+        window._cancelRecognition = (silent = false) => {
+          recognitionController?.abort();
+          if (recognitionWorker) recognitionWorker.terminate().catch(() => {});
+          if (!silent) {
+            const status = document.getElementById('uploadStatus');
+            if (status) status.textContent = '已取消识别';
+          }
+        };
+        const setRecognitionBusy = busy => {
+          const cancel = document.getElementById('cancelRecognitionBtn');
+          const process = document.getElementById('processUploadBtn');
+          if (cancel) cancel.style.display = busy ? '' : 'none';
+          if (process) process.disabled = busy;
+        };
 
         window._handleFileUpload = (event) => {
           const files = event.target.files;
           if (!files || !files.length) return;
+          const oversized = Array.from(files).find(file => file.size > 30 * 1024 * 1024);
+          if (oversized) { showToast(`${oversized.name} 超过 30MB，请拆分后再上传`,'error'); event.target.value = ''; return; }
           const names = Array.from(files).map(f=>f.name).join(', ');
           document.getElementById('uploadStatus').innerHTML = `<span style="font-size:16px;font-weight:600;">已选择：</span><br>${escapeHtml(names)}`;
           document.getElementById('processUploadBtn').disabled = false;
@@ -2067,13 +2254,23 @@
           if (!text) return showToast('请粘贴文本','error');
           window._pendingFiles = null;
           window._recognitionUsedFallback = false;
-          const parsed = await doRecognitionV2(text);
-          if (parsed) {
-            displayPreview(parsed);
-            window._parsedQuestions = parsed;
-            window._readyToImport = true;
-            document.getElementById('processUploadBtn').disabled = false;
-            document.getElementById('processUploadBtn').textContent = '导入识别结果';
+          recognitionController?.abort();
+          const controller = new AbortController();
+          recognitionController = controller;
+          setRecognitionBusy(true);
+          try {
+            const parsed = await doRecognitionV2(text);
+            throwIfRecognitionCancelled();
+            if (parsed && appState.currentView === 'upload') {
+              displayPreview(parsed);
+              window._parsedQuestions = parsed;
+              window._readyToImport = true;
+              document.getElementById('processUploadBtn').textContent = '导入识别结果';
+            }
+          } catch (e) {
+            if (!controller.signal.aborted) showToast(`识别出错：${e.message || e}`,'error');
+          } finally {
+            if (recognitionController === controller) { recognitionController = null; setRecognitionBusy(false); }
           }
         };
         window._processUploadedFile = async () => {
@@ -2084,35 +2281,40 @@
           window._recognitionUsedFallback = false;
           const files = window._pendingFiles;
           if (!files || !files.length) return showToast('请选择文件或粘贴文本','error');
-          document.getElementById('uploadStatus').innerHTML = '<span>正在解析文件...</span>';
-          document.getElementById('processUploadBtn').disabled = true;
-          let allText = '';
-          for (const file of files) {
-            try { allText += await extractTextFromFileV2(file) + '\n\n'; } catch(e) { showToast(`解析 ${file.name} 失败：${e.message || '未知错误'}`,'error'); }
-          }
-          if (!allText.trim()) {
-            document.getElementById('uploadStatus').innerHTML = '<span style="color:var(--red)">未提取到文本</span><br><span style="font-size:12px;color:var(--text-secondary)">若为图片型 PDF，请检查网络后重试（需联网加载 OCR 模型）；也可改用 .txt 或 WPS「PDF 转文字」后的文件</span>';
-            document.getElementById('processUploadBtn').disabled = false;
-            return;
-          }
-          let parsed = null;
+          recognitionController?.abort();
+          const controller = new AbortController();
+          recognitionController = controller;
+          setRecognitionBusy(true);
           try {
-            parsed = await doRecognitionV2(allText);
+            const status = document.getElementById('uploadStatus');
+            if (status) status.textContent = '正在解析文件...';
+            let allText = '';
+            for (const file of files) {
+              throwIfRecognitionCancelled();
+              try { allText += await extractTextFromFileV2(file) + '\n\n'; }
+              catch(e) { if (controller.signal.aborted) throw e; showToast(`解析 ${file.name} 失败：${e.message || '未知错误'}`,'error'); }
+            }
+            throwIfRecognitionCancelled();
+            if (!allText.trim()) throw new Error('未提取到文本；图片型 PDF 需要联网加载 OCR 模型');
+            const parsed = await doRecognitionV2(allText);
+            throwIfRecognitionCancelled();
+            if (!parsed || appState.currentView !== 'upload') return;
+            displayPreview(parsed);
+            window._parsedQuestions = parsed;
+            window._readyToImport = true;
+            document.getElementById('uploadStatus').innerHTML = window._recognitionUsedFallback
+              ? '<span style="color:var(--orange-text)">AI识别失败/不可用，已改用本地规则识别完成，请仔细核对题型。</span>'
+              : '<span style="color:var(--green-text)">识别完成！</span>';
+            document.getElementById('processUploadBtn').textContent = '导入识别结果';
           } catch (e) {
-            console.error('识别阶段异常:', e);
-            document.getElementById('uploadStatus').innerHTML = '<span style="color:var(--red)">识别出错：' + escapeHtml(e.message || String(e)) + '</span>';
-            document.getElementById('processUploadBtn').disabled = false;
-            return;
+            if (!controller.signal.aborted) {
+              const status = document.getElementById('uploadStatus');
+              if (status) status.textContent = '识别出错：' + (e.message || String(e));
+              showToast('识别出错，请检查文件或网络','error');
+            }
+          } finally {
+            if (recognitionController === controller) { recognitionController = null; setRecognitionBusy(false); }
           }
-          if (!parsed) { document.getElementById('processUploadBtn').disabled = false; return; }
-          displayPreview(parsed);
-          window._parsedQuestions = parsed;
-          window._readyToImport = true;
-          document.getElementById('uploadStatus').innerHTML = window._recognitionUsedFallback
-            ? '<span style="color:orange">AI识别失败/不可用，已改用本地规则识别完成，请仔细核对题型。</span>'
-            : '<span style="color:var(--green)">识别完成！</span>';
-          document.getElementById('processUploadBtn').disabled = false;
-          document.getElementById('processUploadBtn').textContent = '导入识别结果';
         };
         window._showDetailPreview = () => {
           if (!window._parsedQuestions) return;
@@ -2135,6 +2337,7 @@
         window._pickProvider = (id) => {
           const keyInput = document.getElementById('aiKeyInput');
           window._modalCfg.apiKey = keyInput ? keyInput.value : window._modalCfg.apiKey;
+          window._modalCfg.rememberKey = Boolean(document.getElementById('rememberAiKey')?.checked);
           const p = PROVIDER_PRESETS.find(x => x.id === id);
           window._modalCfg.providerId = id;
           if (p.id !== 'custom') {
@@ -2195,11 +2398,12 @@
           if (note) note.textContent = '';
           if (btn) { btn.disabled = true; btn.textContent = '获取中…'; }
           try {
-            const res = await fetch(url, {
+            const data = await fetchWithTimeout(url, {
               headers: { 'Authorization': 'Bearer ' + cfg.apiKey, 'Accept': 'application/json' }
+            }, 30000, async res => {
+              if (!res.ok) throw new Error('接口返回 ' + res.status);
+              return res.json();
             });
-            if (!res.ok) throw new Error('接口返回 ' + res.status);
-            const data = await res.json();
             const list = (Array.isArray(data.data) ? data.data.map(m => m.id || m) : []).filter(Boolean);
             if (!list.length) throw new Error('未解析到模型列表');
             window._modelCache = window._modelCache || {};
@@ -2226,7 +2430,7 @@
           cfg.displayName = cfg.displayName || cfg.model;
           appState.aiConfig = cfg;
           appState.apiKey = cfg.apiKey;
-          saveAiConfigToStorage(cfg);
+          if (!saveAiConfigToStorage(cfg)) return;
           closeModal();
           updateAiSummary();
           showToast('AI 配置已保存：' + cfg.name + ' / ' + cfg.displayName,'success');
@@ -2234,11 +2438,11 @@
 
         // 详情编辑
         window._addQuestion = (type) => {
-          const newQ = type==='single'?{q:'新题目',opts:['选项A','选项B','选项C','选项D'],ans:0}:
-                       type==='multi'?{q:'新题目',opts:['选项A','选项B','选项C','选项D'],ans:[0]}:
-                       type==='judge'?{q:'新题目',ans:true}:
-                       type==='fill'?{q:'新题目',ans:'答案'}:
-                       {q:'新题目',a:'参考答案'};
+          const newQ = type==='single'?{q:'新题目',opts:['选项A','选项B','选项C','选项D'],ans:null}:
+                       type==='multi'?{q:'新题目',opts:['选项A','选项B','选项C','选项D'],ans:null}:
+                       type==='judge'?{q:'新题目',ans:null}:
+                       type==='fill'?{q:'新题目',ans:null}:
+                       {q:'新题目',a:''};
           window._editableQuestions[type].push(newQ);
           document.getElementById('detailEditor').innerHTML = renderDetailEditor();
           bindDetailEditorEvents();
@@ -2259,11 +2463,22 @@
             (window._editableQuestions[type]||[]).forEach((q, i) => all.push({ type, index: i, question: q }));
           }
           const item = all[idx];
-          if (field === 'opts' && typeof value === 'string') value = value.split(',').map(s=>s.trim());
+          if (field === 'opts' && typeof value === 'string') {
+            const previous = item.question.opts || [];
+            const next = value.split(/\r?\n/).map(s=>s.trim());
+            const indices = Array.isArray(item.question.ans) ? item.question.ans : [item.question.ans];
+            if (indices.every(Number.isInteger)) {
+              const mapped = indices.map(i => next.map((text, j) => text && text === previous[i] ? j : -1).filter(j => j >= 0));
+              item.question.ans = mapped.every(matches => matches.length === 1)
+                ? (item.type === 'multi' ? mapped.map(matches => matches[0]) : mapped[0][0]) : null;
+            }
+            value = next;
+          }
           window._editableQuestions[item.type][item.index][field] = value;
         };
         window._saveEdits = () => {
-          window._parsedQuestions = window._editableQuestions;
+          window._parsedQuestions = normalizeParsedQuestions(window._editableQuestions);
+          window._editableQuestions = JSON.parse(JSON.stringify(window._parsedQuestions));
           displayPreview(window._parsedQuestions);
           document.getElementById('detailEditor').style.display = 'none';
           showToast('修改已保存','success');
@@ -2280,14 +2495,14 @@
         all.forEach((item, idx) => {
           const q = item.question;
           html += `<div class="card-elegant p-3" id="editQ-${idx}">
-            <div class="flex justify-between"><span class="tag-pill tag-${item.type}">${TYPE_NAMES[item.type]||item.type} #${item.index+1}</span><button class="btn-ghost text-sm" onclick="window._deleteQuestion(${idx})" style="color:var(--red)">删除</button></div>
-            <label class="text-xs">题干</label><input class="input-elegant text-sm" value="${escapeHtml(q.q)}" onchange="window._updateQ(${idx},'q',this.value)">
-            ${item.type==='single'||item.type==='multi'?`<div class="mt-2"><label class="text-xs">选项（用逗号分隔）</label><input class="input-elegant text-sm" value="${escapeHtml((q.opts||[]).join(','))}" onchange="window._updateQ(${idx},'opts',this.value)"></div>`:''}
-            ${item.type==='single'?`<label class="text-xs">答案（0-3）</label><input class="input-elegant text-sm w-20" type="number" min="0" value="${q.ans}" onchange="window._updateQ(${idx},'ans',parseInt(this.value))">`:''}
-            ${item.type==='multi'?`<label class="text-xs">答案（索引，逗号分隔）</label><input class="input-elegant text-sm" value="${(q.ans||[]).join(',')}" onchange="window._updateQ(${idx},'ans',this.value.split(',').map(Number))">`:''}
-            ${item.type==='judge'?`<label class="text-xs">答案</label><select class="input-elegant text-sm" onchange="window._updateQ(${idx},'ans',this.value==='true')"><option ${q.ans?'selected':''} value="true">正确</option><option ${!q.ans?'selected':''} value="false">错误</option></select>`:''}
-            ${item.type==='fill'?`<label class="text-xs">答案</label><input class="input-elegant text-sm" value="${escapeHtml(q.ans)}" onchange="window._updateQ(${idx},'ans',this.value)">`:''}
-            ${item.type==='short'?`<label class="text-xs">参考答案</label><textarea class="input-elegant text-sm" onchange="window._updateQ(${idx},'a',this.value)">${escapeHtml(q.a)}</textarea>`:''}
+            <div class="flex justify-between"><span class="tag-pill tag-${item.type}">${TYPE_NAMES[item.type]||item.type} #${item.index+1}${questionNeedsReview(item.type, q)?' · 待核对':''}</span><button class="btn-ghost text-sm" onclick="window._deleteQuestion(${idx})" style="color:var(--red)">删除</button></div>
+            <label class="text-xs">题干</label><input class="input-elegant text-sm" value="${escapeHtml(q.q)}" oninput="window._updateQ(${idx},'q',this.value)">
+            ${item.type==='single'||item.type==='multi'?`<div class="mt-2"><label class="text-xs">选项（每行一个，可包含逗号）</label><textarea class="input-elegant text-sm" oninput="window._updateQ(${idx},'opts',this.value)">${escapeHtml((q.opts||[]).join('\n'))}</textarea></div>`:''}
+            ${item.type==='single'?`<label class="text-xs">答案索引（A=0，B=1，依此类推）</label><input class="input-elegant text-sm w-20" type="number" min="0" value="${q.ans ?? ''}" oninput="window._updateQ(${idx},'ans',this.value===''?null:Number(this.value))">`:''}
+            ${item.type==='multi'?`<label class="text-xs">答案索引（逗号分隔，如 0,2）</label><input class="input-elegant text-sm" value="${Array.isArray(q.ans)?q.ans.join(','):''}" oninput="window._updateQ(${idx},'ans',this.value.trim()?this.value.split(',').map(x=>x.trim()):null)">`:''}
+            ${item.type==='judge'?`<label class="text-xs">答案</label><select class="input-elegant text-sm" onchange="window._updateQ(${idx},'ans',this.value===''?null:this.value==='true')"><option value="" ${q.ans===null?'selected':''}>待核对</option><option ${q.ans===true?'selected':''} value="true">正确</option><option ${q.ans===false?'selected':''} value="false">错误</option></select>`:''}
+            ${item.type==='fill'?`<label class="text-xs">答案</label><input class="input-elegant text-sm" value="${escapeHtml(q.ans)}" oninput="window._updateQ(${idx},'ans',this.value)">`:''}
+            ${item.type==='short'?`<label class="text-xs">参考答案</label><textarea class="input-elegant text-sm" oninput="window._updateQ(${idx},'a',this.value)">${escapeHtml(q.a)}</textarea>`:''}
           </div>`;
         });
         html += `<button class="btn-primary mt-3" onclick="window._saveEdits()">保存修改并返回</button></div>`;
@@ -2299,9 +2514,10 @@
         const area = document.getElementById('previewArea');
         const content = document.getElementById('previewContent');
         if (area) area.style.display = 'block';
+        const pending = ['single','multi','judge','fill','short'].reduce((sum,type) => sum + parsed[type].filter(q => questionNeedsReview(type,q)).length, 0);
         if (content) content.innerHTML = `
           <p>单选题：${parsed.single.length} 多选题：${parsed.multi.length} 判断题：${parsed.judge.length} 填空题：${parsed.fill.length} 简答题：${parsed.short.length}</p>
-          <p class="mt-1"><strong>总计 ${parsed.single.length+parsed.multi.length+parsed.judge.length+parsed.fill.length+parsed.short.length} 道</strong></p>`;
+          <p class="mt-1"><strong>总计 ${parsed.single.length+parsed.multi.length+parsed.judge.length+parsed.fill.length+parsed.short.length} 道</strong>${pending?` · <span style="color:var(--orange-text)">${pending} 道答案待核对，暂不参与练习</span>`:''}</p>`;
       }
 
       // ================= V2：通用题库解析（本地规则 + 多供应商 AI） =================
@@ -2331,14 +2547,7 @@
   "short": [{"q":"题干","a":"参考答案"}]
 }
 所有字符串用双引号，不要尾随逗号。单选题 ans 用数字索引；多选题 ans 用数字索引数组；判断题 ans 用 true/false。
-
-## 四、思考要求
-在输出最终 JSON 之前，先在 <thinking> 标签内逐题说明题型判断依据，重点说明“单选还是多选”和“填空题答案是否已从题干删除”。示例：
-<thinking>
-题目1：答案只有一个字母 A，判定单选。
-题目2：答案 AB，判定多选。
-题目3：题干括号内已写答案，已删除并替换为（ ）。
-</thinking>`;
+只返回 JSON，不要输出思考过程、Markdown 或其他说明。`;
 
       function buildChatEndpoint(base) {
         let b = String(base || '').trim().replace(/\/+$/, '');
@@ -2387,6 +2596,7 @@
       function parseAnswerIndices(ans, optsLen) {
         const out = [];
         const push = n => {
+          if (n === null || n === undefined || String(n).trim() === '') return;
           n = Number(n);
           if (Number.isInteger(n) && n >= 0 && n < optsLen && !out.includes(n)) out.push(n);
         };
@@ -2414,7 +2624,9 @@
         const s = String(ans || '').trim();
         if (/^(true|t|yes|y)$/i.test(s)) return true;
         if (/^(false|f|no|n)$/i.test(s)) return false;
-        return ['√','✓','对','正确','是'].includes(s);
+        if (['√','✓','对','正确','是'].includes(s)) return true;
+        if (['×','✗','错','错误','否'].includes(s)) return false;
+        return null;
       }
       function cleanQuestionText(q) {
         return String(q || '').replace(/[ \t]+/g, ' ').replace(/\n+/g, ' ').trim();
@@ -2438,17 +2650,23 @@
         const list = key => Array.isArray(raw[key]) ? raw[key] : (raw[key] ? [raw[key]] : []);
         for (const item of list('single')) {
           if (!item || typeof item.q !== 'string' || !item.q.trim()) continue;
-          const opts = (Array.isArray(item.opts) ? item.opts : []).map(o => String(o ?? '').trim()).filter(Boolean);
+          const rawOpts = Array.isArray(item.opts) ? item.opts : [];
+          const optionMap = rawOpts.map((o, oldIndex) => ({ text: String(o ?? '').trim(), oldIndex })).filter(o => o.text);
+          const opts = optionMap.map(o => o.text);
           if (opts.length < 2) continue;
-          const parsed = parseAnswerIndices(item.ans, opts.length);
-          out.single.push({ q: cleanQuestionText(item.q), opts, ans: parsed.length ? parsed[0] : 0 });
+          const parsed = parseAnswerIndices(item.ans, rawOpts.length);
+          const ans = parsed.length === 1 ? optionMap.findIndex(o => o.oldIndex === parsed[0]) : -1;
+          out.single.push({ q: cleanQuestionText(item.q), opts, ans: ans >= 0 ? ans : null });
         }
         for (const item of list('multi')) {
           if (!item || typeof item.q !== 'string' || !item.q.trim()) continue;
-          const opts = (Array.isArray(item.opts) ? item.opts : []).map(o => String(o ?? '').trim()).filter(Boolean);
+          const rawOpts = Array.isArray(item.opts) ? item.opts : [];
+          const optionMap = rawOpts.map((o, oldIndex) => ({ text: String(o ?? '').trim(), oldIndex })).filter(o => o.text);
+          const opts = optionMap.map(o => o.text);
           if (opts.length < 2) continue;
-          const parsed = parseAnswerIndices(item.ans, opts.length);
-          out.multi.push({ q: cleanQuestionText(item.q), opts, ans: parsed.length ? parsed : [0] });
+          const parsed = parseAnswerIndices(item.ans, rawOpts.length);
+          const ans = parsed.map(i => optionMap.findIndex(o => o.oldIndex === i));
+          out.multi.push({ q: cleanQuestionText(item.q), opts, ans: ans.length >= 2 && ans.every(i => i >= 0) ? ans : null });
         }
         for (const item of list('judge')) {
           if (!item || typeof item.q !== 'string' || !item.q.trim()) continue;
@@ -2458,14 +2676,21 @@
           if (!item || typeof item.q !== 'string' || !item.q.trim()) continue;
           let ansList = Array.isArray(item.ans) ? item.ans : String(item.ans == null ? '' : item.ans).split('|');
           ansList = ansList.map(s => String(s).trim()).filter(Boolean);
-          if (!ansList.length) continue;
-          out.fill.push({ q: cleanQuestionText(stripAnswerFromFillQuestion(item.q, ansList)), ans: ansList.join('|') });
+          out.fill.push({ q: cleanQuestionText(stripAnswerFromFillQuestion(item.q, ansList)), ans: ansList.length ? ansList.join('|') : null });
         }
         for (const item of list('short')) {
           if (!item || typeof item.q !== 'string' || !item.q.trim()) continue;
-          out.short.push({ q: cleanQuestionText(item.q), a: String(item.a || '').trim() || '（参考答案略）' });
+          out.short.push({ q: cleanQuestionText(item.q), a: String(item.a || '').trim() });
         }
         return out;
+      }
+      function questionNeedsReview(type, q) {
+        if (type === 'single') return !Number.isInteger(q.ans) || q.ans < 0 || q.ans >= q.opts.length;
+        if (type === 'multi') return !Array.isArray(q.ans) || q.ans.length < 2 || q.ans.some(i => !Number.isInteger(i) || i < 0 || i >= q.opts.length);
+        if (type === 'judge') return typeof q.ans !== 'boolean';
+        if (type === 'fill') return !String(q.ans || '').trim();
+        if (type === 'short') return !String(q.a || '').trim();
+        return false;
       }
 
       async function doRecognitionV2(text) {
@@ -2477,7 +2702,7 @@
         return await aiRecognitionV2(text);
       }
 
-      // ========== V2：AI 识别（流式 + 实时思考展示） ==========
+      // ========== V2：AI 识别（流式响应） ==========
       async function aiRecognitionV2(text) {
         const cfg = appState.aiConfig || loadAiConfig();
         appState.aiConfig = cfg;
@@ -2494,75 +2719,29 @@
           return normalizeParsedQuestions(parseQuestionsFromTextV2(text));
         }
         const modelLabel = cfg.displayName || cfg.model;
-        const thinkBoxHtml = '<div id="thinkBox" class="think-box" style="display:none"><div class="flex items-center gap-2 mb-1"><span class="think-dot" id="thinkDot"></span><strong>AI 实时思考</strong><span class="text-xs" id="thinkState">思考中…</span></div><div id="thinkBody"></div></div>';
-        if (statusEl) statusEl.innerHTML = '<span>正在调用 ' + escapeHtml(cfg.name) + '（' + escapeHtml(modelLabel) + '）识别<span id="chunkStatus"></span>…</span>' + thinkBoxHtml;
-
-        let thinkStarted = false;
-        let curChunk = -1;
-        let thinkBuf = '';
-        let thinkRaf = 0;
-        // 每个 SSE delta 都写一次 DOM 会把整块已渲染内容重新解析一遍（O(n²)），
-        // 长思考流直接把主线程占满 → 页面「无响应」。改成攒到一帧、用 appendChild 追加文本节点。
-        const flushThink = () => {
-          thinkRaf = 0;
-          const tb = document.getElementById('thinkBox');
-          const body = document.getElementById('thinkBody');
-          if (!tb || !body || !thinkBuf) return;
-          body.appendChild(document.createTextNode(thinkBuf));
-          thinkBuf = '';
-          tb.scrollTop = tb.scrollHeight;
-        };
-        const onThink = (chunk, ci) => {
-          const tb = document.getElementById('thinkBox');
-          if (!tb) return;
-          if (!thinkStarted) { thinkStarted = true; tb.style.display = 'block'; }
-          const body = document.getElementById('thinkBody');
-          if (!body) return;
-          if (ci !== curChunk) {
-            if (curChunk >= 0) {
-              const sep = document.createElement('div');
-              sep.style.cssText = 'opacity:.5;margin:6px 0';
-              sep.textContent = '— 第 ' + (ci + 1) + ' 段思考 —';
-              body.appendChild(sep);
-            }
-            curChunk = ci;
-          }
-          thinkBuf += chunk;
-          if (!thinkRaf) thinkRaf = requestAnimationFrame(flushThink);
-        };
-        const finishThink = () => {
-          if (thinkRaf) { cancelAnimationFrame(thinkRaf); thinkRaf = 0; flushThink(); }
-          const dot = document.getElementById('thinkDot');
-          const st = document.getElementById('thinkState');
-          if (dot) dot.style.animation = 'none';
-          if (st) st.textContent = '思考完成';
-        };
+        if (statusEl) statusEl.innerHTML = '<span>正在调用 ' + escapeHtml(cfg.name) + '（' + escapeHtml(modelLabel) + '）识别<span id="chunkStatus"></span>…</span>';
 
         try {
+          throwIfRecognitionCancelled();
           const chunks = chunkText(text);
           const merged = { single:[], multi:[], judge:[], fill:[], short:[] };
           for (let i = 0; i < chunks.length; i++) {
+            throwIfRecognitionCancelled();
             const cs = document.getElementById('chunkStatus');
             if (cs && chunks.length > 1) cs.textContent = '（' + (i + 1) + '/' + chunks.length + ' 段）';
-            const { content, reasoning, streamedThinkLen } = await callProviderOnce(chunks[i], cfg, (c) => onThink(c, i));
-            if (reasoning && reasoning.length > (streamedThinkLen || 0)) {
-              onThink(reasoning.slice(streamedThinkLen || 0), i);
-            } else if (!reasoning) {
-              const m = String(content || '').match(/<thinking>([\s\S]*?)<\/thinking>/i);
-              if (m) onThink(m[1].trim(), i);
-            }
+            const { content } = await callProviderOnce(chunks[i], cfg);
             let cleanContent = String(content || '').replace(/<thinking>[\s\S]*?<\/thinking>/gi, '').trim();
             cleanContent = cleanContent.replace(/```json\s*|```/g, '').trim();
             const jsonMatch = cleanContent.match(/\{[\s\S]*\}/);
             if (!jsonMatch) throw new Error('未找到有效的 JSON 对象');
             mergeParsedResults(merged, normalizeParsedQuestions(robustJSONParse(jsonMatch[0])));
           }
-          if (thinkStarted) finishThink();
           const result = dedupeParsedQuestions(merged);
           const total = result.single.length + result.multi.length + result.judge.length + result.fill.length + result.short.length;
           if (!total) throw new Error('模型没有识别出任何题目');
           return result;
         } catch (error) {
+          if (recognitionController?.signal.aborted || error?.message === '识别已取消') throw error;
           console.error('AI识别异常:', error);
           window._recognitionUsedFallback = true;
           if (statusEl) statusEl.innerHTML = '<span style="color:orange">AI识别失败：' + escapeHtml(error.message || error) + '。已自动切换本地规则识别。</span>';
@@ -2575,8 +2754,8 @@
         }
       }
 
-      // 单次调用：优先流式（实时输出 reasoning_content 思考），失败自动降级非流式
-      async function callProviderOnce(text, cfg, onThink) {
+      // 单次调用：优先流式；仅在尚未收到任何内容时降级非流式，避免重复请求和计费
+      async function callProviderOnce(text, cfg) {
         const endpoint = buildChatEndpoint(cfg.proxyUrl || cfg.baseUrl);
         if (!endpoint) throw new Error('API 地址为空');
         const headers = { 'Content-Type': 'application/json' };
@@ -2587,15 +2766,19 @@
         ];
         const mkBody = stream => JSON.stringify({ model: cfg.model, messages, temperature: 0.1, stream });
         let streamedThinkLen = 0;
+        let receivedAny = false;
         try {
-          const response = await fetch(endpoint, {
+          return await fetchWithTimeout(endpoint, {
             method: 'POST',
             headers,
-            body: mkBody(true)
-          });
+            body: mkBody(true),
+            signal: recognitionController?.signal,
+          }, 90000, async response => {
           if (!response.ok) {
             const body = await response.text().catch(() => '');
-            throw new Error('接口返回 ' + response.status + ' ' + body.slice(0, 200));
+            const error = new Error('接口返回 ' + response.status + ' ' + body.slice(0, 200));
+            error.noRetry = true;
+            throw error;
           }
           if (!response.body || !response.body.getReader) throw new Error('当前浏览器不支持流式读取');
           const reader = response.body.getReader();
@@ -2610,11 +2793,11 @@
             try { j = JSON.parse(payload); } catch (e) { return; }
             const delta = (j.choices && j.choices[0] && j.choices[0].delta) || {};
             if (typeof delta.reasoning_content === 'string' && delta.reasoning_content) {
+              receivedAny = true;
               reasoning += delta.reasoning_content;
               streamedThinkLen += delta.reasoning_content.length;
-              if (onThink) onThink(delta.reasoning_content);
             }
-            if (typeof delta.content === 'string' && delta.content) content += delta.content;
+            if (typeof delta.content === 'string' && delta.content) { receivedAny = true; content += delta.content; }
           };
           while (true) {
             const { done, value } = await reader.read();
@@ -2626,16 +2809,19 @@
               buf = buf.slice(idx + 1);
             }
           }
+          if (buf.trim()) onData(buf);
           if (content || reasoning) return { content, reasoning, streamedThinkLen };
           throw new Error('模型未返回有效内容（可尝试更换模型）');
+          });
         } catch (e) {
-          if (looksLikeCorsError(e)) throw e;
+          if (e.noRetry || receivedAny || recognitionController?.signal.aborted || looksLikeCorsError(e)) throw e;
           // 非流式兜底
-          const response = await fetch(endpoint, {
+          return await fetchWithTimeout(endpoint, {
             method: 'POST',
             headers,
-            body: mkBody(false)
-          });
+            body: mkBody(false),
+            signal: recognitionController?.signal,
+          }, 90000, async response => {
           if (!response.ok) {
             const body = await response.text().catch(() => '');
             throw new Error('接口返回 ' + response.status + ' ' + body.slice(0, 200));
@@ -2645,6 +2831,7 @@
           const content = msg.content;
           if (!content) throw new Error('模型未返回有效内容（可尝试更换模型）');
           return { content, reasoning: msg.reasoning_content || msg.reasoning || '', streamedThinkLen: 0 };
+          });
         }
       }
 
@@ -2684,7 +2871,9 @@
         for (let i = 0; i < seq.length; i++) {
           const start = seq[i].index + seq[i].len;
           const end = i + 1 < seq.length ? seq[i + 1].index : trimmed.length;
-          options.push(trimmed.slice(start, end).replace(/\s*\n+\s*/g, ' ').trim());
+          options.push(trimmed.slice(start, end)
+            .replace(/\s*(?:标准答案|参考答案|答案)\s*[：:][\s\S]*$/i, '')
+            .replace(/\s*\n+\s*/g, ' ').trim());
         }
         return options.filter(Boolean);
       }
@@ -2751,20 +2940,20 @@
         const isFill = (/填空|___|____|（\s*）|\(\s*\)|【\s*】|[（(【][^（）()【】]{1,40}[）)】]/.test(trimmed)) && !hasLetterOptions;
         const isShort = /简答|问答|论述|名词解释/.test(trimmed) && !hasLetterOptions;
         if (explicitJudge || (judgeAns !== null && !hasLetterOptions && !explicitMulti && !isFill)) {
-          return { type: 'judge', data: { q: cleanChoiceQuestionV2(trimmed), ans: judgeAns !== null ? judgeAns : true } };
+          return { type: 'judge', data: { q: cleanChoiceQuestionV2(trimmed), ans: judgeAns } };
         }
         if (isFill || (fillAns && /___|（\s*）|\(\s*\)|【\s*】|[（(【][^（）()【】]{1,40}[）)】]/.test(trimmed) && !hasLetterOptions && !explicitJudge && !explicitMulti)) {
-          const cleanedAns = fillAns || '（请填写）';
+          const cleanedAns = fillAns || null;
           return { type: 'fill', data: { q: cleanFillQuestionV2(trimmed, cleanedAns), ans: cleanedAns } };
         }
         if (hasLetterOptions) {
           if (explicitMulti || answerIndices.length > 1) {
-            return { type: 'multi', data: { q: cleanChoiceQuestionV2(trimmed), opts: options, ans: answerIndices.length ? answerIndices : [0] } };
+            return { type: 'multi', data: { q: cleanChoiceQuestionV2(trimmed), opts: options, ans: answerIndices.length ? answerIndices : null } };
           }
-          return { type: 'single', data: { q: cleanChoiceQuestionV2(trimmed), opts: options, ans: answerIndices.length ? Math.min(answerIndices[0], options.length - 1) : 0 } };
+          return { type: 'single', data: { q: cleanChoiceQuestionV2(trimmed), opts: options, ans: answerIndices.length ? answerIndices[0] : null } };
         }
         if (isShort || shortAns) {
-          return { type: 'short', data: { q: cleanQuestionText(trimmed.replace(/(?:标准答案|参考答案|答案|答)\s*[：:]\s*[\s\S]*$/i, '')), a: shortAns || '（参考答案略）' } };
+          return { type: 'short', data: { q: cleanQuestionText(trimmed.replace(/(?:标准答案|参考答案|答案|答)\s*[：:]\s*[\s\S]*$/i, '')), a: shortAns || '' } };
         }
         return null;
       }
@@ -2786,7 +2975,8 @@
           reader.readAsText(file, 'UTF-8');
         });
       }
-      function extractDocx(file) {
+      async function extractDocx(file) {
+        await ensureLibrary('mammoth');
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = async () => {
@@ -2801,7 +2991,8 @@
           reader.readAsArrayBuffer(file);
         });
       }
-      function extractExcel(file) {
+      async function extractExcel(file) {
+        await ensureLibrary('xlsx');
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => {
@@ -2837,11 +3028,16 @@
         });
       }
       async function extractPdfTextLayer(file) {
+        await ensureLibrary('pdf');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         const pdf = await pdfjsLib.getDocument({ data: await readFileBuffer(file) }).promise;
+        if (pdf.numPages > 100) throw new Error('PDF 超过 100 页，请拆分后再识别');
         let text = '';
         for (let i=1; i<=pdf.numPages; i++) {
+          throwIfRecognitionCancelled();
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
+          throwIfRecognitionCancelled();
           text += content.items.map(it => it.str).join(' ') + '\n';
         }
         return text;
@@ -2940,17 +3136,19 @@
       }
       // 逐页渲染成 canvas 再 OCR；tesseract 首次会下载中文模型（约 1.7MB，之后走 IndexedDB 缓存）
       async function ocrPdf(file) {
-        if (typeof pdfjsLib === 'undefined') throw new Error('PDF 解析组件未加载，请检查网络后刷新页面');
-        if (typeof Tesseract === 'undefined') {
-          throw new Error('这是图片型 PDF，需要 OCR 组件（CDN 未加载成功）。请检查网络后刷新重试；或把 PDF 另存为文字型 PDF / 改用 .txt 上传');
-        }
+        await ensureLibrary('pdf');
+        await ensureLibrary('tesseract');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         const pdf = await pdfjsLib.getDocument({ data: await readFileBuffer(file) }).promise;
+        if (pdf.numPages > 100) throw new Error('PDF 超过 100 页，请拆分后再识别');
         const startedAt = Date.now();
         setUploadStatus('<span>检测到图片型 PDF，正在加载中文 OCR 模型…（首次约 3.5MB，请稍候）</span>');
         const worker = await Tesseract.createWorker('chi_sim', 1, OCR_CDN);
+        recognitionWorker = worker;
         let text = '';
         try {
           for (let i=1; i<=pdf.numPages; i++) {
+            throwIfRecognitionCancelled();
             const secs = Math.round((Date.now() - startedAt) / 1000);
             setUploadStatus(`<span style="color:var(--accent)">图片型 PDF，正在识别… 第 ${i}/${pdf.numPages} 页（已用 ${secs} 秒，请勿关闭页面）</span>`);
             const page = await pdf.getPage(i);
@@ -2960,17 +3158,20 @@
             canvas.height = Math.ceil(viewport.height);
             const ctx = canvas.getContext('2d');
             await page.render({ canvasContext: ctx, viewport }).promise;
+            throwIfRecognitionCancelled();
             const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             // 双栏试卷按栏切开分别识别，否则 tesseract 会把左右两栏串成一行
             for (const [x0, x1] of ocrColumnRanges(imgData, canvas.width, canvas.height)) {
               const target = (x0 === 0 && x1 === canvas.width) ? canvas : ocrCrop(canvas, x0, x1);
               const { data } = await worker.recognize(target);
+              throwIfRecognitionCancelled();
               text += ocrLinesWithAnswers(data, imgData, canvas.width, x0) + '\n';
             }
             canvas.width = 0; canvas.height = 0;
           }
         } finally {
           try { await worker.terminate(); } catch(e) {}
+          if (recognitionWorker === worker) recognitionWorker = null;
         }
         return text;
       }
@@ -3013,33 +3214,43 @@
         const normalized = normalizeParsedQuestions(parsed);
         const total = normalized.single.length + normalized.multi.length + normalized.judge.length + normalized.fill.length + normalized.short.length;
         if (!total) { showToast('没有可导入的有效题目，请检查识别结果','error'); return; }
+        const pending = ['single','multi','judge','fill','short'].reduce((sum,type) => sum + normalized[type].filter(q => questionNeedsReview(type,q)).length, 0);
+        if (pending) {
+          showToast(`${pending} 道题答案待核对，请先在详情中补全后再导入`,'error');
+          window._showDetailPreview?.();
+          return;
+        }
         const nameInput = document.getElementById('subjectNameInput');
         const select = document.getElementById('existingSubjectSelect');
         const targetId = select?.value;
         const customName = nameInput?.value?.trim();
         let skipped = 0;
+        const subjects = Object.assign(Object.create(null), appState.subjects);
+        let message;
         if (targetId && appState.subjects[targetId]) {
-          const sub = appState.subjects[targetId];
-          sub.questions = sub.questions || { single:[], multi:[], judge:[], fill:[], short:[] };
+          const sub = { ...appState.subjects[targetId], questions: { ...appState.subjects[targetId].questions } };
+          subjects[targetId] = sub;
           for (let type of ['single','multi','judge','fill','short']) {
-            sub.questions[type] = sub.questions[type] || [];
+            sub.questions[type] = [...(sub.questions[type] || [])];
             const existing = new Set(sub.questions[type].map(q => String(q.q || '').trim()));
             const fresh = normalized[type].filter(q => !existing.has(String(q.q || '').trim()));
             skipped += normalized[type].length - fresh.length;
             sub.questions[type].push(...fresh);
           }
-          saveData();
-          showToast(`已导入 ${total - skipped} 题到「${sub.name}」${skipped ? `，跳过重复 ${skipped} 题` : ''}`,'success');
+          message = `已导入 ${total - skipped} 题到「${sub.name}」${skipped ? `，跳过重复 ${skipped} 题` : ''}`;
         } else {
-          const newId = 'sub_' + Date.now();
-          appState.subjects[newId] = {
+          let newId = createSubjectId();
+          while (subjects[newId]) newId = createSubjectId();
+          subjects[newId] = {
             name: customName || `上传题库 ${new Date().toLocaleDateString('zh-CN')}`,
             createdAt: new Date().toISOString().split('T')[0],
             questions: { single: normalized.single, multi: normalized.multi, judge: normalized.judge, fill: normalized.fill, short: normalized.short }
           };
-          saveData();
-          showToast(`已创建题库「${appState.subjects[newId].name}」，共 ${total} 题`,'success');
+          message = `已创建题库「${subjects[newId].name}」，共 ${total} 题`;
         }
+        if (!saveData({ subjects, wrongBook: appState.wrongBook, stats: appState.stats })) return;
+        appState.subjects = subjects;
+        showToast(message,'success');
         window._parsedQuestions = null;
         window._readyToImport = false;
         window._pendingFiles = null;
@@ -3069,7 +3280,7 @@
 
       // ================= 全局事件 =================
       document.addEventListener('keydown', e => {
-        const inField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable;
+        const inField = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(e.target.tagName) || e.target.isContentEditable || Boolean(e.target.closest?.('[role="button"], [role="tab"]'));
         const modalOpen = (document.getElementById('modalRoot') || {}).style?.display !== 'none';
         if (e.key === 'Escape') {
           if (modalOpen) { closeModal(); return; }
