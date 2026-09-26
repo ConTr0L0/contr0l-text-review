@@ -1,6 +1,6 @@
 # 期末复习系统
 
-一个在浏览器中运行的单文件复习工具。可以从复习资料中识别题目、建立多个题库、练习和重练错题，并查看练习统计。无需安装或构建项目。
+一个在浏览器中运行的轻量复习工具。可以从复习资料中识别题目、建立多个题库、练习和重练错题，并查看练习统计。无需安装或构建项目。
 
 版本：`v1.3.2`。`index.html` 内置更新日志记录了该版本。
 
@@ -39,7 +39,7 @@
 
 ## 运行依赖
 
-应用主体由 HTML、CSS 和原生 JavaScript 构成，没有构建步骤。Tailwind CSS、Mammoth、SheetJS、pdf.js 和 tesseract.js 从 CDN 加载；文档解析及图片型 PDF OCR 需要网络访问相应资源。AI 识别还需要访问所选模型供应商。
+应用由 HTML、独立 CSS 文件和原生 JavaScript 文件构成，没有构建步骤。使用时请将 `index.html`、`styles.css` 和 `app.js` 放在同一目录。Tailwind CSS、Mammoth、SheetJS、pdf.js 和 tesseract.js 从 CDN 加载；文档解析及图片型 PDF OCR 需要网络访问相应资源。AI 识别还需要访问所选模型供应商。
 
 完整更新记录可在应用内打开「更新日志」查看。
 
