@@ -59,7 +59,8 @@
         subjects: {}, wrongBook: {}, stats: [], darkMode: false, motion: true,
         examStartTime: null, lastResult: null,
         _sessionStartMode: 'order', _lastAnswerMode: 'order',
-        motionLevel: 'full', navStack: ['home'], scrollMemo: {}, _navDirection: 'forward', _suppressStack: false,
+        motionLevel: 'full', navStack: ['home'], scrollMemo: {}, _navDirection: 'forward', _suppressStack: false, _suppressViewTransition: false,
+        _subjectPickerAction: 'open', _subjectPickerIndex: 0, _homeSubjectIndex: 0,
         apiKey: localStorage.getItem(API_KEY_STORAGE) || '',
         aiConfig: null,
       };
@@ -432,6 +433,7 @@
         const noStack = appState._suppressStack;
         appState._suppressStack = false;
         appState._navDirection = opts.back ? 'back' : 'forward';
+        appState._suppressViewTransition = Boolean(opts.skipViewTransition || prev === 'subject-picker' || view === 'subject-picker');
         appState.currentView = view;
         if (!opts.replace && !noStack && !opts.back) push(view);
         renderView();
@@ -453,6 +455,8 @@
         const app = document.getElementById('app');
         const html = renderCurrentView();
         const key = viewKey();
+        const suppressTransition = appState._suppressViewTransition;
+        appState._suppressViewTransition = false;
         const swapContent = (h) => {
           app.innerHTML = h;
           bindEvents();
@@ -465,7 +469,7 @@
         const dir = appState._navDirection || 'forward';
         // 只切 .vt-back：:root 默认 --vt-in: vtIn，.vt-back 覆盖为 vtInLeft
         document.documentElement.classList.toggle('vt-back', dir === 'back');
-        const canVT = typeof document.startViewTransition === 'function' && appState.motionLevel !== 'off';
+        const canVT = !suppressTransition && typeof document.startViewTransition === 'function' && appState.motionLevel !== 'off';
         if (canVT) {
           try { document.startViewTransition(() => swapContent(html)); return; } catch (e) {}
         }
@@ -475,6 +479,7 @@
       function renderCurrentView() {
         switch (appState.currentView) {
           case 'home': return renderHomePage();
+          case 'subject-picker': return renderSubjectPickerPage();
           case 'subject': return renderSubjectPage();
           case 'exam': return renderExamPage();
           case 'upload': return renderUploadPage();
@@ -512,7 +517,7 @@
           const y = lineY - (g / 100) * (H - P * 2 - 16);
           return `<line x1="${P}" y1="${y.toFixed(1)}" x2="${W - P}" y2="${y.toFixed(1)}" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="3 4"/>`;
         }).join('');
-        const dots = pts.map(p => `<circle class="home-trend-dot" style="animation-delay:${520 + p.i * 36}ms" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.2" fill="${dotColor(p.s.acc)}"><title>${escapeHtml(p.s.date)} · ${p.s.acc}%（${escapeHtml(p.s.subjectName || '')}）</title></circle>`).join('');
+        const dots = pts.map(p => `<circle class="home-trend-dot" style="animation-delay:${260 + p.i * 42}ms" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.2" fill="${dotColor(p.s.acc)}"><title>${escapeHtml(p.s.date)} · ${p.s.acc}%（${escapeHtml(p.s.subjectName || '')}）</title></circle>`).join('');
         return `
         <div class="card-elegant home-progress-card p-4 rise-item" style="animation-delay:80ms">
           <div class="flex justify-between items-center mb-2">
@@ -537,22 +542,36 @@
       }
 
       // ================= 首页 =================
+      function subjectCardOffset(index, activeIndex, total, direction = 1) {
+        let offset = (index - activeIndex + total) % total;
+        if (offset > total / 2 || (total % 2 === 0 && offset === total / 2 && direction > 0)) offset -= total;
+        return offset;
+      }
+      function renderSubjectCards(ids, activeIndex, action) {
+        return ids.map((id, index) => {
+          const sub = appState.subjects[id], q = sub.questions || {};
+          const qCount = ['single','multi','judge','fill','short'].reduce((sum, type) => sum + (q[type]?.length || 0), 0);
+          const wrong = totalWrongCount(id);
+          const offset = subjectCardOffset(index, activeIndex, ids.length);
+          const cta = action === 'comp' ? '进入综合测试' : action === 'home' ? '打开题库' : '开始复习';
+          const active = index === activeIndex;
+          return `<button type="button" class="subject-picker-card" data-picker-index="${index}" data-offset="${offset}" aria-current="${active}" ${active ? '' : 'aria-hidden="true" tabindex="-1"'}>
+            <span class="subject-picker-card-top"><span class="subject-picker-card-number">SUBJECT ${String(index + 1).padStart(2,'0')}</span><span>${String(index + 1).padStart(2,'0')} / ${String(ids.length).padStart(2,'0')}</span></span>
+            <span class="subject-picker-card-body"><span class="subject-picker-card-title">${escapeHtml(sub.name)}</span><span class="subject-picker-card-info">${qCount} 道题${wrong ? ` · ${wrong} 道错题` : ''}</span></span>
+            <span class="subject-picker-card-bottom"><span>${escapeHtml(sub.createdAt || '题库')}</span><span class="subject-picker-cta">${cta} ${iconSvg('arrowRight',16)}</span></span>
+          </button>`;
+        }).join('');
+      }
       function renderHomePage() {
         const ids = Object.keys(appState.subjects);
+        const homeIndex = ids.length ? Math.max(0, Math.min(ids.length - 1, Number(appState._homeSubjectIndex) || 0)) : 0;
+        const homeCards = renderSubjectCards(ids, homeIndex, 'home');
+        const reducedHomeMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+        const homeDeckMotion = appState.motionLevel === 'off' || reducedHomeMotion ? 'fade' : 'full';
         const totalQuestions = ids.reduce((s, id) => {
           const q = appState.subjects[id].questions || {};
           return s + ['single','multi','judge','fill','short'].reduce((a, t) => a + (q[t]?.length || 0), 0);
         }, 0);
-        const rows = ids.map((id, i) => {
-          const sub = appState.subjects[id], q = sub.questions || {};
-          const qCount = ['single','multi','judge','fill','short'].reduce((a, t) => a + (q[t]?.length || 0), 0);
-          const wrong = totalWrongCount(id);
-          return `<button type="button" class="subject-card" onclick="window._openSubject('${id}')">
-            <span class="subject-number">${String(i + 1).padStart(2,'0')}</span>
-            <span class="subject-copy"><h3>${escapeHtml(sub.name)}</h3><p>${wrong ? `${wrong} 道错题 · ` : ''}${escapeHtml(sub.createdAt || '')}</p></span>
-            <span class="subject-side"><span class="subject-count">${qCount}</span><span class="subject-arrow">${iconSvg('arrowRight',18)}</span></span>
-          </button>`;
-        }).join('');
         return `
         <div class="home-bento">
           <div class="home-hero-track" id="homeRevealTrack">
@@ -594,13 +613,22 @@
             </div>
             </section>
           </div>
-          <section class="home-library" aria-labelledby="homeLibraryTitle">
+          <section class="home-library home-scroll-page" aria-labelledby="homeLibraryTitle">
             <header class="home-section-head"><div><p class="home-index">02 / YOUR LIBRARY</p><h2 id="homeLibraryTitle">我的题库</h2></div><span class="home-count-chip">${ids.length} 个题库</span></header>
-            <div class="home-subject-list">${rows || `
-              <div class="home-empty"><p class="font-semibold">还没有题库</p><p class="text-sm text-secondary">上传复习资料后，即可整理题目并开始练习</p></div>`}
+            <div class="home-subject-list">${ids.length ? `
+              <div class="home-subject-deck">
+                <div class="subject-picker-stage" id="homeSubjectStage" data-context="home" data-motion="${homeDeckMotion}" role="group" aria-roledescription="carousel" aria-label="我的题库卡片">${homeCards}</div>
+                <div class="subject-picker-controls">
+                  <button type="button" class="btn-icon" data-picker-step="-1" aria-label="上一个题库" aria-controls="homeSubjectStage" ${ids.length < 2 ? 'disabled' : ''}><span aria-hidden="true">←</span></button>
+                  <span class="subject-picker-live" data-picker-status role="status" aria-live="polite" aria-atomic="true"></span>
+                  <button type="button" class="btn-icon" data-picker-step="1" aria-label="下一个题库" aria-controls="homeSubjectStage" ${ids.length < 2 ? 'disabled' : ''}><span aria-hidden="true">→</span></button>
+                </div>
+                <p class="subject-picker-hint">使用 ← → 切换题库，或左右滑动</p>
+              </div>` : `
+                <div class="home-empty"><p class="font-semibold">还没有题库</p><p class="text-sm text-secondary">上传复习资料后，即可整理题目并开始练习</p></div>`}
             </div>
           </section>
-          <aside class="home-progress" aria-labelledby="homeProgressTitle">
+          <aside class="home-progress home-scroll-page" aria-labelledby="homeProgressTitle">
             <header class="home-section-head"><div><p class="home-index">03 / PRACTICE TRACE</p><h2 id="homeProgressTitle">学习轨迹</h2></div></header>
             ${renderStatsCard()}
           </aside>
@@ -612,6 +640,41 @@
             <button class="btn-ghost text-sm press" onclick="window._resetAll()" style="color:var(--red)">重置数据</button>
           </div>
         </div>`;
+      }
+      function renderSubjectPickerPage() {
+        const ids = Object.keys(appState.subjects);
+        const action = appState._subjectPickerAction === 'comp' ? 'comp' : 'open';
+        const activeIndex = ids.length ? Math.max(0, Math.min(ids.length - 1, Number(appState._subjectPickerIndex) || 0)) : 0;
+        const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+        const motion = appState.motionLevel === 'off' || reduced ? 'fade' : 'full';
+        if (!ids.length) return `
+          <main class="subject-picker-page">
+            <header class="subject-picker-topbar"><button class="subject-picker-back" onclick="window._back()"><span aria-hidden="true">←</span> 返回</button><span class="subject-picker-toplabel">YOUR LIBRARY</span><span class="subject-picker-count">00 / 00</span></header>
+            <section class="subject-picker-empty"><div><p class="subject-picker-eyebrow">SUBJECT SELECTION</p><h1 class="subject-picker-title">还没有题库</h1><p class="subject-picker-intro">上传复习资料后，即可整理题目并开始练习</p></div><button class="btn-primary" onclick="window._navigateTo('upload')">上传题库</button></section>
+            <span></span>
+          </main>`;
+        const cards = renderSubjectCards(ids, activeIndex, action);
+        return `
+          <main class="subject-picker-page">
+            <header class="subject-picker-topbar">
+              <button class="subject-picker-back" onclick="window._back()"><span aria-hidden="true">←</span> 返回</button>
+              <span class="subject-picker-toplabel">YOUR LIBRARY / 题库</span>
+              <span class="subject-picker-count"><strong data-picker-current>${String(activeIndex + 1).padStart(2,'0')}</strong> / ${String(ids.length).padStart(2,'0')}</span>
+            </header>
+            <section class="subject-picker-main" aria-labelledby="subjectPickerTitle">
+              <p class="subject-picker-eyebrow">SUBJECT SELECTION</p>
+              <h1 class="subject-picker-title" id="subjectPickerTitle">选择题库</h1>
+              <p class="subject-picker-intro">${action === 'comp' ? '选择一个题库开始综合测试' : '选择要复习的题库'}</p>
+              <div class="subject-picker-stage" id="subjectPickerStage" data-motion="${motion}" role="group" aria-roledescription="carousel" aria-label="题库卡片">${cards}</div>
+              <div class="subject-picker-controls">
+                <button type="button" class="btn-icon" data-picker-step="-1" aria-label="上一个题库" aria-controls="subjectPickerStage" ${ids.length < 2 ? 'disabled' : ''}><span aria-hidden="true">←</span></button>
+                <span class="subject-picker-live" id="subjectPickerStatus" role="status" aria-live="polite" aria-atomic="true"></span>
+                <button type="button" class="btn-icon" data-picker-step="1" aria-label="下一个题库" aria-controls="subjectPickerStage" ${ids.length < 2 ? 'disabled' : ''}><span aria-hidden="true">→</span></button>
+              </div>
+              <p class="subject-picker-hint">使用 ← → 切换题库，或左右滑动；点击卡片继续</p>
+            </section>
+            <span aria-hidden="true"></span>
+          </main>`;
       }
       function animateHomeMetrics() {
         const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches && !document.body.classList.contains('motion-explicit-full');
@@ -780,6 +843,23 @@
           window.addEventListener('scroll', updateHomeScrollReveal, { passive:true });
           window.addEventListener('resize', updateHomeScrollReveal, { passive:true });
           window._homeRevealScrollBound = true;
+        }
+        window._homePageObserver?.disconnect();
+        const pages = Array.from(document.querySelectorAll('.home-scroll-page'));
+        const systemReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches && !document.body.classList.contains('motion-explicit-full');
+        const reduceSectionMotion = appState.motionLevel === 'off' || systemReduced;
+        if (reduceSectionMotion || typeof IntersectionObserver !== 'function') {
+          pages.forEach(page => page.classList.add('is-in-view'));
+        } else {
+          const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('is-in-view');
+              observer.unobserve(entry.target);
+            });
+          }, { threshold:.12, rootMargin:'0px 0px -8% 0px' });
+          window._homePageObserver = observer;
+          pages.forEach(page => observer.observe(page));
         }
         updateHomeScrollReveal();
       }
@@ -1484,24 +1564,9 @@
         window._pickSubject = (action) => {
           const ids = Object.keys(appState.subjects);
           if (!ids.length) { showToast('还没有题库，请先上传题库','error'); return; }
-          const rows = ids.map((id, i) => {
-            const sub = appState.subjects[id];
-            const qCount = (sub.questions?.single?.length||0)+(sub.questions?.multi?.length||0)+(sub.questions?.judge?.length||0)+(sub.questions?.fill?.length||0)+(sub.questions?.short?.length||0);
-            return `<button class="mode-opt" onclick="window._pickSubjectGo('${id}','${action}')">
-              <span class="mode-opt-icon" style="background:rgba(0,113,227,.08);color:var(--accent)">${iconSvg('book', 20)}</span>
-              <span class="text-left flex-1 min-w-0"><span class="block font-semibold text-sm truncate">${escapeHtml(sub.name)}</span><span class="text-xs text-secondary">${qCount} 题 · ${escapeHtml(sub.createdAt||'')}</span></span>
-              <span style="color:var(--text-secondary);display:inline-flex">${iconSvg('arrowRight', 16)}</span>
-            </button>`;
-          }).join('');
-          openModal(`
-            <div class="p-5 sm:p-6 space-y-3">
-              <div class="text-center">
-                <h3 class="text-lg font-semibold">选择题库</h3>
-                <p class="text-sm text-secondary">共 ${ids.length} 个题库 · ${action === 'comp' ? '将进入综合测试' : '选择要复习的题库'}</p>
-              </div>
-              <div class="space-y-2" style="max-height:50vh;overflow-y:auto">${rows}</div>
-              <button class="btn-ghost w-full" onclick="window._closeModal()">取消</button>
-            </div>`);
+          appState._subjectPickerAction = action === 'comp' ? 'comp' : 'open';
+          appState._subjectPickerIndex = 0;
+          navigateTo('subject-picker', { skipViewTransition:true });
         };
         window._pickSubjectGo = (id, action) => {
           closeModal();
@@ -1510,6 +1575,151 @@
           else navigateTo('subject');
         };
         window._openSubject = (id) => { appState.currentSubjectId = id; navigateTo('subject'); };
+        const bindSubjectDeck = stage => {
+          if (!stage) return;
+          const isHomeDeck = stage.dataset.context === 'home';
+          const deckRoot = stage.closest(isHomeDeck ? '.home-subject-deck' : '.subject-picker-page');
+          const cards = Array.from(stage.querySelectorAll('.subject-picker-card'));
+          const ids = Object.keys(appState.subjects);
+          const steps = Array.from(deckRoot.querySelectorAll('[data-picker-step]'));
+          const status = deckRoot.querySelector('.subject-picker-live');
+          const currentCount = deckRoot.querySelector('[data-picker-current]');
+          let activeIndex = Math.max(0, Math.min(cards.length - 1, Number(isHomeDeck ? appState._homeSubjectIndex : appState._subjectPickerIndex) || 0));
+          let animating = false, swipeStart = null, suppressClick = false, suppressTimer = null, deckDirection = 1;
+          const motionForDeck = () => {
+            const systemReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches && !document.body.classList.contains('motion-explicit-full');
+            return systemReduced || appState.motionLevel === 'off' ? 'fade' : 'full';
+          };
+          const refreshDeck = () => {
+            stage.dataset.motion = motionForDeck();
+            cards.forEach((card, index) => {
+              const offset = subjectCardOffset(index, activeIndex, cards.length, deckDirection);
+              const distance = Math.abs(offset), side = Math.sign(offset);
+              const cardWidth = card.offsetWidth || stage.clientWidth * .6;
+              const x = side * Math.min(cardWidth * (.88 + Math.max(0, distance - 1) * .5), window.innerWidth * .42 + cardWidth * .1);
+              const scale = distance ? Math.max(.28, 1 - .14 * distance) : 1;
+              const z = distance ? -(34 * distance + 6 * distance * distance) : 0;
+              const rotate = -side * Math.min(16 * distance, 70);
+              const opacity = distance ? Math.max(.2, 1 - .14 * distance) : 1;
+              const visible = distance === 0 || (opacity > .22 && Math.abs(x) < window.innerWidth / 2 + cardWidth * scale / 2);
+              card.dataset.offset = String(offset);
+              card.style.setProperty('--card-x', `${x.toFixed(1)}px`);
+              card.style.setProperty('--card-y', `${Math.min(distance * 4,20).toFixed(1)}px`);
+              card.style.setProperty('--card-z', `${z.toFixed(1)}px`);
+              card.style.setProperty('--card-scale', scale.toFixed(3));
+              card.style.setProperty('--card-rotate', `${rotate.toFixed(1)}deg`);
+              card.style.setProperty('--card-opacity', opacity.toFixed(3));
+              card.style.setProperty('--card-layer', String(100 - distance));
+              card.style.setProperty('--card-pointer', visible ? 'auto' : 'none');
+              const active = index === activeIndex;
+              card.tabIndex = active ? 0 : -1;
+              card.setAttribute('aria-hidden', String(!active));
+              card.setAttribute('aria-current', String(active));
+            });
+            if (isHomeDeck) appState._homeSubjectIndex = activeIndex;
+            else appState._subjectPickerIndex = activeIndex;
+            if (currentCount) currentCount.textContent = String(activeIndex + 1).padStart(2,'0');
+            if (status) status.textContent = `第 ${activeIndex + 1} / ${cards.length} 个题库：${cards[activeIndex]?.querySelector('.subject-picker-card-title')?.textContent || ''}`;
+          };
+          stage._refreshSubjectDeck = refreshDeck;
+          if (!window._subjectDeckResizeBound) {
+            window.addEventListener('resize', () => document.querySelectorAll('.subject-picker-stage').forEach(deck => deck._refreshSubjectDeck?.()), { passive:true });
+            window._subjectDeckResizeBound = true;
+          }
+          const transformForCard = card => {
+            const value = name => card.style.getPropertyValue(name).trim();
+            return `translate3d(calc(-50% + ${value('--card-x')}),calc(-50% + ${value('--card-y')}),${value('--card-z')}) scale(${value('--card-scale')}) rotateY(${value('--card-rotate')})`;
+          };
+          const finishStep = () => { stage.classList.remove('is-transitioning','is-waapi-transitioning'); animating = false; };
+          const stepDeck = (direction, targetIndex = null) => {
+            if (animating || cards.length < 2) return;
+            const previousIndex = activeIndex;
+            const nextIndex = targetIndex ?? (activeIndex + direction + cards.length) % cards.length;
+            const outgoing = cards[previousIndex], incoming = cards[nextIndex];
+            const focusWasOnCard = cards[previousIndex] === document.activeElement;
+            const mode = motionForDeck();
+            const starts = mode === 'full' && typeof cards[0]?.animate === 'function'
+              ? cards.map(card => ({ transform:transformForCard(card), opacity:getComputedStyle(card).opacity }))
+              : null;
+            cards.forEach(card => card.classList.remove('is-fading-in','is-fading-out'));
+            if (mode === 'full') {
+              animating = true;
+              stage.classList.add('is-transitioning');
+              if (starts) stage.classList.add('is-waapi-transitioning');
+            }
+            deckDirection = direction;
+            activeIndex = nextIndex;
+            refreshDeck();
+            if (focusWasOnCard) incoming.focus({ preventScroll:true });
+            if (mode === 'full') {
+              const duration = appState.motionLevel === 'lite' ? 620 : 1000;
+              if (starts) {
+                const animations = cards.map((card, index) => {
+                  const value = name => card.style.getPropertyValue(name).trim();
+                  return card.animate([
+                    { transform:starts[index].transform, opacity:starts[index].opacity },
+                    { transform:transformForCard(card), opacity:value('--card-opacity') }
+                  ], { duration, easing:'cubic-bezier(.25,.1,.25,1)' });
+                });
+                Promise.all(animations.map(animation => animation.finished.catch(() => {}))).then(finishStep);
+              } else {
+                window.setTimeout(finishStep, duration);
+              }
+              return;
+            }
+            animating = true;
+            stage.classList.add('is-transitioning');
+            outgoing.classList.add('is-fading-out');
+            incoming.classList.add('is-fading-in');
+            void incoming.offsetWidth;
+            requestAnimationFrame(() => incoming.classList.remove('is-fading-in'));
+            window.setTimeout(() => {
+              outgoing.classList.remove('is-fading-out');
+              finishStep();
+            }, 320);
+          };
+          cards.forEach((card, index) => card.addEventListener('click', () => {
+            if (animating) return;
+            if (index !== activeIndex) {
+              const offset = subjectCardOffset(index, activeIndex, cards.length, deckDirection);
+              if (offset) stepDeck(Math.sign(offset), index);
+              return;
+            }
+            if (isHomeDeck) window._openSubject(ids[index]);
+            else window._pickSubjectGo(ids[index], appState._subjectPickerAction);
+          }));
+          steps.forEach(button => button.addEventListener('click', () => stepDeck(Number(button.dataset.pickerStep))));
+          deckRoot.addEventListener('keydown', event => {
+            if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+            if (event.target.closest('input,textarea,select,[contenteditable="true"]') || cards.length < 2) return;
+            event.preventDefault();
+            stepDeck(event.key === 'ArrowRight' ? 1 : -1);
+          });
+          stage.addEventListener('pointerdown', event => {
+            if (event.pointerType === 'mouse' || animating) return;
+            swipeStart = { x:event.clientX, y:event.clientY, id:event.pointerId };
+          });
+          stage.addEventListener('pointerup', event => {
+            if (!swipeStart || event.pointerId !== swipeStart.id) return;
+            const dx = event.clientX - swipeStart.x, dy = event.clientY - swipeStart.y;
+            swipeStart = null;
+            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+            suppressClick = true;
+            window.clearTimeout(suppressTimer);
+            suppressTimer = window.setTimeout(() => { suppressClick = false; }, 500);
+            stepDeck(dx < 0 ? 1 : -1);
+          });
+          stage.addEventListener('pointercancel', () => { swipeStart = null; });
+          stage.addEventListener('click', event => {
+            if (!suppressClick) return;
+            suppressClick = false;
+            window.clearTimeout(suppressTimer);
+            if (event.target.closest('.subject-picker-card')) { event.preventDefault(); event.stopImmediatePropagation(); }
+          }, true);
+          refreshDeck();
+        };
+        bindSubjectDeck(document.getElementById('subjectPickerStage'));
+        bindSubjectDeck(document.getElementById('homeSubjectStage'));
         window._resetAll = () => {
           if (confirm('确定清空所有题库、错题与统计？')) {
             appState.subjects = {};
@@ -2925,7 +3135,7 @@
           btn.title = motionLevelTitle();
           btn.setAttribute('aria-label', motionLevelTitle());
         }
-        updateHomeScrollReveal();
+        bindHomeScrollReveal();
         showToast(enableFullOverride ? '已按你的选择启用完整动效' : motionLevelTitle(), 'info');
       }
       window._cycleMotion = cycleMotion;
